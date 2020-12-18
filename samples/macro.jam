@@ -1,0 +1,4 @@
+..macro define mydd hlq #
+//DD[#] DD DISP=SHR,DSN=[hlq].MY.FILE[#]
+..macro end
+..for 1 to 5 macro mydd SYS1

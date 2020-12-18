@@ -1,0 +1,35 @@
+..askqu metric Y Do you want metric measurements?
+..if [metric = 'Y']
+..  set flour = '225 g'
+..  set butter = '100 g'
+..  set jam = '125 ml'
+..  set temp = '180︒C'
+..  set thickness = '6 mm'
+..else
+..  set flour = '8 ounces'
+..  set butter = '4 ounces'
+..  set jam = '1/2 cup'
+..  set temp = '350︒F'
+..  set thickness = '1/4 inch'
+..end
+Traditional Jam Tarts
+---------------------
+
+Ingredients
+
+- For the pastry crust:
+  - [flour] all-purpose flour
+  - [butter] butter (cubed; or an equal mix of butter and lard)
+  - 1 pinch salt
+  - 2 to 3 tablespoons water (cold)
+
+ - For the filling:
+   - [jam] strawberry jam (or any fruit jam or lemon curd)
+
+Steps
+
+1. Preheat the oven to [temp] Gas Mark 4. 
+2. Lightly grease a 12-hole tart mold with a little butter.
+3. Make tarts
+4. Bake tarts
+5. Take tarts with a cup of tea

@@ -1,0 +1,5 @@
+alias sysname jc mc sysclone sysplex  jesname jesnode njenet  cat             tags        host
+TST1  R2D2    A  X  T1       TESTPLEX JESTST1 N11     NJEA    SYS1.MASTER.CAT 'DEV TEST'  r2d2.example.org
+TST2  R2D3    A  X  T2       TESTPLEX JESTST2 N12     NJEA    SYS1.MASTER.CAT 'UAT'       r2d3.example.org  
+PRD1  C3P0    A  X  P1       PRODPLEX JESPRD1 N21     NJEB    SYS1.MASTER.CAT 'PROD'      c3p0.example.org  
+PRD2  C3P1    A  X  P1       PRODPLEX JESPRD2 N22     NJEB    SYS1.MASTER.CAT 'PROD DR'   c3p1.example.org

@@ -1,0 +1,5 @@
+..copy my.pds(mem1,mem2,mem3) your.pds
+
+..copy my.pds(mem1) your.pds,
+..copy my.pds(mem2) your.pds,
+..copy my.pds(mem3) your.pds

@@ -1,0 +1,5 @@
+..option debug
+..job tst1
+..job r2d3
+..job scum
+..job

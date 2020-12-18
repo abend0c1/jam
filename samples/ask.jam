@@ -1,0 +1,8 @@
+..ask reply red ASK - What's your favourite color?
+..say You said <[reply]>
+..asku reply orange ASKU - What's your favourite color?
+..say You said <[reply]>
+..askq reply yellow ASKQ - What's your favourite color?
+..say You said <[reply]>
+..askqu reply green ASKQU - What's your favourite color?
+..say You said <[reply]>

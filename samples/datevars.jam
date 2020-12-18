@@ -1,0 +1,58 @@
+..datevars 2008/04/01
+..say [day date]
+..quit
+
+
+
+    Input                               Resulting date               Comment
+    ---------------------------------   --------------------------   -------
+..datevars 25/2/1966
+    [datevar                         ]  [dayname date             ] 
+..datevars Easter 2021
+    [datevar                         ]  [dayname date             ] 
+..datevars prev friday before easter 2021
+    [datevar                         ]  [dayname date             ]  (Good Friday)
+..datevars first monday in january 2021
+    [datevar                         ]  [dayname date             ]  (1st Monday)
+..datevars [date] +7
+    [datevar                         ]  [dayname date             ]  (2nd Monday)
+..datevars [date] +7
+    [datevar                         ]  [dayname date             ]  (3rd Monday)
+..datevars [date] +7
+    [datevar                         ]  [dayname date             ]  (4th Monday)
+..datevars last saturday in march 2021
+    [datevar                         ]  [dayname date             ] 
+
+
+
+
+..datevars easter 2021
+..say Easter 2021 is [day date]
+..set easter = date
+
+..datevars first saturday after [easter]
+..say [datevar] is [day date]
+..datevars next saturday after easter 2021
+..say [datevar] is [day date]
+
+..datevars last saturday before [easter]
+..say [datevar] is [day date]
+
+..datevars first sunday in october
+..say [datevar] is [day date]
+..datevars first sunday in april
+..say [datevar] is [day date]
+
+..datevars last friday in dec
+..say [datevar] is [day date]
+..datevars last friday in november
+..say [datevar] is [day date]
+
+..datevars next friday
+..say [datevar] is [day date]
+
+..datevars Friday
+..say [datevar] is [day date]
+
+..datevars last Friday in Easter 2021
+..say [datevar] is [day date]
