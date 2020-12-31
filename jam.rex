@@ -1737,7 +1737,7 @@ doDateVars:
   25/2/66      |  1966/02/25
   25/2/1966    |  1966/02/25
   25/2         |  yyyy/02/25 (in the current year)
-  2/25         |  1966/02/25
+  2/25         |  yyyy/02/25 (in the current year)
   2/25/66      |  1966/02/25
   2/25/1966    |  1966/02/25
   25 Feb 1966  |  1966/02/25
@@ -2485,7 +2485,9 @@ each line of input does the following:
     sVerb = word(g.0VERBS,i)
     parse value sourceline(g.0HELPBEG.sVerb) with . sSyntax
     parse var sSyntax sVerb .
-    queue '- ['sVerb'](#'space(sSyntax,1,'-')')'
+    sLink = translate(sSyntax,'','[].,=')
+    sLink = toLower(strip(space(sLink,1,'-'),'LEADING','#'))
+    queue '- ['sVerb'](#'sLink')'
   end
   /* Generate help text for each verb */
   do i = 1 to words(g.0VERBS)

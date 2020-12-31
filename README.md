@@ -329,7 +329,7 @@ In more detail, it performs the following types of transformation on the input f
    dollar value is right-justified. The following JAM input file (with 
    REXX stem variables appropriately set):
 
-       NASDAQ      Company            Value
+    q   NASDAQ      Company            Value
        [s.1 ] [     com.1     ] [  value.1]
        [s.2 ] [     com.2     ] [  value.2]
        [s.3 ] [     com.3     ] [  value.3]
@@ -344,18 +344,18 @@ In more detail, it performs the following types of transformation on the input f
     The text justification method depends on whether there is at least one leading 
     and/or trailing space around the REXX expression as follows:
 
-    Example          | Resulting justification
-    ---------------- | -----------------------
-    <pre>[s  ]</pre> | Left justified
-    <pre>[  s]</pre> | Right justified
-    <pre>[ s ]</pre> | Centred
-    <pre>[s]  </pre> | No justification
+    | Example   | Resulting justification |
+    | --------- | ----------------------- |
+    | ``[s ]``  | Left justified          |
+    | ``[ s]``  | Right justified         |
+    | ``[ s ]`` | Centred                 |
+    | ``[s]``   | No justification        |
     
     
     When justification *is* used, the width of each output column equals the number of 
     characters bounded by the square brackets including the square brackets
     themselves. Any content longer than that width is truncated. When justification
-    is not used, no truncation occurs and the width of the output column is simply
+    is not used, no truncation occurs and the width of the output cell is simply
     the width of the content.
 
 
@@ -455,13 +455,12 @@ In batch, JAM reads from DD:IN and writes to DD:OUT.
 ### On Linux or Windows
 On Linux or Windows the syntax is:
 
-`JAM [{filein | DD:ddname}  [[fileout | DD:ddname | -]] [--options...]`
+`JAM filein [fileout | -] [--options...]`
 
 
 Where,
 
-* `filein` - Identifies the JAM input file. For z/OS it must be a fully qualified dataset name. For example, `sys1.jam.pds(mymem)`.
-* `DD:ddname` - Identifies an input or output file by DD name (z/OS only). For example, `JAM DD:IN DD:OUT`.
+* `filein` - Identifies the JAM input file.
 * `fileout` - Identifies the transformed output file to be created.
               The default is the path and file name of the input file with a `.txt` extension appended.
               If `-` is specified then the output is written to the terminal.
@@ -638,12 +637,12 @@ input file called MY.JAM.INPUT containing:
    uppercase and/or allow the user to reply Q to quit the JAM session.
    The variations are summarised below:
 
-   Verb  | Convert reply to uppercase? | Reply Q to Quit?
-   ----- | --------------------------- | ----------------
-   ASK   | No                          | No
-   ASKU  | Yes                         | No
-   ASKQ  | No                          | Yes
-   ASKQU | Yes                         | Yes
+   | Verb  | Convert reply to uppercase? | Reply Q to Quit? |
+   | ----- | --------------------------- | ---------------- |
+   | ASK   | No                          | No               |
+   | ASKU  | Yes                         | No               |
+   | ASKQ  | No                          | Yes              |
+   | ASKQU | Yes                         | Yes              |
 
    Another way to solicit user input is to put a question
    mark at the end of a REXX variable name within square brackets.
@@ -715,9 +714,9 @@ input file called MY.JAM.INPUT containing:
   the catalog appropriate for the "alias" system. The
   following pre-defined catalog variables can be used:
 
-  Variable | Description
-  -------- | -----------
-  cat      | The master catalog for the alias system.
+  | Variable | Description |
+  | -------- | ----------- |
+  | cat      | The master catalog for the alias system. |
 
 ### ..COMPRESS  dsn [volser]
 
@@ -775,53 +774,53 @@ input file called MY.JAM.INPUT containing:
   Unrecognised dates are silently assumed to be the current date.
   Examples of "date" values that you can specify include:
 
-  date         |  Interpreted as
-  ----         |  --------------
-  25/2/66      |  1966/02/25
-  25/2/1966    |  1966/02/25
-  25/2         |  yyyy/02/25 (in the current year)
-  2/25         |  1966/02/25
-  2/25/66      |  1966/02/25
-  2/25/1966    |  1966/02/25
-  25 Feb 1966  |  1966/02/25
-  25 Feb 66    |  1966/02/25
-  25 Feb       |  yyyy/02/25 (in the current year)
-  25FEB        |  yyyy/02/25 (in the current year)
-  February 25  |  yyyy/02/25 (in the current year)
-  Feb          |  yyyy/02/01 (in the current year)
-  1966 Feb     |  1966/02/01
-  1966 Feb 25  |  1966/02/25
-  1966         |  1966/01/01 (first day of that year)
-  66056        |  1966/02/25 (Julian yyddd)
-  66.056       |  1966/02/25 (Julian yy.ddd)
-  250266       |  1966/02/25 (ddmmyy)
-  717756       |  1966/02/25 (days since 1/1/1900)
-  +7           |             (the current date + 7 days)
-  -7           |             (the current date - 7 days)
-  <unrecognised> |  yyyy/mm/dd (the current date)
+  | date           | Interpreted as                           |
+  | -------------- | ---------------------------------------- |
+  | 25/2/66        | 1966/02/25                               |
+  | 25/2/1966      | 1966/02/25                               |
+  | 25/2           | yyyy/02/25 (in the current year)         |
+  | 2/25           | 1966/02/25                               |
+  | 2/25/66        | 1966/02/25                               |
+  | 2/25/1966      | 1966/02/25                               |
+  | 25 Feb 1966    | 1966/02/25                               |
+  | 25 Feb 66      | 1966/02/25                               |
+  | 25 Feb         | yyyy/02/25 (in the current year)         |
+  | 25FEB          | yyyy/02/25 (in the current year)         |
+  | February 25    | yyyy/02/25 (in the current year)         |
+  | Feb            | yyyy/02/01 (in the current year)         |
+  | 1966 Feb       | 1966/02/01                               |
+  | 1966 Feb 25    | 1966/02/25                               |
+  | 1966           | 1966/01/01 (first day of that year)      |
+  | 66056          | 1966/02/25 (Julian yyddd)                |
+  | 66.056         | 1966/02/25 (Julian yy.ddd)               |
+  | 250266         | 1966/02/25 (ddmmyy)                      |
+  | 717756         | 1966/02/25 (days since 1/1/1900)         |
+  | +7             |            (the current date + 7 days)   |
+  | -7             |            (the current date - 7 days)   |
+  | <unrecognised> | yyyy/mm/dd (the current date)            |
 
-  The REXX variables created for the specified date are:
+  The resulting REXX variables created for the specified date are:
 
-  Variable  | Example         | Description
-  --------  | --------------  | ----------------------------
-  datevar   | 25/2/1966       | The input date passed to ..datevars
-  basedate  | 717756          | Days since 1900/01/01
-  date      | Fri 25 Feb 1966 | REXX default date format
-  dayname   | Friday          | Long day name
-  day       |  Fri            | Short day name
-  dd        |  25             | 2-digit day number
-  mm        |  02             | 2-digit month number
-  yy        |  66             | 2-digit year
-  yyyy      |  1966           | 4-digit year
-  yyddd     |  66056          | Julian date
-  ddd       |  056            | Days since yyyy/01/01
-  yymmdd    |  66/02/25       | Short sortable date format
-  ddmmyy    |  25/02/66       | European date format
-  month     |  February       | Long month name
-  mon       |  Feb            | Short month name
-  yyyymmdd  |  1966/02/25     | Long sortable date format
-  ddmmyyyy  |  25/02/1966     | Long European date format
-  days      |  -20000         | Days since today
+  | Variable  | Example         | Description                         |
+  | --------  | --------------  | ----------------------------------- |
+  | datevar   | 25/2/1966       | The input date passed to ..datevars |
+  | basedate  | 717756          | Days since 1900/01/01               |
+  | date      | Fri 25 Feb 1966 | REXX default date format            |
+  | dayname   | Friday          | Long day name                       |
+  | day       |  Fri            | Short day name                      |
+  | dd        |  25             | 2-digit day number                  |
+  | mm        |  02             | 2-digit month number                |
+  | yy        |  66             | 2-digit year                        |
+  | yyyy      |  1966           | 4-digit year                        |
+  | yyddd     |  66056          | Julian date                         |
+  | ddd       |  056            | Days since yyyy/01/01               |
+  | yymmdd    |  66/02/25       | Short sortable date format          |
+  | ddmmyy    |  25/02/66       | European date format                |
+  | month     |  February       | Long month name                     |
+  | mon       |  Feb            | Short month name                    |
+  | yyyymmdd  |  1966/02/25     | Long sortable date format           |
+  | ddmmyyyy  |  25/02/1966     | Long European date format           |
+  | days      |  -20000         | Days since today                    |
 
   For example:
 
@@ -1017,9 +1016,9 @@ input file called MY.JAM.INPUT containing:
   search order. The following pre-defined catalog
   variables can be used:
 
-  Variable | Description
-  -------- | -----------
-  cat      | The master catalog for the alias system.
+  | Variable | Description                               |
+  | -------- | ----------------------------------------- |
+  | cat      | The master catalog for the alias system.  |
 
 ### ..LISTVTOC  dsn volser
 
@@ -1186,16 +1185,16 @@ input file called MY.JAM.INPUT containing:
   You can specify any name for an option but the following options have
   special meaning to the JAM processor:
 
-  Option   | Action when set
-  -------- | ----------------------------------------------
-  trunc    | Truncate input lines at column 71.
-  blanks   | Honours blank input cards. Use "noblanks" to cause blank input lines to be ignored.
-  comments | Honours JCL comment cards. Use "nocomments" to cause JCL comment input lines to be ignored.
-  debug    | Show JAM statements trace messages.
-  hold     | Append TYPRUN=HOLD to job cards that are generated by subsequent `..job` or `..runon` statements.
-  quiet    | Do not generate comments describing the JCL being generated.
-  verbose  | Copy input JAM statements to output.
-  useftp   | Use FTP to submit jobs instead of NJE even when the source and target systems are in the same NJE network.
+  | Option   | Action when set
+  | -------- | ----------------------------------------------
+  | trunc    | Truncate input lines at column 71.
+  | blanks   | Honours blank input cards. Use "noblanks" to cause blank input lines to be ignored.
+  | comments | Honours JCL comment cards. Use "nocomments" to cause JCL comment input lines to be ignored.
+  | debug    | Show JAM statements trace messages.
+  | hold     | Append TYPRUN=HOLD to job cards that are generated by subsequent `..job` or `..runon` statements.
+  | quiet    | Do not generate comments describing the JCL being generated.
+  | verbose  | Copy input JAM statements to output.
+  | useftp   | Use FTP to submit jobs instead of NJE even when the source and target systems are in the same NJE network.
 
   Any flags set in this way can be used in subsequent `..if` statements. For example:
 
@@ -1460,17 +1459,18 @@ input file called MY.JAM.INPUT containing:
 
   The parameters passed to the `..style` JAM statement are:
 
-  Parameter   | Meaning
-  ---------   | --------------------------------------------
-  name        | The name of the set of variables to be defined and/or activated
-  width       | The width of the comment line
-  first       | The characters (if any) to emit before the top border line
-  borderleft  | The leftmost characters of the top and bottom border line
-  borderfill  | The single fill character of the top and bottom border line
-  borderright | The rightmost characters of the top and bottom border line
-  commentleft | The leftmost characters of each comment line
-  commentright| The rightmost characters of each comment line
-  last        | The characters (if any) to emit after the bottom border line
+  | Parameter   | Meaning
+  | ---------   | --------------------------------------------
+  | name        | The name of the set of variables to be defined and/or activated
+  | width       | The width of the comment line
+  | first       | The characters (if any) to emit before the top border line
+  | borderleft  | The leftmost characters of the top and bottom border line
+  | borderfill  | The single fill character of the top and bottom border line
+  | borderright | The rightmost characters of the top and bottom border line
+  | commentleft | The leftmost characters of each comment line
+  | commentright| The rightmost characters of each comment line
+  | last        | The characters (if any) to emit after the bottom 
+ border line
 
   If you omit the parameters then the named set becomes the active set for
   subsequent `..*` JAM statements. For example, to set assembler-style comments:
@@ -1488,15 +1488,15 @@ input file called MY.JAM.INPUT containing:
 
   The following styles are pre-defined:
 
-  name | width | first   | border<br/>left | border<br/>fill | border<br/>right | comment<br/>left | comment<br/>right | last   
-  ---- | ----- | ------- | -----------     | --------------- | ---------------- | ---------------- | ----------------- | ----   
-  asm  | 71    | *       | *               | -               | *                | *                | *                 | *      
-  box  | 71    |         | **              | *               | **               | **               | **                |        
-  c    | 80    | //      | //              | -               | -                | //               | -                 | //     
-  jcl  | 71    | //* | //*         | -               | *                | //*          | *                 | //*
-  js   | 80    | //      | //              | -               |                  | //               |                   | //     
-  rexx | 80    | /*  | &nbsp;*         | -               | */           | &nbsp;*          | */            | */ 
-  xml  | 80    | <!--    |                 |                 |                  |                  |                   | -->    
+  | name | width | first   | border<br/>left | border<br/>fill | border<br/>right | comment<br/>left | comment<br/>right | last |  
+  | ---- | ----- | ------- | -----------     | --------------- | ---------------- | ---------------- | ----------------- | ---- | 
+  | asm  | 71    | *       | *               | -               | *                | *                | *                 | *    | 
+  | box  | 71    |         | **              | *               | **               | **               | **                |      | 
+  | c    | 80    | //      | //              | -               | -                | //               | -                 | //   | 
+  | jcl  | 71    | //*     | //*             | -               | *                | //*              | *                 | //*  |
+  | js   | 80    | //      | //              | -               |                  | //               |                   | //   | 
+  | rexx | 80    | /*      | &nbsp;*         | -               | */               | &nbsp;*          | */                | */   |
+  | xml  | 80    | <!--    |                 |                 |                  |                  |                   | -->  | 
 
   Note that xml comments cannot contain double hypens (--).
 
@@ -1734,57 +1734,57 @@ For example:
   `..job` or `..runon` JAM verb, or whenever you assign a  
   system alias to the "alias" variable using `..set alias = youralias`:
 
-  Variable | Description
-  -------- | --------------------------------
-  alias    | System alias
-  cat      | Catalog name
-  host     | Host name
-  jc       | Job class
-  jesnode  | JES2 node number
-  jobname  | Job name
-  mc       | Message class
-  sysclone | Sysclone system variable
-  sysname  | Sysname (the SMF id of this system)
-  sysplex  | Sysplex name
+  | Variable | Description
+  | -------- | --------------------------------
+  | alias    | System alias
+  | cat      | Catalog name
+  | host     | Host name
+  | jc       | Job class
+  | jesnode  | JES2 node number
+  | jobname  | Job name
+  | mc       | Message class
+  | sysclone | Sysclone system variable
+  | sysname  | Sysname (the SMF id of this system)
+  | sysplex  | Sysplex name
 
   Other pre-defined variables that are independent of the "alias"
   variable are:
 
-  Variable | Description                           | Example
-  -------- | ------------------------------------  | -------
-  prog     | Programmer Name from job card         | Donald Duck
-  userid   | Userid                                | U12345
-  user     | Userid (with a shorter variable name) | U12345
-  u        | Userid (even shorter variable name)   | U12345
+  | Variable | Description                           | Example
+  | -------- | ------------------------------------  | -------
+  | prog     | Programmer Name from job card         | Donald Duck
+  | userid   | Userid                                | U12345
+  | user     | Userid (with a shorter variable name) | U12345
+  | u        | Userid (even shorter variable name)   | U12345
  
 # Built-in functions
 
-  Function                   | Description
-  --------                   | -----------
-  getHost(addr_or_name)      | Resolve host name from IP address or host name
-  inRange(n,lo,hi)           | Return 1 if lo <= n <= hi
-  inSet(element,list)        | Return 1 if element is in a list of words
-  intersect(set1,set2)       | Return elements common to both set1 and set2
-  isASCII(text)              | Return 1 if text is ASCII
-  isDatasetName(name)        | Return 1 if name is a valid dataset name
-  isDDName(name)             | Return 1 if name is a valid DD name
-  isHex(hex)                 | Return 1 if hex is valid hex
-  isIPAddr(addr)             | Return 1 if addr is a valid IP address
-  isMemberName(name)         | Return 1 if name is a valid member name
-  isNum(n)                   | Return 1 if n is a whole number
-  isText(text)               | Return 1 if text is EBCDIC
-  range(from,to,space,fill)  | Return a range of values between from and to
-  replace(from,to,text)      | Return text after changing all occurrences of "from" to "to"
-  sortStem(stem,ascending)   | Return "sorted." stem that indexes the elements of "stem." in ascending (1) or descending (0) order
-  sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order
-  toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem." 
-  toASCII(text)              | Convert text to ASCII from EBCDIC
-  toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen"
-  toEBCDIC(text)             | Convert text to EBCDIC from ASCII
-  toLower(text)              | Convert text to lower case
-  toString(stem)             | Convert a REXX "stem." variable to a string
-  toUpper(text)              | Convert text to upper case
-  union(set1,set2)           | Return the union of set1 and set2
+  | Function                   | Description
+  | -------------------------- | ----------------------------------------------
+  | getHost(addr_or_name)      | Resolve host name from IP address or host name
+  | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi
+  | inSet(element,list)        | Return 1 if element is in a list of words
+  | intersect(set1,set2)       | Return elements common to both set1 and set2
+  | isASCII(text)              | Return 1 if text is ASCII
+  | isDatasetName(name)        | Return 1 if name is a valid dataset name
+  | isDDName(name)             | Return 1 if name is a valid DD name
+  | isHex(hex)                 | Return 1 if hex is valid hex
+  | isIPAddr(addr)             | Return 1 if addr is a valid IP address
+  | isMemberName(name)         | Return 1 if name is a valid member name
+  | isNum(n)                   | Return 1 if n is a whole number
+  | isText(text)               | Return 1 if text is EBCDIC
+  | range(from,to,space,fill)  | Return a range of values between from and to
+  | replace(from,to,text)      | Return text after changing all occurrences of "from" to "to"
+  | sortStem(stem,ascending)   | Return "sorted." stem that indexes the elements of "stem." in ascending (1) or descending (0) order
+  | sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order
+  | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem." 
+  | toASCII(text)              | Convert text to ASCII from EBCDIC
+  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen"
+  | toEBCDIC(text)             | Convert text to EBCDIC from ASCII
+  | toLower(text)              | Convert text to lower case
+  | toString(stem)             | Convert a REXX "stem." variable to a string
+  | toUpper(text)              | Convert text to upper case
+  | union(set1,set2)           | Return the union of set1 and set2
 
 
 # How to use JAM in ISPF/EDIT
