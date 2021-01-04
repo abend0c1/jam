@@ -1812,8 +1812,8 @@ You should, before first use, do some initial set up as follows.
        ..job
        ..br14
        ..* [user] does nothing yet again
-       //OUT       DD SYSOUT=(*,INTRDR)
        @@
+       //OUT       DD SYSOUT=(*,INTRDR)
 
 2. Insert any JCL and/or JAM statements after the IN DD and
    before the @@ delimiter. You do not need the delimiter if the
