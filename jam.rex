@@ -6180,7 +6180,7 @@ toString:
   __string = ''
   interpret '__size =' __stem'.0'
   if datatype(__size,'WHOLE') & __size > 0
-  then do
+  then do __i = 1 to __size
     interpret '__word =' __stem'.'__i
     __string = __string __word
   end
