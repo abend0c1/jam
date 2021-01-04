@@ -1,0 +1,3 @@
+..set rich = 'Gates Musk Cheesecake'
+..set famous = 'Einstein Musk Gates'
+..say Rich and famous: [intersect(rich,famous)]

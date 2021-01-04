@@ -1,0 +1,4 @@
+..set count = toArray('charlie bob alice','name.')
+..set alreadysorted = sortStem('name.')
+..set first = sorted.1
+..say First is [name.first] of [count]
