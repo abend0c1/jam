@@ -1771,7 +1771,7 @@ For example:
   | isHex(hex)                 | Return 1 if hex is valid hex                    | `..say [isHex('0C1')]` | 1
   | isIPAddr(addr)             | Return 1 if addr is a valid IP address          | `..say [isIPAddr(127.0.0.1)]` | 1
   | isMemberName(name)         | Return 1 if name is a valid member name         | `..say [isMemberName('$$README')]` | 1
-  | isNum(n)                   | Return 1 if n is a whole number                 | `..say [isNum(3.14159265358979)]` | 1
+  | isNum(n)                   | Return 1 if n is a whole number                 | `..say [isNum(3.14159265358979)]` | 0
   | isText(text)               | Return 1 if text is EBCDIC                      | `..say [isText('The cat sat on the mat')]` | 1
   | range(from,to,space,fill)  | Return a range of values between from and to    | `..say [range(1,3,2,'-')]`<br/>`..say [range(1,3)]` | 1--2--3<br/>1 2 3
   | replace(from,to,text)      | Return text after changing all occurrences of "from" to "to" | `..say [replace('ur',"you're",'ur good']` | you're good
