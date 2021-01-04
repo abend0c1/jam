@@ -6121,6 +6121,8 @@ return translate(s,g.0ASCII,g.0EBCDIC)
 toBlock:
   /* reblocks text into an array of no more than n chars per line */
   parse arg __text,__stem,__maxlen
+  __size = 0
+  __line = ''
   if \datatype(__maxlen,'WHOLE')
   then __maxlen = 72
   if __stem = ''
