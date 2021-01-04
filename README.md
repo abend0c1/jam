@@ -1759,32 +1759,32 @@ For example:
  
 # Built-in functions
 
-  | Function                   | Description
-  | -------------------------- | ----------------------------------------------
-  | getHost(addr_or_name)      | Resolve host name from IP address or host name
-  | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi
-  | inSet(element,list)        | Return 1 if element is in a list of words
-  | intersect(set1,set2)       | Return elements common to both set1 and set2
-  | isASCII(text)              | Return 1 if text is ASCII
-  | isDatasetName(name)        | Return 1 if name is a valid dataset name
-  | isDDName(name)             | Return 1 if name is a valid DD name
-  | isHex(hex)                 | Return 1 if hex is valid hex
-  | isIPAddr(addr)             | Return 1 if addr is a valid IP address
-  | isMemberName(name)         | Return 1 if name is a valid member name
-  | isNum(n)                   | Return 1 if n is a whole number
-  | isText(text)               | Return 1 if text is EBCDIC
-  | range(from,to,space,fill)  | Return a range of values between from and to
-  | replace(from,to,text)      | Return text after changing all occurrences of "from" to "to"
-  | sortStem(stem,ascending)   | Return "sorted." stem that indexes the elements of "stem." in ascending (1) or descending (0) order
-  | sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order
-  | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem." 
-  | toASCII(text)              | Convert text to ASCII from EBCDIC
-  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen"
-  | toEBCDIC(text)             | Convert text to EBCDIC from ASCII
-  | toLower(text)              | Convert text to lower case
-  | toString(stem)             | Convert a REXX "stem." variable to a string
-  | toUpper(text)              | Convert text to upper case
-  | union(set1,set2)           | Return the union of set1 and set2
+  | Function                   | Description                                     | Example | Result
+  | -------------------------- | ----------------------------------------------  | ------- | ---
+  | getHost(addr_or_name)      | Resolve host name from IP address or host name  | `..say [getHost('localhost')]` | 127.0.0.1
+  | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi                       | `..set month = 2`<br/>`..if [inRange(month,1,12)]` | 1
+  | inSet(element,list)        | Return 1 if element is in a list of words       | `..set lpar = 'PRD1'`<br/>`..if [inset(lpar,'TST1 PRD1')]`<br/>ok<br/>`..end` | ok
+  | intersect(set1,set2)       | Return elements common to both set1 and set2    | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich and famous: [intersect(rich,famous)]` | Rich and famous: Gates Musk
+  | isASCII(text)              | Return 1 if text is ASCII                       | `..say [isASCII('6162'x)]` | 1
+  | isDatasetName(name)        | Return 1 if name is a valid dataset name        | `..say [isDatasetName('SYS1.PARMLIB')]` | 1
+  | isDDName(name)             | Return 1 if name is a valid DD name             | `..say [isDDName('SYSIN')]` | 1
+  | isHex(hex)                 | Return 1 if hex is valid hex                    | `..say [isHex('0C1')]` | 1
+  | isIPAddr(addr)             | Return 1 if addr is a valid IP address          | `..say [isIPAddr(127.0.0.1)]` | 1
+  | isMemberName(name)         | Return 1 if name is a valid member name         | `..say [isMemberName('$$README')]` | 1
+  | isNum(n)                   | Return 1 if n is a whole number                 | `..say [isNum(3.14159265358979)]` | 1
+  | isText(text)               | Return 1 if text is EBCDIC                      | `..say [isText('The cat sat on the mat')]` | 1
+  | range(from,to,space,fill)  | Return a range of values between from and to    | `..say [range(1,3,2,'-')]`<br/>`..say [range(1,3)]` | 1--2--3<br/>1 2 3
+  | replace(from,to,text)      | Return text after changing all occurrences of "from" to "to" | `..say [replace('ur',"you're",'ur good']` | you're good
+  | sortStem(stem,ascending)   | Return "sorted." stem that indexes the elements of "stem." in ascending (1) or descending (0) order | `..set count = toArray('charlie bob alice','name.')`<br/>`..set alreadysorted = sortStem('name.')`<br/>`..set first = sorted.1`<br/>`..say First is [name.first] of [count]` | First is alice of 3
+  | sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order | `..say [sortWords('charlie bob alice')]` | alice bob charlie
+  | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem."  | `..set count = toArray('charlie bob alice','name.')`<br/>`..say name.1='[name.1]'`<br/>`..say name.2='[name.2]'`<br/>`..say name.3='[name.3]'` | name.1='charlie'<br/>name.2='bob'<br/>name.3='alice'
+  | toASCII(text)              | Convert text to ASCII from EBCDIC | `..say [c2x(toASCII('C1C2C3'x))]` | 414243
+  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen" | `size = toBlock('The quality of mercy is not strained','a.',12)`<br/>`..say Reblocked to [size] lines:`<br/>`..say a.1='[a.1]'`<br/>`..say a.2='[a.2]'`<br/>`..say a.3'[a.3]'` | Reblocked to 3 lines:<br/>a.1='The quality'<br/>a.2='of mercy is'<br/>a.3='not strained'
+  | toEBCDIC(text)             | Convert text to EBCDIC from ASCII | `..say [c2x(toEBCDIC('414243'x))]` | C1C2C3
+  | toLower(text)              | Convert text to lower case | `..say [toLower('ABC123')]` | abc123
+  | toString(stem)             | Convert a REXX "stem." variable to a string | `..say '[toString('a.')]'` | 'The quality of mercy is not strained'
+  | toUpper(text)              | Convert text to upper case | `..say toUpper('abc123')` | ABC123
+  | union(set1,set2)           | Return the union of set1 and set2 | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich or famous: [union(rich,famous)]` | Rich or famous: Gates Musk Cheesecake Einstein
 
 
 # How to use JAM in ISPF/EDIT
