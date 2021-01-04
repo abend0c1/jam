@@ -1779,7 +1779,7 @@ For example:
   | sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order | `..say [sortWords('charlie bob alice')]` | alice bob charlie
   | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem."  | `..set count = toArray('charlie bob alice','name.')`<br/>`..say name.1='[name.1]'`<br/>`..say name.2='[name.2]'`<br/>`..say name.3='[name.3]'` | name.1='charlie'<br/>name.2='bob'<br/>name.3='alice'
   | toASCII(text)              | Convert text to ASCII from EBCDIC | `..say [c2x(toASCII('C1C2C3'x))]` | 414243
-  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen" | `size = toBlock('The quality of mercy is not strained','a.',12)`<br/>`..say Reblocked to [size] lines:`<br/>`..say a.1='[a.1]'`<br/>`..say a.2='[a.2]'`<br/>`..say a.3'[a.3]'` | Reblocked to 3 lines:<br/>a.1='The quality'<br/>a.2='of mercy is'<br/>a.3='not strained'
+  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen" | `size = toBlock('The quality of mercy is not strained','a.',12)`<br/>`..say Reblocked to [size] lines:`<br/>`..say a.1='[a.1]'`<br/>`..say a.2='[a.2]'`<br/>`..say a.3='[a.3]'` | Reblocked to 3 lines:<br/>a.1='The quality'<br/>a.2='of mercy is'<br/>a.3='not strained'
   | toEBCDIC(text)             | Convert text to EBCDIC from ASCII | `..say [c2x(toEBCDIC('414243'x))]` | C1C2C3
   | toLower(text)              | Convert text to lower case | `..say [toLower('ABC123')]` | abc123
   | toString(stem)             | Convert a REXX "stem." variable to a string | `..say '[toString('a.')]'` | 'The quality of mercy is not strained'
