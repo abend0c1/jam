@@ -1782,37 +1782,44 @@ doDateVars:
 
   For example:
 
-      Input                               Resulting date               Comment
-      ---------------------------------   --------------------------   -------
-    ..datevars 25/2/1966
-      [datevar                         ]  [dayname date             ]
-    ..datevars Easter 2021
-      [datevar                         ]  [dayname date             ]
-    ..datevars prev friday before easter 2021
-      [datevar                         ]  [dayname date             ]  (Good Friday)
-    ..datevars first monday in january 2021
-      [datevar                         ]  [dayname date             ]  (1st Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (2nd Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (3rd Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (4th Monday)
-    ..datevars last saturday in march 2021
-      [datevar                         ]  [dayname date             ]
+        Input                               Resulting date               Comment
+        ---------------------------------   --------------------------   -------
+      ..datevars 25/2/1966
+        [datevar                         ]  [dayname date             ]
+      ..datevars Easter 2021
+        [datevar                         ]  [dayname date             ]
+      ..datevars last saturday in march 2021
+        [datevar                         ]  [dayname date             ]  (Earth Hour 20:30-21:30 local time)
+      ..datevars prev friday before easter 2021
+        [datevar                         ]  [dayname date             ]  (Good Friday)
+      ..datevars first monday in january 2021
+        [datevar                         ]  [dayname date             ]  (1st Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (2nd Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (3rd Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (4th Monday)
+      ..datevars first sunday in october 2021
+        [datevar                         ]  [dayname date             ]  (Australian daylight savings start)
+      ..datevars first sunday in april 2022
+        [datevar                         ]  [dayname date             ]  (Australian daylight savings end)
+    
 
   generates:
 
       Input                               Resulting date               Comment
       ---------------------------------   --------------------------   -------
-      25/2/1966                           Friday 25 Feb 1966
-      Easter 2021                         Sunday 4 Apr 2021
+      25/2/1966                           Friday 25 Feb 1966         
+      Easter 2021                         Sunday 4 Apr 2021          
+      last saturday in march 2021         Saturday 27 Mar 2021         (Earth Hour 20:30-21:30 local time)
       prev friday before easter 2021      Friday 2 Apr 2021            (Good Friday)
       first monday in january 2021        Monday 4 Jan 2021            (1st Monday)
       4 Jan 2021 +7                       Monday 11 Jan 2021           (2nd Monday)
       11 Jan 2021 +7                      Monday 18 Jan 2021           (3rd Monday)
       18 Jan 2021 +7                      Monday 25 Jan 2021           (4th Monday)
-      last saturday in march 2021         Saturday 27 Mar 2021
+      first sunday in october 2021        Sunday 3 Oct 2021            (Australian daylight savings start)
+      first sunday in april 2022          Sunday 3 Apr 2022            (Australian daylight savings end)
 
 */
   parse var g.1 . date

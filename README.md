@@ -21,36 +21,36 @@
 
 
 ## OVERVIEW
-JAM is a z/OS productivity tool that transforms an input file, containing a 
-mixture of JAM statements and ordinary text, to an output file containing the 
-transformed content. 
+JAM is a z/OS productivity tool that transforms an input file, containing a
+mixture of JAM statements and ordinary text, to an output file containing the
+transformed content.
 
-JAM statements are those lines that have `..` in columns 1 
-and 2 and comprise a verb and operands. For example, 
+JAM statements are those lines that have `..` in columns 1
+and 2 and comprise a verb and operands. For example,
 
     ..say Hello, World!
 
-In this case, the JAM verb is `say`, the operands are `Hello, World!` and the result is to 
+In this case, the JAM verb is `say`, the operands are `Hello, World!` and the result is to
 bore the user with an inane message.
 
-Although JAM was initially intended to produce JCL from simple input commands, 
-it does not have to be used solely to generate JCL. It can be used to generate 
-configuration files, XML files, JSON files, YAML files, CSV files, simple columnar tables, 
-emails, or anything that is textual. 
+Although JAM was initially intended to produce JCL from simple input commands,
+it does not have to be used solely to generate JCL. It can be used to generate
+configuration files, XML files, JSON files, YAML files, CSV files, simple columnar tables,
+emails, or anything that is textual.
 
-If you want to add functionality to JAM all you need to do is add a REXX subroutine called 
-doXXX where XXX is the name of the JAM verb you would like to implement. 
+If you want to add functionality to JAM all you need to do is add a REXX subroutine called
+doXXX where XXX is the name of the JAM verb you would like to implement.
 All the I/O is done for you, so you can focus on the transformation logic.
 
 JAM is a **one-pass interpreter**, so it does not support looping constructs per se.
-However it does support some loop-like constructs (for example, `..for 1 to 10 macro sayHello`) 
-that are realised in a manner akin to laying down bricks on the fly before walking on them. 
-Because of this, large loops can be a little slow but in practice that is not normally an issue. 
+However it does support some loop-like constructs (for example, `..for 1 to 10 macro sayHello`)
+that are realised in a manner akin to laying down bricks on the fly before walking on them.
+Because of this, large loops can be a little slow but in practice that is not normally an issue.
 
 ## PREREQUISITES
 
 1. To run JAM on z/OS you should:
-    * Store the JAM, JAMINIT and JAMEDIT rexx procedures in a RECFM=VB LRECL=255 
+    * Store the JAM, JAMINIT and JAMEDIT rexx procedures in a RECFM=VB LRECL=255
        dataset in your SYSEXEC concatenation
     * Assign PF4 to "JAM" using the KEYS command in ISPF/EDIT
     * Assign PF4 to "TSO JAM" using the KEYS command in other ISPF environments
@@ -58,18 +58,18 @@ Because of this, large loops can be a little slow but in practice that is not no
     Assigning PF4 is optional but highly recommended as it will improve your
     work flow.
 
-1. To run JAM on Linux or windows, you will need to install a REXX interpreter 
+1. To run JAM on Linux or windows, you will need to install a REXX interpreter
    such as:
     * Regina REXX      (http://regina-rexx.sourceforge.net)
     * Open Object REXX (http://www.oorexx.org/)
 
-    On Linux, there is usually a REXX package that you can install using your 
+    On Linux, there is usually a REXX package that you can install using your
     package manager. On Ubuntu you can install it by issuing:
 
         sudo apt install regina-rexx
 
     The REXX interpreter can then be invoked in a command window by issuing, for example:
-    
+
         rexx jam.rex recipe.jam jamtart.txt
 
 
@@ -95,13 +95,13 @@ Because of this, large loops can be a little slow but in practice that is not no
 
         alias sysname jc mc sysclone sysplex  jesname jesnode njenet cat             tags       host
         TST1  R2D2    A  X  T1       TESTPLEX JESTST1 N11     NJEA   SYS1.MASTER.CAT 'DEV TEST' r2d2.example.org
-        TST2  R2D3    A  X  T2       TESTPLEX JESTST2 N12     NJEA   SYS1.MASTER.CAT 'UAT'      r2d3.example.org  
-        PRD1  C3P0    A  X  P1       PRODPLEX JESPRD1 N21     NJEB   SYS1.MASTER.CAT 'PROD'     c3p0.example.org  
+        TST2  R2D3    A  X  T2       TESTPLEX JESTST2 N12     NJEA   SYS1.MASTER.CAT 'UAT'      r2d3.example.org
+        PRD1  C3P0    A  X  P1       PRODPLEX JESPRD1 N21     NJEB   SYS1.MASTER.CAT 'PROD'     c3p0.example.org
         PRD2  C3P1    A  X  P1       PRODPLEX JESPRD2 N22     NJEB   SYS1.MASTER.CAT 'PROD DR'  c3p1.example.org
 
     The columns can be in any order except for the first column which **must** be the system alias that you have
-    assigned to each LPAR. The remaining columns are the minimum required to make JAM useful on z/OS sites. 
-    You can add your own columns if you wish. This table is "mapped" (i.e. loaded into REXX variables) by 
+    assigned to each LPAR. The remaining columns are the minimum required to make JAM useful on z/OS sites.
+    You can add your own columns if you wish. This table is "mapped" (i.e. loaded into REXX variables) by
     the JAMSITE REXX procedure. The cell values can be accessed by REXX stem variables indexed by
     the system alias, for example: [`sysname.TST1`] will resolve to `R2D2`. If any cell needs to have a null
     value then you can either code `''` or (in my opinion) a slightly cleaner looking `.` to represent
@@ -122,9 +122,9 @@ In more detail, it performs the following types of transformation on the input f
    brackets is passed to REXX for evaluation. It doesn't matter which square
    brackets you use on z/OS - both code page IBM037 and IBM1047 work the same way.
 
-   The beauty of using square brackets to enclose REXX expressions on z/OS is that 
-   mainframers have traditionally shunned them because they did not 
-   exist on the original IBM 3270 Display System keyboards, so the chance of 
+   The beauty of using square brackets to enclose REXX expressions on z/OS is that
+   mainframers have traditionally shunned them because they did not
+   exist on the original IBM 3270 Display System keyboards, so the chance of
    clashing with existing JCL is minimal.
 
    For example,
@@ -136,23 +136,23 @@ In more detail, it performs the following types of transformation on the input f
 
         Hey Andrew, your lucky number is 13
 
-    Note that if you put an invalid expression between square brackets (e.g. 
-    `[1/0]`) then the JAM processor will die after issuing a diagnostic message. 
-    To avoid premature death, you should perform your own input validation. 
+    Note that if you put an invalid expression between square brackets (e.g.
+    `[1/0]`) then the JAM processor will die after issuing a diagnostic message.
+    To avoid premature death, you should perform your own input validation.
     There are a  number of [JAM built-in functions](#built-in-functions)
     that you can invoke to help you accomplish that.
 
 
-1. JAM interacts with the user via the terminal (yes, in a JAM session) using the 
+1. JAM interacts with the user via the terminal (yes, in a JAM session) using the
    `..ask`, `..asku`, `..askq`, `..askqu` and `..say` verbs. For example,
 
         ..set name = 'Andrew'
         ..askqu lucky_number 7 Hey [name], what's your lucky number?
         ..say So your lucky number is [lucky_number]?
 
-    prompts the user for a number, offering a default if they reply with a null 
-    line, and assigns the user's response (converted to upper case) to a REXX 
-    variable called "lucky_number". 
+    prompts the user for a number, offering a default if they reply with a null
+    line, and assigns the user's response (converted to upper case) to a REXX
+    variable called "lucky_number".
 
         Hey Andrew, what's your lucky number? (7):
         three
@@ -161,10 +161,10 @@ In more detail, it performs the following types of transformation on the input f
     If the user had pressed Enter, the default lucky number (7) would be assigned
     to the "lucky_number" REXX variable.
 
-    If the user had replied with "q" (for quit) then the JAM processor would 
-    have exited immediately. This is an easy way for the user to abort a 
-    JAM session. If you don't want this escape mechanism then you could use the 
-    `..asku` JAM verb, and if you don't want the conversion to upper case 
+    If the user had replied with "q" (for quit) then the JAM processor would
+    have exited immediately. This is an easy way for the user to abort a
+    JAM session. If you don't want this escape mechanism then you could use the
+    `..asku` JAM verb, and if you don't want the conversion to upper case
     then you could use the `..ask` JAM verb. And finally, you could use the
     `..askq` verb to avoid case conversion but still allow the user to enter
     "q" to quit.
@@ -172,10 +172,10 @@ In more detail, it performs the following types of transformation on the input f
     To write a message to the user's terminal you use the `..say` verb.
 
 
-1. JAM performs conditional transformation using the `..if`, `..else`, `..end` and 
+1. JAM performs conditional transformation using the `..if`, `..else`, `..end` and
    `..select`, `..when`, `..otherwise`, `..end` constructs. These should already be familiar
    to REXX programmers so the learning curve is minimal.
-   
+
    For example,
 
         ..if [lucky_number = 13]
@@ -195,29 +195,29 @@ In more detail, it performs the following types of transformation on the input f
         ..end
 
     then a message would be appended to the output file instead of
-    being displayed on the user's terminal. This is a good way to conditionally 
+    being displayed on the user's terminal. This is a good way to conditionally
     build output text files.
 
 1. JAM can load table data from files using either the `..table` verb or the `...map` verb.
 
    This makes it easy to produce complex output from simple tabular input.
 
-   - The `..table` verb stores each column in an array using the traditional REXX 
-      convention of having the number of elements stored in `column.0` and each 
-      element stored in `column.row` (where `row` is from `1` to `[column.0]`). 
-      For example, assume you had a file called my.user.list containing: 
-      
+   - The `..table` verb stores each column in an array using the traditional REXX
+      convention of having the number of elements stored in `column.0` and each
+      element stored in `column.row` (where `row` is from `1` to `[column.0]`).
+      For example, assume you had a file called my.user.list containing:
+
           userid  name         phone
           U001   'Don Juan'    555-1111
           U002   'Don Quixote' 555-2222
           U003   'Don McLean'  555-3333
-    
+
         You can access the details of the second row by:
 
           ..table my.user.list
           [userid.2]'s name is [name.2] and phone is [phone.2]
           The number of rows in this table is [userid.0]
-      
+
         and the output would be:
 
             U002's name is Don Quixote and phone is 555-2222
@@ -228,17 +228,17 @@ In more detail, it performs the following types of transformation on the input f
 
           ..table my.user.list userid name phone
 
-      Generally, it's better to have column headings in the table file because 
+      Generally, it's better to have column headings in the table file because
       the file then becomes self-documenting.
 
-   - An alternative to accessing tabular data by row number is to use the `..map` verb to 
-      map the data by key. When you map tabular data the value 
-      in column 1 is assumed to be a unique key for that row, and each column can be 
+   - An alternative to accessing tabular data by row number is to use the `..map` verb to
+      map the data by key. When you map tabular data the value
+      in column 1 is assumed to be a unique key for that row, and each column can be
       referenced by that row's key by using `[column.key]`.
 
 
-      For example, using the above table again, the key column is 
-      "userid" and the other columns are indexed by userid. You can now access U002's 
+      For example, using the above table again, the key column is
+      "userid" and the other columns are indexed by userid. You can now access U002's
       details by name:
 
           ..map my.user.list
@@ -251,9 +251,9 @@ In more detail, it performs the following types of transformation on the input f
             The number of rows in this table is 3
 
 
-1. JAM can transform some simple JAM statements into more complex JCL fragments. This provides a 
-   productivity boost for z/OS fan boys because you never have to remember the 
-   sometimes (mostly?) arcane JCL syntax for doing relatively simple things. 
+1. JAM can transform some simple JAM statements into more complex JCL fragments. This provides a
+   productivity boost for z/OS fan boys because you never have to remember the
+   sometimes (mostly?) arcane JCL syntax for doing relatively simple things.
    For example,
 
         ..copy my.dataset your.dataset
@@ -281,20 +281,20 @@ In more detail, it performs the following types of transformation on the input f
         /*
 
     The particular z/OS utility program chosen to perform the copy function depends on the
-    operands (and may not be your preferred utility, but all is not lost). For example, 
-    
+    operands (and may not be your preferred utility, but all is not lost). For example,
+
         ..copy ~/my.file ~/some/path/some.file
-    
-    would generate a BPXBATCH job step to issue the simple Unix `cp` 
+
+    would generate a BPXBATCH job step to issue the simple Unix `cp`
     command. Yes, Unix got it right...simple *is* better!
 
     If you ever find that the canned JAM verbs do not produce the JCL that you
     want, then that is not a show stopper. You have some alternatives:
-    - Use the `..include` JAM verb to include your beloved JCL into a JAM input 
-      file and let JAM simply substitute the desired parameters in the appropriate 
+    - Use the `..include` JAM verb to include your beloved JCL into a JAM input
+      file and let JAM simply substitute the desired parameters in the appropriate
       places.
     - Modify the JAM exec to create your own preferred JCL (this is free open source software afterall).
-    - Create your own JAM verb by adding a `doXXX` procedure to the JAM exec 
+    - Create your own JAM verb by adding a `doXXX` procedure to the JAM exec
       to do what you want. Submitting a git pull request afterwards would be nice but is not required.
     - Don't use JAM, but write your own &lt;insert language of your choice here&gt; program instead.
     - Don't use JAM, or write a program, but continue using the same bizarre JCL
@@ -303,13 +303,13 @@ In more detail, it performs the following types of transformation on the input f
 1. Certain JAM statements can be chained together by appending a comma (`,`).
 
     This is useful when, for example, you want to copy several datasets but
-    don't want to create a single job step per copy operation. To do this you would 
+    don't want to create a single job step per copy operation. To do this you would
     chain them together by coding:
 
         ..copy my.pds(mem1) your.pds,
         ..copy my.pds(mem2) your.pds,
         ..copy my.pds(mem3) your.pds
-        
+
     which results in a single job step that performs all three operations containing
     (in a nutshell):
 
@@ -322,11 +322,11 @@ In more detail, it performs the following types of transformation on the input f
 
         ..copy my.pds(mem1,mem2,mem3) your.pds
 
-1. JAM has a rather intuitive text justification feature that enables you to 
+1. JAM has a rather intuitive text justification feature that enables you to
    generate tabular output easily. For example suppose you wanted to create
-   a stock market report (yes, this is a thing that people get paid to do) 
-   where the stock name is left-justified, the company name is centred and the 
-   dollar value is right-justified. The following JAM input file (with 
+   a stock market report (yes, this is a thing that people get paid to do)
+   where the stock name is left-justified, the company name is centred and the
+   dollar value is right-justified. The following JAM input file (with
    REXX stem variables appropriately set):
 
     q   NASDAQ      Company            Value
@@ -341,7 +341,7 @@ In more detail, it performs the following types of transformation on the input f
        AAPL       Apple Inc         $117.34
        AMZN    Amazon.com, Inc.    $3099.40
 
-    The text justification method depends on whether there is at least one leading 
+    The text justification method depends on whether there is at least one leading
     and/or trailing space around the REXX expression as follows:
 
     | Example   | Resulting justification |
@@ -350,17 +350,17 @@ In more detail, it performs the following types of transformation on the input f
     | ``[ s]``  | Right justified         |
     | ``[ s ]`` | Centred                 |
     | ``[s]``   | No justification        |
-    
-    
-    When justification *is* used, the width of each output column equals the number of 
+
+
+    When justification *is* used, the width of each output column equals the number of
     characters bounded by the square brackets including the square brackets
     themselves. Any content longer than that width is truncated. When justification
     is not used, no truncation occurs and the width of the output cell is simply
     the width of the content.
 
 
-1. JAM has a useful macro facility which can be used to encapsulate frequently 
-   generated content. For example, suppose you wanted to concatenate varying 
+1. JAM has a useful macro facility which can be used to encapsulate frequently
+   generated content. For example, suppose you wanted to concatenate varying
    numbers of GDG datasets. You could do something like:
 
        ..askqu first_gdg_number -8 Enter starting GDG number
@@ -434,7 +434,7 @@ Running JAM against this input file would product something like:
 
 You: "hmmm...but isn't the resulting JCL simpler than the input JAM statements?"
 
-Me:  Well, yes - in this case. But imagine that you had to generate JCL to copy a 
+Me:  Well, yes - in this case. But imagine that you had to generate JCL to copy a
 table of 1000 datasets. The number of JAM statements to do that would be in the
 10's of lines - and would be reusable for many different tables of datasets.
 
@@ -824,24 +824,29 @@ input file called MY.JAM.INPUT containing:
 
   For example:
 
-      Input                               Resulting date               Comment
-      ---------------------------------   --------------------------   -------
-    ..datevars 25/2/1966
-      [datevar                         ]  [dayname date             ]
-    ..datevars Easter 2021
-      [datevar                         ]  [dayname date             ]
-    ..datevars prev friday before easter 2021
-      [datevar                         ]  [dayname date             ]  (Good Friday)
-    ..datevars first monday in january 2021
-      [datevar                         ]  [dayname date             ]  (1st Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (2nd Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (3rd Monday)
-    ..datevars [date] +7
-      [datevar                         ]  [dayname date             ]  (4th Monday)
-    ..datevars last saturday in march 2021
-      [datevar                         ]  [dayname date             ]
+        Input                               Resulting date               Comment
+        ---------------------------------   --------------------------   -------
+      ..datevars 25/2/1966
+        [datevar                         ]  [dayname date             ]
+      ..datevars Easter 2021
+        [datevar                         ]  [dayname date             ]
+      ..datevars last saturday in march 2021
+        [datevar                         ]  [dayname date             ]  (Earth Hour 20:30-21:30 local time)
+      ..datevars prev friday before easter 2021
+        [datevar                         ]  [dayname date             ]  (Good Friday)
+      ..datevars first monday in january 2021
+        [datevar                         ]  [dayname date             ]  (1st Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (2nd Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (3rd Monday)
+      ..datevars [date] +7
+        [datevar                         ]  [dayname date             ]  (4th Monday)
+      ..datevars first sunday in october 2021
+        [datevar                         ]  [dayname date             ]  (Australian daylight savings start)
+      ..datevars first sunday in april 2022
+        [datevar                         ]  [dayname date             ]  (Australian daylight savings end)
+
 
   generates:
 
@@ -849,12 +854,14 @@ input file called MY.JAM.INPUT containing:
       ---------------------------------   --------------------------   -------
       25/2/1966                           Friday 25 Feb 1966
       Easter 2021                         Sunday 4 Apr 2021
+      last saturday in march 2021         Saturday 27 Mar 2021         (Earth Hour 20:30-21:30 local time)
       prev friday before easter 2021      Friday 2 Apr 2021            (Good Friday)
       first monday in january 2021        Monday 4 Jan 2021            (1st Monday)
       4 Jan 2021 +7                       Monday 11 Jan 2021           (2nd Monday)
       11 Jan 2021 +7                      Monday 18 Jan 2021           (3rd Monday)
       18 Jan 2021 +7                      Monday 25 Jan 2021           (4th Monday)
-      last saturday in march 2021         Saturday 27 Mar 2021
+      first sunday in october 2021        Sunday 3 Oct 2021            (Australian daylight savings start)
+      first sunday in april 2022          Sunday 3 Apr 2022            (Australian daylight savings end)
 
 ### ..DELETE    dsn [catalog] [options...]
 

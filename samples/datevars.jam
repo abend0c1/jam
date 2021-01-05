@@ -1,15 +1,11 @@
-..datevars 2008/04/01
-..say [day date]
-..quit
-
-
-
     Input                               Resulting date               Comment
     ---------------------------------   --------------------------   -------
 ..datevars 25/2/1966
-    [datevar                         ]  [dayname date             ] 
+    [datevar                         ]  [dayname date             ]
 ..datevars Easter 2021
-    [datevar                         ]  [dayname date             ] 
+    [datevar                         ]  [dayname date             ]
+..datevars last saturday in march 2021
+    [datevar                         ]  [dayname date             ]  (Earth Hour 20:30-21:30 local time)
 ..datevars prev friday before easter 2021
     [datevar                         ]  [dayname date             ]  (Good Friday)
 ..datevars first monday in january 2021
@@ -20,10 +16,12 @@
     [datevar                         ]  [dayname date             ]  (3rd Monday)
 ..datevars [date] +7
     [datevar                         ]  [dayname date             ]  (4th Monday)
-..datevars last saturday in march 2021
-    [datevar                         ]  [dayname date             ] 
+..datevars first sunday in october 2021
+    [datevar                         ]  [dayname date             ]  (Australian daylight savings start)
+..datevars first sunday in april 2022
+    [datevar                         ]  [dayname date             ]  (Australian daylight savings end)
 
-
+..quit
 
 
 ..datevars easter 2021
