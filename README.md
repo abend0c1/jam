@@ -475,62 +475,62 @@ Where,
 
       ..job ?
 
-- [...](#...-[JAM-comment])
-- [..*](#..*-[comment])
-- [..ARGS](#..ARGS-var-[var...])
-- [..ASK](#..ASK-var-[default-[prompt]])
-- [..AUTO](#..AUTO-[text])
-- [..BACKUP](#..BACKUP-dsn-backup-[options...])
-- [..BR14](#..BR14-[label])
-- [..CATALOG](#..CATALOG-dsn-volser-[catalog])
-- [..COMPRESS](#..COMPRESS-dsn-[volser])
-- [..COPY](#..COPY-fromdsn-todsn)
-- [..DATEVARS](#..DATEVARS-[date-[+|-days]])
-- [..DELETE](#..DELETE-dsn-[catalog]-[options...])
-- [..ELSE](#..ELSE-[action])
-- [..END](#..END)
-- [..GET](#..GET-fromdsn-fromsys-[todsn-[locsiteoptions...]])
-- [..GETOUT](#..GETOUT-fromdsn-fromsys-todsn)
-- [..HELP](#..HELP)
-- [..IF](#..IF-cond-[action])
-- [..FOR](#..FOR-READ-dsn-MACRO-macroname)
-- [..INCLUDE](#..INCLUDE-dsn)
-- [..JCL](#..JCL-[stmt])
-- [..JOB](#..JOB-[system[/jobnamesuffix]-[description]])
-- [..LISTCAT](#..LISTCAT-dsn-[catalog]-[options...])
-- [..LISTVTOC](#..LISTVTOC-dsn-volser)
-- [..MACRO](#..MACRO-DEFINE-macroname-[parameters...])
-- [..MAP](#..MAP-dsn)
-- [..MOUNT](#..MOUNT-dsn-path-[options...])
-- [..OPTION](#..OPTION-[NO]option...)
-- [..OTHERWISE](#..OTHERWISE-[action])
-- [..PUT](#..PUT-fromdsn-tosystem-[todsn-[siteoptions...]])
-- [..QUEUE](#..QUEUE-[line])
-- [..QUEUED](#..QUEUED)
-- [..QUIT](#..QUIT-[CANCEL]-[quitmsg])
-- [..RECOVER](#..RECOVER-dsn-fromvol-tovol-[options...])
-- [..RENAME](#..RENAME-dsn-todsn-[volser])
-- [..REPRO](#..REPRO-fromdsn-todsn-[fromrec-[count]])
-- [..RESTORE](#..RESTORE-dsn-[backup-|-=]-[options...])
-- [..REXX](#..REXX-statement)
-- [..RUNON](#..RUNON-[system[/jobnamesuffix][/via]]-[description])
-- [..SAY](#..SAY-text)
-- [..SCRATCH](#..SCRATCH-dsn-volser)
-- [..SELECT](#..SELECT-[expr])
-- [..SET](#..SET-var-=-expr)
-- [..SHIP](#..SHIP-dsn-tosystem-[todsn-[options...]])
-- [..STEP](#..STEP-args)
-- [..STYLE](#..STYLE-name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last])
-- [..SUBMIT](#..SUBMIT-dsn-[tosystem-[outdsn]])
-- [..SUDO](#..SUDO-unixcommand)
-- [..TABLE](#..TABLE-dsn)
-- [..TSO](#..TSO-tsocommand)
-- [..UNCATALOG](#..UNCATALOG-dsn-[catalog])
-- [..UNMOUNT](#..UNMOUNT-dsn-[options...])
-- [..USS](#..USS-unixcommand)
-- [..WHEN](#..WHEN-expr-[action])
-- [..XEQ](#..XEQ-[alias])
-- [..XMIT](#..XMIT-dsn-[system-[userid-[options...]]])
+- [...](#jam-comment)
+- [..*](#*-comment)
+- [..ARGS](#args-var-var)
+- [..ASK](#ask-var-default-prompt)
+- [..AUTO](#auto-text)
+- [..BACKUP](#backup-dsn-backup-options)
+- [..BR14](#br14-label)
+- [..CATALOG](#catalog-dsn-volser-catalog)
+- [..COMPRESS](#compress-dsn-volser)
+- [..COPY](#copy-fromdsn-todsn)
+- [..DATEVARS](#datevars-date-+|-days)
+- [..DELETE](#delete-dsn-catalog-options)
+- [..ELSE](#else-action)
+- [..END](#end)
+- [..GET](#get-fromdsn-fromsys-todsn-locsiteoptions)
+- [..GETOUT](#getout-fromdsn-fromsys-todsn)
+- [..HELP](#help)
+- [..IF](#if-cond-action)
+- [..FOR](#for-read-dsn-macro-macroname)
+- [..INCLUDE](#include-dsn)
+- [..JCL](#jcl-stmt)
+- [..JOB](#job-system-/jobnamesuffix-description)
+- [..LISTCAT](#listcat-dsn-catalog-options)
+- [..LISTVTOC](#listvtoc-dsn-volser)
+- [..MACRO](#macro-define-macroname-parameters)
+- [..MAP](#map-dsn)
+- [..MOUNT](#mount-dsn-path-options)
+- [..OPTION](#option-no-option)
+- [..OTHERWISE](#otherwise-action)
+- [..PUT](#put-fromdsn-tosystem-todsn-siteoptions)
+- [..QUEUE](#queue-line)
+- [..QUEUED](#queued)
+- [..QUIT](#quit-cancel-quitmsg)
+- [..RECOVER](#recover-dsn-fromvol-tovol-options)
+- [..RENAME](#rename-dsn-todsn-volser)
+- [..REPRO](#repro-fromdsn-todsn-fromrec-count)
+- [..RESTORE](#restore-dsn-backup-|-options)
+- [..REXX](#rexx-statement)
+- [..RUNON](#runon-system-/jobnamesuffix-/via-description)
+- [..SAY](#say-text)
+- [..SCRATCH](#scratch-dsn-volser)
+- [..SELECT](#select-expr)
+- [..SET](#set-var-expr)
+- [..SHIP](#ship-dsn-tosystem-todsn-options)
+- [..STEP](#step-args)
+- [..STYLE](#style-name-width-first-borderleft-borderfill-borderright-commentleft-commentright-last)
+- [..SUBMIT](#submit-dsn-tosystem-outdsn)
+- [..SUDO](#sudo-unixcommand)
+- [..TABLE](#table-dsn)
+- [..TSO](#tso-tsocommand)
+- [..UNCATALOG](#uncatalog-dsn-catalog)
+- [..UNMOUNT](#unmount-dsn-options)
+- [..USS](#uss-unixcommand)
+- [..WHEN](#when-expr-action)
+- [..XEQ](#xeq-alias)
+- [..XMIT](#xmit-dsn-system-userid-options)
 ### ...         [JAM comment]
 
 This is used to add comments to a JAM input file. These comments
@@ -774,30 +774,30 @@ input file called MY.JAM.INPUT containing:
   Unrecognised dates are silently assumed to be the current date.
   Examples of "date" values that you can specify include:
 
-  | date           | Interpreted as                           |
-  | -------------- | ---------------------------------------- |
-  | 25/2/66        | 1966/02/25                               |
-  | 25/2/1966      | 1966/02/25                               |
-  | 25/2           | yyyy/02/25 (in the current year)         |
-  | 2/25           | 1966/02/25                               |
-  | 2/25/66        | 1966/02/25                               |
-  | 2/25/1966      | 1966/02/25                               |
-  | 25 Feb 1966    | 1966/02/25                               |
-  | 25 Feb 66      | 1966/02/25                               |
-  | 25 Feb         | yyyy/02/25 (in the current year)         |
-  | 25FEB          | yyyy/02/25 (in the current year)         |
-  | February 25    | yyyy/02/25 (in the current year)         |
-  | Feb            | yyyy/02/01 (in the current year)         |
-  | 1966 Feb       | 1966/02/01                               |
-  | 1966 Feb 25    | 1966/02/25                               |
-  | 1966           | 1966/01/01 (first day of that year)      |
-  | 66056          | 1966/02/25 (Julian yyddd)                |
-  | 66.056         | 1966/02/25 (Julian yy.ddd)               |
-  | 250266         | 1966/02/25 (ddmmyy)                      |
-  | 717756         | 1966/02/25 (days since 1/1/1900)         |
-  | +7             |            (the current date + 7 days)   |
-  | -7             |            (the current date - 7 days)   |
-  | <unrecognised> | yyyy/mm/dd (the current date)            |
+  | date           |  Interpreted as                          |
+  | ----           |  --------------------------------------- |
+  | 25/2/66        |  1966/02/25                              |
+  | 25/2/1966      |  1966/02/25                              |
+  | 25/2           |  yyyy/02/25 (in the current year)        |
+  | 2/25           |  yyyy/02/25 (in the current year)        |
+  | 2/25/66        |  1966/02/25                              |
+  | 2/25/1966      |  1966/02/25                              |
+  | 25 Feb 1966    |  1966/02/25                              |
+  | 25 Feb 66      |  1966/02/25                              |
+  | 25 Feb         |  yyyy/02/25 (in the current year)        |
+  | 25FEB          |  yyyy/02/25 (in the current year)        |
+  | February 25    |  yyyy/02/25 (in the current year)        |
+  | Feb            |  yyyy/02/01 (in the current year)        |
+  | 1966 Feb       |  1966/02/01                              |
+  | 1966 Feb 25    |  1966/02/25                              |
+  | 1966           |  1966/01/01 (first day of that year)     |
+  | 66056          |  1966/02/25 (Julian yyddd)               |
+  | 66.056         |  1966/02/25 (Julian yy.ddd)              |
+  | 250266         |  1966/02/25 (ddmmyy)                     |
+  | 717756         |  1966/02/25 (days since 1/1/1900)        |
+  | +7             |             (the current date + 7 days)  |
+  | -7             |             (the current date - 7 days)  |
+  | <unrecognised> |  yyyy/mm/dd (the current date)           |
 
   The resulting REXX variables created for the specified date are:
 
@@ -1469,8 +1469,7 @@ input file called MY.JAM.INPUT containing:
   | borderright | The rightmost characters of the top and bottom border line
   | commentleft | The leftmost characters of each comment line
   | commentright| The rightmost characters of each comment line
-  | last        | The characters (if any) to emit after the bottom 
- border line
+  | last        | The characters (if any) to emit after the bottom border line
 
   If you omit the parameters then the named set becomes the active set for
   subsequent `..*` JAM statements. For example, to set assembler-style comments:
@@ -1488,15 +1487,15 @@ input file called MY.JAM.INPUT containing:
 
   The following styles are pre-defined:
 
-  | name | width | first   | border<br/>left | border<br/>fill | border<br/>right | comment<br/>left | comment<br/>right | last |  
-  | ---- | ----- | ------- | -----------     | --------------- | ---------------- | ---------------- | ----------------- | ---- | 
-  | asm  | 71    | *       | *               | -               | *                | *                | *                 | *    | 
-  | box  | 71    |         | **              | *               | **               | **               | **                |      | 
-  | c    | 80    | //      | //              | -               | -                | //               | -                 | //   | 
-  | jcl  | 71    | //*     | //*             | -               | *                | //*              | *                 | //*  |
-  | js   | 80    | //      | //              | -               |                  | //               |                   | //   | 
-  | rexx | 80    | /*      | &nbsp;*         | -               | */               | &nbsp;*          | */                | */   |
-  | xml  | 80    | <!--    |                 |                 |                  |                  |                   | -->  | 
+  | name | width | first   | border<br/>left | border<br/>fill | border<br/>right | comment<br/>left | comment<br/>right | last    |
+  | ---- | ----- | ------- | -----------     | --------------- | ---------------- | ---------------- | ----------------- | ----    |
+  | asm  | 71    | *       | *               | -               | *                | *                | *                 | *       |
+  | box  | 71    |         | **              | *               | **               | **               | **                |         |
+  | c    | 80    | //      | //              | -               | -                | //               | -                 | //      |
+  | jcl  | 71    | //* | //*         | -               | *                | //*          | *                 | //* |
+  | js   | 80    | //      | //              | -               |                  | //               |                   | //      |
+  | rexx | 80    | /*  | &nbsp;*         | -               | */           | &nbsp;*          | */            | */  |
+  | xml  | 80    | <!--    |                 |                 |                  |                  |                   | -->     |
 
   Note that xml comments cannot contain double hypens (--).
 
@@ -1734,28 +1733,28 @@ For example:
   `..job` or `..runon` JAM verb, or whenever you assign a  
   system alias to the "alias" variable using `..set alias = youralias`:
 
-  | Variable | Description
-  | -------- | --------------------------------
-  | alias    | System alias
-  | cat      | Catalog name
-  | host     | Host name
-  | jc       | Job class
-  | jesnode  | JES2 node number
-  | jobname  | Job name
-  | mc       | Message class
-  | sysclone | Sysclone system variable
-  | sysname  | Sysname (the SMF id of this system)
-  | sysplex  | Sysplex name
+  | Variable | Description                         |
+  | -------- | ----------------------------------- |
+  | alias    | System alias                        |
+  | cat      | Catalog name                        |
+  | host     | Host name                           |
+  | jc       | Job class                           |
+  | jesnode  | JES2 node number                    |
+  | jobname  | Job name                            |
+  | mc       | Message class                       |
+  | sysclone | Sysclone system variable            |
+  | sysname  | Sysname (the SMF id of this system) |
+  | sysplex  | Sysplex name                        |
 
   Other pre-defined variables that are independent of the "alias"
   variable are:
 
-  | Variable | Description                           | Example
-  | -------- | ------------------------------------  | -------
-  | prog     | Programmer Name from job card         | Donald Duck
-  | userid   | Userid                                | U12345
-  | user     | Userid (with a shorter variable name) | U12345
-  | u        | Userid (even shorter variable name)   | U12345
+  | Variable | Description                           | Example     |
+  | -------- | ------------------------------------  | ----------- |
+  | prog     | Programmer Name from job card         | Donald Duck |
+  | userid   | Userid                                | U12345      |
+  | user     | Userid (with a shorter variable name) | U12345      |
+  | u        | Userid (even shorter variable name)   | U12345      |
  
 # Built-in functions
 
