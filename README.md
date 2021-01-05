@@ -16,7 +16,7 @@
   - [Using JAM variables](#Using-JAM-variables)
   - [Pre-defined variables](#Pre-defined-variables)
   - [Built-in functions](#Built-in-functions)
-  - [How to use JAM in ISPF/EDIT](#How-to-use-JAM-in-ISPF/EDIT)
+  - [How to use JAM in ISPF/EDIT](#How-to-use-JAM-in-ISPFEDIT)
   - [How to use JAM in BATCH](#How-to-use-JAM-in-BATCH)
 
 
