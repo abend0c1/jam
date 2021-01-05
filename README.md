@@ -594,7 +594,7 @@ each line of input does the following:
       ..job ?
 
 - [...](#---------jam-comment)
-- [..*](#*---------comment)
+- [..*](#---------comment)
 - [..ARGS](#args------var-var)
 - [..ASK](#ask-------var-default-prompt)
 - [..AUTO](#auto------text)
