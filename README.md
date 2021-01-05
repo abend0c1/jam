@@ -488,7 +488,7 @@ Where,
 - [..DATEVARS](#datevars--date--days)
 - [..DELETE](#delete----dsn-catalog-options)
 - [..ELSE](#else------action)
-- [..END](#end-----)
+- [..END](#end)
 - [..GET](#get-------fromdsn-fromsys-todsn-locsiteoptions)
 - [..GETOUT](#getout----fromdsn-fromsys-todsn)
 - [..HELP](#help)
@@ -506,7 +506,7 @@ Where,
 - [..OTHERWISE](#otherwise-action)
 - [..PUT](#put-------fromdsn-tosystem-todsn-siteoptions)
 - [..QUEUE](#queue-----line)
-- [..QUEUED](#queued---)
+- [..QUEUED](#queued)
 - [..QUIT](#quit------cancel-quitmsg)
 - [..RECOVER](#recover---dsn-fromvol-tovol-options)
 - [..RENAME](#rename----dsn-todsn-volser)
@@ -536,9 +536,9 @@ Where,
 This is used to add comments to a JAM input file. These comments
 are ignored by the JAM processor and do not produce any output.
 
-For example, the following simply builds a job card and ignores the 
+For example, the following simply builds a job card and ignores the
 preceding comments:
- 
+
     ...
     ... Build a job card
     ...
@@ -549,7 +549,7 @@ preceding comments:
   This will generate a comment using the specified comment text.
   The default comment style is `jcl`. Other built-in
   styles available include `asm`, `box`, `c`, `js`, `rexx`, and `xml`.
-  Styles can be added or updated by using the `..style` JAM verb. 
+  Styles can be added or updated by using the `..style` JAM verb.
 
   For example:
 
@@ -562,9 +562,9 @@ preceding comments:
   generates:
 
       <!--
-       This is an XML comment                                                         
+       This is an XML comment
       -->
-      
+
       //*
       //*-------------------------------------------------------------------*
       //* This is a JCL comment                                             *
@@ -604,8 +604,8 @@ input file called MY.JAM.INPUT containing:
 ### ..ASKQ      var [default [prompt]]
 ### ..ASKQU     var [default [prompt]]
 
-   These JAM statements will ask the user for terminal input. 
-   
+   These JAM statements will ask the user for terminal input.
+
    The text specified by "prompt" is displayed to the user and
    the user's reply is assigned to REXX variable "var". The default reply
    is specified by "default" and if it contains spaces then it must be
@@ -677,7 +677,7 @@ input file called MY.JAM.INPUT containing:
    The "text" (if present) is displayed to the user and
    can be used to let the user know what is happening.
 
-   To enable this facility you need to issue (one time only) the 
+   To enable this facility you need to issue (one time only) the
    following ISPF/EDIT command:
 
      IMACRO JAMINIT
@@ -685,7 +685,7 @@ input file called MY.JAM.INPUT containing:
    To disable this facility, issue:
 
      IMACRO NONE
-   
+
 ### ..BACKUP    dsn backup        [options...]
 
   This will generate a job step that will backup dataset(s) "dsn" to
@@ -759,7 +759,7 @@ input file called MY.JAM.INPUT containing:
 ### ..DATEVARS  PREV dayname [BEFORE date]
 ### ..DATEVARS  FIRST dayname IN month
 ### ..DATEVARS  LAST dayname IN month
-### ..DATEVARS  LAST dayname 
+### ..DATEVARS  LAST dayname
 ### ..DATEVARS  EASTER [year]
 
   Takes the specified date and generates several REXX
@@ -827,9 +827,9 @@ input file called MY.JAM.INPUT containing:
       Input                               Resulting date               Comment
       ---------------------------------   --------------------------   -------
     ..datevars 25/2/1966
-      [datevar                         ]  [dayname date             ] 
+      [datevar                         ]  [dayname date             ]
     ..datevars Easter 2021
-      [datevar                         ]  [dayname date             ] 
+      [datevar                         ]  [dayname date             ]
     ..datevars prev friday before easter 2021
       [datevar                         ]  [dayname date             ]  (Good Friday)
     ..datevars first monday in january 2021
@@ -841,20 +841,20 @@ input file called MY.JAM.INPUT containing:
     ..datevars [date] +7
       [datevar                         ]  [dayname date             ]  (4th Monday)
     ..datevars last saturday in march 2021
-      [datevar                         ]  [dayname date             ] 
+      [datevar                         ]  [dayname date             ]
 
   generates:
 
       Input                               Resulting date               Comment
       ---------------------------------   --------------------------   -------
-      25/2/1966                           Friday 25 Feb 1966          
-      Easter 2021                         Sunday 4 Apr 2021           
+      25/2/1966                           Friday 25 Feb 1966
+      Easter 2021                         Sunday 4 Apr 2021
       prev friday before easter 2021      Friday 2 Apr 2021            (Good Friday)
       first monday in january 2021        Monday 4 Jan 2021            (1st Monday)
       4 Jan 2021 +7                       Monday 11 Jan 2021           (2nd Monday)
       11 Jan 2021 +7                      Monday 18 Jan 2021           (3rd Monday)
       18 Jan 2021 +7                      Monday 25 Jan 2021           (4th Monday)
-      last saturday in march 2021         Saturday 27 Mar 2021        
+      last saturday in march 2021         Saturday 27 Mar 2021
 
 ### ..DELETE    dsn [catalog] [options...]
 
@@ -878,7 +878,7 @@ input file called MY.JAM.INPUT containing:
   subsequent statements until the closing `..end`
   JAM statement is found.
 
-### ..END     
+### ..END
 
   This closes the previous matching `..if` or `..select` JAM statement.
 
@@ -906,7 +906,7 @@ input file called MY.JAM.INPUT containing:
       output if condition evaluates to 0
     ..end
 
-  This JAM verb will evaluate the REXX expression specified by "cond". 
+  This JAM verb will evaluate the REXX expression specified by "cond".
   The result of the evaluation must be either 1 (true) or 0 (false).
 
   If 1, execute the "action" (if present) and process all
@@ -1223,12 +1223,12 @@ input file called MY.JAM.INPUT containing:
         .
         .
     ..  otherwise
-          output if expr does not equal any of the above values        
+          output if expr does not equal any of the above values
     ..end
 
-  The `..otherwise` clause is processed if all previous `..when` clauses 
-  of a `..select` statement are evaluated as false. First process the 
-  otherwise "action" (if present) and all subsequent statements until `..end` 
+  The `..otherwise` clause is processed if all previous `..when` clauses
+  of a `..select` statement are evaluated as false. First process the
+  otherwise "action" (if present) and all subsequent statements until `..end`
   statement that closes the corresponding `..select` statement is found
 
 ### ..PUT       fromdsn tosystem [todsn [siteoptions...]]
@@ -1257,7 +1257,7 @@ input file called MY.JAM.INPUT containing:
       ..queue //          DSN=MY.DATASET, []
       ..queue //          RECFM=V,BLKSIZE=27990,LRECL=255
 
-### ..QUEUED   
+### ..QUEUED
 
   This processes any JAM statements that were queued by
   earlier `..queue` JAM statements and then clears the
@@ -1355,11 +1355,11 @@ input file called MY.JAM.INPUT containing:
         .
         .
     ..  otherwise
-          output if expr does not equal any of the above values        
+          output if expr does not equal any of the above values
     ..end
 
-  If "expr" is present then the `..select` clause will evaluate the REXX 
-  expression and search for a `..when` clause expression that matches that 
+  If "expr" is present then the `..select` clause will evaluate the REXX
+  expression and search for a `..when` clause expression that matches that
   value.
 
   If "expr" is omitted then subsequent `..when` clause expressions are
@@ -1397,7 +1397,7 @@ input file called MY.JAM.INPUT containing:
 
 ### ..SET       var = expr
 
-  This evaluates the expression "expr" and assigns the result to a REXX 
+  This evaluates the expression "expr" and assigns the result to a REXX
   variable called "var". Any valid REXX expression can be used.
   The variable named "alias" is special. If you set this
   variable then several other variables will be updated
@@ -1441,7 +1441,7 @@ input file called MY.JAM.INPUT containing:
 
 ### ..STYLE     name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
 
-  This creates a named set of global REXX variables that are used by the 
+  This creates a named set of global REXX variables that are used by the
   `..*` JAM statements to generate styled comment lines.
 
   To illustrate where where the parameter texts are placed you can code:
@@ -1473,16 +1473,16 @@ input file called MY.JAM.INPUT containing:
 
   If you omit the parameters then the named set becomes the active set for
   subsequent `..*` JAM statements. For example, to set assembler-style comments:
-  
+
       ..style asm
-  
+
   If the named set does not exist then the default comment style (jcl) becomes active.
 
   If you only specify the width parameter, then only the width is updated for this style.
   For example, the following sets the comment width to 40 characters for the asm style:
 
       ..style asm=40
- 
+
   If you omit the borderfill parameter then no top or bottom border will be generated.
 
   The following styles are pre-defined:
@@ -1504,11 +1504,11 @@ input file called MY.JAM.INPUT containing:
       ... Override the built-in asm default style:
       ..style asm=60,*,*,-,*,*,*,*
       ..* This is an assembler comment
-      
+
       ... Create a new style called myxml:
       ..style myxml=60,,,,<!--,-->,
       ..* This is my xml comment
-      
+
       ... Reset to the (overridden) asm style:
       ..style asm
       ..* This is also an assembler comment
@@ -1520,15 +1520,15 @@ input file called MY.JAM.INPUT containing:
       * This is an assembler comment                             *
       *----------------------------------------------------------*
       *
-      
+
       <!-- This is my xml comment                              -->
-      
+
       *
       *----------------------------------------------------------*
       * This is also an assembler comment                        *
       *----------------------------------------------------------*
       *
-      
+
 ### ..SUBMIT    dsn [tosystem [outdsn]]
 
   This submits the JCL in dataset "dsn" to the system alias specified by
@@ -1549,7 +1549,7 @@ input file called MY.JAM.INPUT containing:
 
   This generates a job step to execute the specified command as superuser in the Unix
   System Services environment. The invoker will need to be permitted
-  RACF READ access to BPX.SUPERUSER (or have uid=0) for this to be 
+  RACF READ access to BPX.SUPERUSER (or have uid=0) for this to be
   effective.
 
 ### ..TABLE     dsn
@@ -1626,7 +1626,7 @@ input file called MY.JAM.INPUT containing:
         .
         .
     ..  otherwise
-          output if expr does not equal any of the above values        
+          output if expr does not equal any of the above values
     ..end
 
   The REXX expression specified by "expr" is evaluated. The result could
@@ -1640,7 +1640,7 @@ input file called MY.JAM.INPUT containing:
 
   If "expr" evaluates as 0, ignore all statements in this `..when` clause.
 
-  If "expr" evaluates as neither 0 nor 1, compare the value of "expr" to the 
+  If "expr" evaluates as neither 0 nor 1, compare the value of "expr" to the
   value of the variable specified on the owning `..select` and
   process the resulting 0 or 1 as decribed above.
 
@@ -1670,9 +1670,9 @@ input file called MY.JAM.INPUT containing:
 
 ### ..XEQ      [alias]
 
-  This will generate XEQ and JOBPARM cards for the specified system alias, 
-  or else from the system currently specified by the "alias" variable. 
-  If you specify "alias" then the "alias" variable will be set to that 
+  This will generate XEQ and JOBPARM cards for the specified system alias,
+  or else from the system currently specified by the "alias" variable.
+  If you specify "alias" then the "alias" variable will be set to that
   value, so the following:
 
       ..set alias = 'TST1'
@@ -1729,8 +1729,8 @@ For example:
 
 # Pre-defined variables
 
-  The following variables are re-evaluated whenever you use a 
-  `..job` or `..runon` JAM verb, or whenever you assign a  
+  The following variables are re-evaluated whenever you use a
+  `..job` or `..runon` JAM verb, or whenever you assign a
   system alias to the "alias" variable using `..set alias = youralias`:
 
   | Variable | Description                         |
@@ -1755,7 +1755,7 @@ For example:
   | userid   | Userid                                | U12345      |
   | user     | Userid (with a shorter variable name) | U12345      |
   | u        | Userid (even shorter variable name)   | U12345      |
- 
+
 # Built-in functions
 
   | Function                   | Description                                     | Example | Result
@@ -1793,10 +1793,10 @@ You should, before first use, do some initial set up as follows.
 1. Get into ISPF/EDIT
 2. Use the KEYS command to assign JAM to PF4.
    Now you can either press PF4 or enter JAM on the command line
-   to process the JAM statements in the file you are editing. 
+   to process the JAM statements in the file you are editing.
 3. Use the IMACRO command to set your initial macro to be JAMINIT.
-   The JAMINIT macro will automatically run the JAM processor when 
-   you edit a file if the first line of that file contains 
+   The JAMINIT macro will automatically run the JAM processor when
+   you edit a file if the first line of that file contains
    `..auto [message]`.
 
 # How to use JAM in BATCH
