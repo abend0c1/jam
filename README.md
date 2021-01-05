@@ -8,7 +8,7 @@
 - [How JAM Works](#HOW-JAM-WORKS)
 - [Example](#EXAMPLE)
 - [Command Syntax](#COMMAND-SYNTAX)
-  - [On z/OS only](#On-z/OS-only)
+  - [On z/OS only](#On-zOS-only)
   - [On Linux or Windows](#On-Linux-or-Windows)
 - [List of JAM Verbs](#List-of-JAM-verbs)
 - [Usage](#USAGE)
