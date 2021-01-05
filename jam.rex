@@ -2484,14 +2484,14 @@ each line of input does the following:
   do i = 1 to words(g.0VERBS)
     sVerb = word(g.0VERBS,i)
     parse value sourceline(g.0HELPBEG.sVerb) with '..'sSyntax 0 . sVerb .
-    /*              e.g. sourceline = '### ..ARGS      var [var...]' */
-    /*                      sSyntax =       'ARGS      var [var...]' */
-    /*                        sVerb =     '..ARGS'                   */
-    sLink = translate(sSyntax,'ff'x,' ') /* 'ARGS\\\\\\var\[var...]' */
-    sLink = translate(sLink,'','[].,=')  /* 'ARGS\\\\\\var\ var    ' */
-    sLink = space(sLink,0)               /* 'ARGS\\\\\\var\var'      */
-    sLink = translate(sLink,'-','ff'x)   /* 'ARGS------var-var'      */
-    sLink = toLower(sLink)               /* 'args------var-var'      */
+    /*                e.g. sourceline = '### ..ARGS      var [var...]' */
+    /*                        sSyntax =       'ARGS      var [var...]' */
+    /*                          sVerb =     '..ARGS'                   */
+    sLink = translate(sSyntax,'ff'x,' ')   /* 'ARGS\\\\\\var\[var...]' */
+    sLink = translate(sLink,'','[].,=+|')  /* 'ARGS\\\\\\var\ var    ' */
+    sLink = space(sLink,0)                 /* 'ARGS\\\\\\var\var'      */
+    sLink = translate(sLink,'-','ff'x)     /* 'ARGS------var-var'      */
+    sLink = toLower(sLink)                 /* 'args------var-var'      */
     queue '- ['sVerb'](#'sLink')' /* - [..ARGS](#args------var-var)  */
   end
   /* Generate help text for each verb */
