@@ -2480,14 +2480,19 @@ each line of input does the following:
 */
 
   call queueHelpForVerb 'Help'
-  /* Generate Table of Contents in github markdown syntax */
+  /* Generate Table of Contents in GitHub markdown syntax */
   do i = 1 to words(g.0VERBS)
     sVerb = word(g.0VERBS,i)
-    parse value sourceline(g.0HELPBEG.sVerb) with . sSyntax
-    parse var sSyntax sVerb .
-    sLink = translate(sSyntax,'','[].,=')
-    sLink = toLower(strip(space(sLink,1,'-'),'LEADING','#'))
-    queue '- ['sVerb'](#'sLink')'
+    parse value sourceline(g.0HELPBEG.sVerb) with '..'sSyntax 0 . sVerb .
+    /*              e.g. sourceline = '### ..ARGS      var [var...]' */
+    /*                      sSyntax =       'ARGS      var [var...]' */
+    /*                        sVerb =     '..ARGS'                   */
+    sLink = translate(sSyntax,'ff'x,' ') /* 'ARGS\\\\\\var\[var...]' */
+    sLink = translate(sLink,'','[].,=')  /* 'ARGS\\\\\\var\ var    ' */
+    sLink = space(sLink,0)               /* 'ARGS\\\\\\var\var'      */
+    sLink = translate(sLink,'-','ff'x)   /* 'ARGS------var-var'      */
+    sLink = toLower(sLink)               /* 'args------var-var'      */
+    queue '- ['sVerb'](#'sLink')' /* - [..ARGS](#args------var-var)  */
   end
   /* Generate help text for each verb */
   do i = 1 to words(g.0VERBS)
