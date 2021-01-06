@@ -3,8 +3,6 @@
 
 ..style jcl
 ..* This is a JCL comment
-..quit
-
 
 ... Show how the parameter texts are transformed:
 ..style test=60,1,2,3,4,5,6,7

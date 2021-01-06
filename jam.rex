@@ -1712,28 +1712,43 @@ return
 
 doDateVars:
 /*
-### ..DATEVARS  [date [+|-days]]
-### ..DATEVARS  NEXT dayname [AFTER date]
-### ..DATEVARS  PREV dayname [BEFORE date]
-### ..DATEVARS  FIRST dayname IN month
-### ..DATEVARS  LAST dayname IN month
-### ..DATEVARS  LAST dayname
-### ..DATEVARS  EASTER [year]
+### ..DATEVARS  [date [+|-days]] [stem.]
+### ..DATEVARS  NEXT dayname [AFTER date] [+|-days] [stem.]
+### ..DATEVARS  PREV dayname [BEFORE date] [+|-days] [stem.]
+### ..DATEVARS  FIRST dayname IN month [+|-days] [stem.]
+### ..DATEVARS  LAST dayname IN month [+|-days] [stem.]
+### ..DATEVARS  LAST dayname [+|-days] [stem.]
+### ..DATEVARS  EASTER [year] [+|-days] [stem.]
 
-  Takes the specified date and generates several REXX
-  variables containing different aspects of that date.
+  The `..datevars` JAM verb is a very powerful date manipulation facility.
 
-  If "+" or "-" followed by a whole number days is
-  specified then that number of days is added to the
-  date before generating any REXX variables.
+  It accepts a date expression and generates several REXX
+  variables representing different aspects of that date (such as day name, year
+  number, month name, month number etc).
 
-  The "date" can be in a variety of formats - including some that
+  The date passed to `..datevars` can have a variety of formats - including some that
   are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc).
-  Unrecognised dates are silently assumed to be the current date.
-  Examples of "date" values that you can specify include:
 
-  | date           |  Interpreted as                          |
-  | ----           |  --------------------------------------- |
+  Optionally, you can specify an offset in days (`+|-days`) to be added to the date
+  before generating the REXX variables.
+
+  If "stem." is specified, then the generated REXX variables will be
+  prefixed by that stem. For example:
+
+      ..datevars easter 2020 a.
+      ..datevars easter 2021 b.
+      ..say Easter 2020 is [a.date] and Easter 2021 is [b.date]
+
+  will generate:
+      
+      Easter 2020 is 19 Apr 2020 and Easter 2021 is 4 Apr 2021
+
+  Unrecognised date specifications are silently assumed to be the current date.
+
+  Examples of acceptable date formats include:
+
+  | Date expression|  Interpreted as                          |
+  | -------------- |  --------------------------------------- |
   | 25/2/66        |  1966/02/25                              |
   | 25/2/1966      |  1966/02/25                              |
   | 25/2           |  yyyy/02/25 (in the current year)        |
@@ -1755,6 +1770,7 @@ doDateVars:
   | 717756         |  1966/02/25 (days since 1/1/1900)        |
   | +7             |             (the current date + 7 days)  |
   | -7             |             (the current date - 7 days)  |
+  | easter 1966    |  1966/04/10                              |
   | <unrecognised> |  yyyy/mm/dd (the current date)           |
 
   The resulting REXX variables created for the specified date are:
@@ -1780,6 +1796,7 @@ doDateVars:
   | ddmmyyyy  |  25/02/1966     | Long European date format           |
   | days      |  -20000         | Days since today                    |
 
+
   For example:
 
         Input                               Resulting date               Comment
@@ -1792,6 +1809,10 @@ doDateVars:
         [datevar                         ]  [dayname date             ]  (Earth Hour 20:30-21:30 local time)
       ..datevars prev friday before easter 2021
         [datevar                         ]  [dayname date             ]  (Good Friday)
+      ..datevars easter 2021 -47
+        [datevar                         ]  [dayname date             ]  (Shrove Tuesday)
+      ..datevars easter 2021 -46
+        [datevar                         ]  [dayname date             ]  (Ash Wednesday)
       ..datevars first monday in january 2021
         [datevar                         ]  [dayname date             ]  (1st Monday)
       ..datevars [date] +7
@@ -1800,13 +1821,13 @@ doDateVars:
         [datevar                         ]  [dayname date             ]  (3rd Monday)
       ..datevars [date] +7
         [datevar                         ]  [dayname date             ]  (4th Monday)
-      ..datevars first sunday in october 2021
-        [datevar                         ]  [dayname date             ]  (Australian daylight savings start)
-      ..datevars first sunday in april 2022
-        [datevar                         ]  [dayname date             ]  (Australian daylight savings end)
+      ..datevars first sunday in october 2021 aedt.
+        [aedt.datevar                    ]  [aedt.dayname aedt.date   ]  (Australian daylight savings start)
+      ..datevars first sunday in april 2022 aest.
+        [aest.datevar                    ]  [aest.dayname aest.date   ]  (Australian daylight savings end)
     
 
-  generates:
+  will generate:
 
       Input                               Resulting date               Comment
       ---------------------------------   --------------------------   -------
@@ -1814,12 +1835,14 @@ doDateVars:
       Easter 2021                         Sunday 4 Apr 2021          
       last saturday in march 2021         Saturday 27 Mar 2021         (Earth Hour 20:30-21:30 local time)
       prev friday before easter 2021      Friday 2 Apr 2021            (Good Friday)
+      easter 2021 -47                     Tuesday 16 Feb 2021          (Shrove Tuesday)
+      easter 2021 -46                     Wednesday 17 Feb 2021        (Ash Wednesday)
       first monday in january 2021        Monday 4 Jan 2021            (1st Monday)
       4 Jan 2021 +7                       Monday 11 Jan 2021           (2nd Monday)
       11 Jan 2021 +7                      Monday 18 Jan 2021           (3rd Monday)
       18 Jan 2021 +7                      Monday 25 Jan 2021           (4th Monday)
-      first sunday in october 2021        Sunday 3 Oct 2021            (Australian daylight savings start)
-      first sunday in april 2022          Sunday 3 Apr 2022            (Australian daylight savings end)
+      first sunday in october 2021 aedt.  Sunday 3 Oct 2021            (Australian daylight savings start)
+      first sunday in april 2022 aest.    Sunday 3 Apr 2022            (Australian daylight savings end)
 
 */
   parse var g.1 . date
