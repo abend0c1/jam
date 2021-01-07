@@ -861,7 +861,7 @@ return
 
 doJAMComment:
 /*
-### ...         [JAM comment]
+### ... [JAM comment]
 
 This is used to add comments to a JAM input file. These comments
 are ignored by the JAM processor and do not produce any output.
@@ -882,7 +882,7 @@ return
 
 doComment:
 /*
-### ..*         [comment]
+### ..* [comment]
 
   This will generate a comment using the specified comment text.
   The default comment style is `jcl`. Other built-in
@@ -994,7 +994,7 @@ return
 
 doArgs:
 /*
-### ..ARGS      var [var...]
+### ..ARGS var [var...]
 
 This will parse any supplied command-line arguments into the
 specified list of variables. For example, suppose you had a JAM
@@ -1035,10 +1035,10 @@ return
 
 doAsk:
 /*
-### ..ASK       var [default [prompt]]
-### ..ASKU      var [default [prompt]]
-### ..ASKQ      var [default [prompt]]
-### ..ASKQU     var [default [prompt]]
+### ..ASK var [default [prompt]]
+### ..ASKU var [default [prompt]]
+### ..ASKQ var [default [prompt]]
+### ..ASKQU var [default [prompt]]
 
    These JAM statements will ask the user for terminal input.
 
@@ -1143,7 +1143,7 @@ return
 
 doAuto:
 /*
-### ..AUTO      [text]
+### ..AUTO [text]
 
    This is used to automatically run the JAM processor when a file is edited.
 
@@ -1174,7 +1174,7 @@ return
 
 doBackup:
 /*
-### ..BACKUP    dsn backup        [options...]
+### ..BACKUP dsn backup [options...]
 
   This will generate a job step that will backup dataset(s) "dsn" to
   a backup dataset called "backup" using ADRDSSU DUMP.
@@ -1240,7 +1240,7 @@ return
 
 doBR14:
 /*
-### ..BR14      [label]
+### ..BR14 [label]
 
   This will generate a dummy (IEFBR14) JCL step.
 
@@ -1272,7 +1272,7 @@ return
 
 doCatalog:
 /*
-### ..CATALOG   dsn volser [catalog]
+### ..CATALOG dsn volser [catalog]
 
   This will generate a job step that will catalog dataset "dsn" on
   volume "volser" in the specified catalog, or else in
@@ -1310,7 +1310,7 @@ return
 
 doCompress:
 /*
-### ..COMPRESS  dsn [volser]
+### ..COMPRESS dsn [volser]
 
   This will generate a job step that will compress partitioned dataset "dsn" on
   volume "volser", or else will compress the cataloged dataset
@@ -1351,15 +1351,15 @@ return
 
 doCopy:
 /*
-### ..COPY      fromdsn todsn
-### ..COPY      frompds(member,member,...) todsn [tovol] [fromvol]
-### ..COPY      fromgdg(n) todsn [tovol]
-### ..COPY      frompath todsn [options...]
-### ..COPY      fromdsn topath [options...]
-### ..COPY      frompath topath
-### ..COPY      * todsn
-### ..COPY      [fromsite]:fromdsn [tosite]:todsn [options...]
-### ..COPY      [fromsite]:frompath [tosite]:topath [options...]
+### ..COPY fromdsn todsn
+### ..COPY frompds(member,member,...) todsn [tovol] [fromvol]
+### ..COPY fromgdg(n) todsn [tovol]
+### ..COPY frompath todsn [options...]
+### ..COPY fromdsn topath [options...]
+### ..COPY frompath topath
+### ..COPY * todsn
+### ..COPY [fromsite]:fromdsn [tosite]:todsn [options...]
+### ..COPY [fromsite]:frompath [tosite]:topath [options...]
 
   This will generate a job step that, depending on the operands, will copy either:
   - Dataset "fromdsn" to dataset "todsn"
@@ -1712,13 +1712,13 @@ return
 
 doDateVars:
 /*
-### ..DATEVARS  [date [+|-days]] [stem.]
-### ..DATEVARS  NEXT dayname [AFTER date] [+|-days] [stem.]
-### ..DATEVARS  PREV dayname [BEFORE date] [+|-days] [stem.]
-### ..DATEVARS  FIRST dayname IN month [+|-days] [stem.]
-### ..DATEVARS  LAST dayname IN month [+|-days] [stem.]
-### ..DATEVARS  LAST dayname [+|-days] [stem.]
-### ..DATEVARS  EASTER [year] [+|-days] [stem.]
+### ..DATEVARS [date [+|-days]] [stem.]
+### ..DATEVARS NEXT dayname [AFTER date] [+|-days] [stem.]
+### ..DATEVARS PREV dayname [BEFORE date] [+|-days] [stem.]
+### ..DATEVARS FIRST dayname IN month [+|-days] [stem.]
+### ..DATEVARS LAST dayname IN month [+|-days] [stem.]
+### ..DATEVARS LAST dayname [+|-days] [stem.]
+### ..DATEVARS EASTER [year] [+|-days] [stem.]
 
   The `..datevars` JAM verb is a very powerful date manipulation facility.
 
@@ -2187,7 +2187,7 @@ return basedate
 
 doDelete:
 /*
-### ..DELETE    dsn [catalog] [options...]
+### ..DELETE dsn [catalog] [options...]
 
   This will generate a job step that will delete dataset "dsn" from the
   specified catalog, or else from the catalog appropriate
@@ -2219,7 +2219,7 @@ return
 
 doElse:
 /*
-### ..ELSE      [action]
+### ..ELSE [action]
 
   This is part of an if-else-end construct:
 
@@ -2256,7 +2256,7 @@ doEnd:
 /*
 ### ..END
 
-  This closes the previous matching `..if` or `..select` JAM statement.
+This closes the previous matching `..if` or `..select` JAM statement.
 
 */
   parse var g.1 . sParms .
@@ -2282,7 +2282,7 @@ return
 
 doGet:
 /*
-### ..GET       fromdsn fromsys [todsn [locsiteoptions...]]
+### ..GET fromdsn fromsys [todsn [locsiteoptions...]]
 
   This generates a job step that uses FTP to get a dataset called
   "fromdsn" from system "fromsys" and optionally store
@@ -2327,7 +2327,7 @@ return
 
 doGetOut:
 /*
-### ..GETOUT    fromdsn fromsys todsn
+### ..GETOUT fromdsn fromsys todsn
 
   This generates a job step that uses FTP to submit dataset called
   "fromdsn" on system "fromsys" and store the resulting
@@ -2381,7 +2381,7 @@ return
 
 doHelp:
 /*
-### ..HELP
+### ..HELP 
 
 The `..help` JAM statement displays help information about all of the
 JAM verbs. If you want to display help information about a particular
@@ -2669,7 +2669,7 @@ return
 
 doIf:
 /*
-### ..IF        cond [action]
+### ..IF cond [action]
 
   This is part of an if-else-end construct:
 
@@ -2708,7 +2708,7 @@ return
 
 doFor:
 /*
-### ..FOR       READ dsn MACRO macroname
+### ..FOR READ dsn MACRO macroname
 
   This invokes the macro called "macroname" once for each
   line in the dataset "dsn"
@@ -2720,7 +2720,7 @@ doFor:
       ..macro end
       ..for read sys1.parmlib(ieasys00) macro show
 
-### ..FOR       str1 str2 ... strn MACRO macroname
+### ..FOR str1 str2 ... strn MACRO macroname
 
   Invokes the macro called "macroname" once for each
   string in the list "str1 str2 ... strn"
@@ -2732,7 +2732,7 @@ doFor:
       ..macro end
       ..for A B C macro duplicate
 
-### ..FOR       x TO y [BY z] MACRO macroname
+### ..FOR x TO y [BY z] MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range "x" to "y" (by "z" steps)
@@ -2745,7 +2745,7 @@ doFor:
       ..for 1 to 10 by 2 macro show
 
 
-### ..FOR       n MACRO macroname
+### ..FOR n MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range 1 to "n"
@@ -2896,19 +2896,19 @@ return line.0
 
 doInclude:
 /*
-### ..INCLUDE   dsn
+### ..INCLUDE dsn
   This includes the contents of dataset "dsn"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
-### ..INCLUDE   dsn(member)
+### ..INCLUDE dsn(member)
   This includes the contents of partitioned dataset "dsn" member "member"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
-### ..INCLUDE   (member)
+### ..INCLUDE (member)
 
   Includes the contents of "member" from the pds currently being edited
   at this point in the JAM input file.
@@ -3015,7 +3015,7 @@ return
 
 doJCL:
 /* TODO: Get this working properly
-### ..JCL       [stmt]
+### ..JCL [stmt]
 
   This reformats the specified JCL statement with continuations
   if necessary.
@@ -3227,7 +3227,7 @@ return i
 
 doJob:
 /*
-### ..JOB       [system[/jobnamesuffix] [description]]
+### ..JOB [system[/jobnamesuffix] [description]]
 
   This generates a JOB card, an XEQ card and a JOBPARM card
   for the system specified by "system", or else for the
@@ -3296,7 +3296,7 @@ return
 
 doListcat:
 /*
-### ..LISTCAT   dsn [catalog] [options...]
+### ..LISTCAT dsn [catalog] [options...]
 
   This generates a job step that will invoke IDCAMS to LIST dataset "dsn" in the
   specified catalog, or else in the standard catalog
@@ -3368,7 +3368,7 @@ return
 
 doListVTOC:
 /*
-### ..LISTVTOC  dsn volser
+### ..LISTVTOC dsn volser
 
    This generates a job step that will list datasets specified by
    "dsn" in the VTOC of the volume specified by "volser".
@@ -3405,7 +3405,7 @@ return
 
 doMacro:
 /*
-### ..MACRO     DEFINE macroname [parameters...]
+### ..MACRO DEFINE macroname [parameters...]
 
   This defines a named group of lines, bounded by `..macro define`
   and `..macro end` statements, that can be subsequently
@@ -3415,17 +3415,17 @@ doMacro:
   parameter names but can be any valid operand of the
   REXX "parse value" statement.
 
-### ..MACRO     EXIT
+### ..MACRO EXIT
   This exits from the macro at run time, otherwise the macro terminates at
   the `..macro end` JAM statement.
 
-### ..MACRO     END
+### ..MACRO END
 
   This terminates a named group of lines (bounded by `..macro define`
   and `..macro end` statements) that can be subsequently
   included by invoking the `..macro macroname` statement.
 
-### ..MACRO     macroname [arguments]
+### ..MACRO macroname [arguments]
 
   This invokes a macro called "macroname" that has been previously
   defined by a `..macro define` statement and terminated by
@@ -3528,7 +3528,7 @@ return
 
 doMap:
 /*
-### ..MAP       dsn
+### ..MAP dsn
 
   This maps tabular data in dataset "dsn" (containing column headings) to REXX variables
   that are indexed by the value of the first column.
@@ -3563,7 +3563,7 @@ doMap:
 
       XYZ's phone is 2222 567 890 and email is user2@example.org
 
-### ..MAP       dsn column1 [column2 ... columnn]
+### ..MAP dsn column1 [column2 ... columnn]
 
   Maps the tabular data in a dataset (containing no column headings) to REXX variables.
   The column headings to be used are specified on the `..map` JAM statement.
@@ -3649,8 +3649,8 @@ return
 
 doMount:
 /*
-### ..MOUNT     dsn path [options...]
-### ..MOUNT     path dsn [options...]
+### ..MOUNT dsn path [options...]
+### ..MOUNT path dsn [options...]
 
   This generates a job step to mount file system "dsn" at mount point "path" using any
   "options" valid on the TSO MOUNT command. The "path"
@@ -3691,9 +3691,9 @@ return
 
 doOption:
 /*
-### ..OPTION    [NO]option...
-### ..OPTION    PUSH
-### ..OPTION    POP
+### ..OPTION [NO]option...
+### ..OPTION PUSH
+### ..OPTION POP
 
   This sets (or resets) one or more named option flags.
 
@@ -3809,7 +3809,7 @@ return
 
 doPut:
 /*
-### ..PUT       fromdsn tosystem [todsn [siteoptions...]]
+### ..PUT fromdsn tosystem [todsn [siteoptions...]]
 
   This generates a job step that uses FTP to transfer local dataset
   "fromdsn" to system "tosystem" and optionally
@@ -3854,7 +3854,7 @@ return
 
 doQueue:
 /*
-### ..QUEUE     [line]
+### ..QUEUE [line]
 
   This appends the specified line to a queue of input JAM
   statements to be processed when a subsquent `..queued`
@@ -3890,7 +3890,7 @@ return
 
 doQueued:
 /*
-### ..QUEUED
+### ..QUEUED 
 
   This processes any JAM statements that were queued by
   earlier `..queue` JAM statements and then clears the
@@ -3917,7 +3917,7 @@ return
 
 doQuit:
 /*
-### ..QUIT      [CANCEL] [quitmsg]
+### ..QUIT [CANCEL] [quitmsg]
 
   This stops the JAM processor. If "quitmsg" is present
   then that message is displayed as the reason for
@@ -3941,7 +3941,7 @@ return
 
 doRecover:
 /*
-### ..RECOVER   dsn fromvol tovol [options...]
+### ..RECOVER dsn fromvol tovol [options...]
 
   This generates a job step that will copy dataset "dsn" from
   volume "fromvol" to volume "tovol" using ADRDSSU
@@ -3988,9 +3988,9 @@ return
 
 doRename:
 /*
-### ..RENAME    dsn todsn [volser]
-### ..RENAME    pds(mem1[,mem2...]) (new1[,new2...]) [volser]
-### ..RENAME    path topath
+### ..RENAME dsn todsn [volser]
+### ..RENAME pds(mem1[,mem2...]) (new1[,new2...]) [volser]
+### ..RENAME path topath
 
   This generates a job step that will rename a dataset, members in a
   partitioned dataset, or a Unix System Services file or directory.
@@ -4159,7 +4159,7 @@ return
 
 doRepro:
 /*
-### ..REPRO     fromdsn todsn [fromrec [count]]
+### ..REPRO fromdsn todsn [fromrec [count]]
 
   This generates a job step that will copy dataset "fromdsn" to
   dataset "todsn" starting at record number "fromrec"
@@ -4202,7 +4202,7 @@ return
 
 doRestore:
 /*
-### ..RESTORE   dsn [backup | =]  [options...]
+### ..RESTORE dsn [backup | =] [options...]
 
   This generates a job step that will restore datasets "dsn" from
   a backup dataset "backup" that was created by ADRDSSU
@@ -4258,7 +4258,7 @@ return
 
 doREXX:
 /*
-### ..REXX      statement
+### ..REXX statement
 
   This executes the specified REXX statement.
 
@@ -4278,7 +4278,7 @@ return
 
 doRunOn:
 /*
-### ..RUNON     [system[/jobnamesuffix][/via]] [description]
+### ..RUNON [system[/jobnamesuffix][/via]] [description]
 
   This generates JCL to run the following JCL on the system
   alias specified by "system".
@@ -4375,7 +4375,7 @@ return
 
 doSay:
 /*
-### ..SAY       text
+### ..SAY text
 
   This displays the specified message text on the user's terminal.
 
@@ -4393,7 +4393,7 @@ return
 
 doScratch:
 /*
-### ..SCRATCH   dsn volser
+### ..SCRATCH dsn volser
 
   This generates a job step that will delete dataset "dsn" from
   volume "volser".
@@ -4426,7 +4426,7 @@ return
 
 doSelect:
 /*
-### ..SELECT    [expr]
+### ..SELECT [expr]
 
   This is part of a select-when-otherwise-end construct:
 
@@ -4493,7 +4493,7 @@ return
 
 doSet:
 /*
-### ..SET       var = expr
+### ..SET var = expr
 
   This evaluates the expression "expr" and assigns the result to a REXX
   variable called "var". Any valid REXX expression can be used.
@@ -4568,7 +4568,7 @@ return
 
 doShip:
 /*
-### ..SHIP      dsn tosystem [todsn [options...]]
+### ..SHIP dsn tosystem [todsn [options...]]
 
   This transfers a dataset to another system.
 
@@ -4677,7 +4677,7 @@ return
 
 doStep:
 /*
-### ..STEP      args
+### ..STEP args
 
   This generates an EXEC card with the specified arguments.
 
@@ -4708,7 +4708,7 @@ return
 
 doStyle:
 /*
-### ..STYLE     name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
+### ..STYLE name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
 
   This creates a named set of global REXX variables that are used by the
   `..*` JAM statements to generate styled comment lines.
@@ -4835,7 +4835,7 @@ return
 
 doSubmit:
 /*
-### ..SUBMIT    dsn [tosystem [outdsn]]
+### ..SUBMIT dsn [tosystem [outdsn]]
 
   This submits the JCL in dataset "dsn" to the system alias specified by
   "tosystem", or to the system specified by the
@@ -4908,7 +4908,7 @@ return
 
 doSudo:
 /*
-### ..SUDO      unixcommand
+### ..SUDO unixcommand
 
   This generates a job step to execute the specified command as superuser in the Unix
   System Services environment. The invoker will need to be permitted
@@ -4943,11 +4943,11 @@ return
 
 doTable:
 /*
-### ..TABLE     dsn
+### ..TABLE dsn
   This reads tabular data in dataset "dsn" (containing column headings) into REXX variables
   that are indexed by row number. See below for more detail.
 
-### ..TABLE     dsn col1 [col2 ...]
+### ..TABLE dsn col1 [col2 ...]
 
   This reads tabular data in dataset "dsn" (with no column headings) into REXX variables
   that are indexed by row number. The column headings are supplied on the `..table`
@@ -5093,7 +5093,7 @@ return
 
 doTSO:
 /*
-### ..TSO       tsocommand
+### ..TSO tsocommand
 
   This generates a job step to executes the specified TSO command in batch
 
@@ -5141,7 +5141,7 @@ return
 
 doUnmount:
 /*
-### ..UNMOUNT   dsn [options...]
+### ..UNMOUNT dsn [options...]
 
   This generates a job step to unmount file system "dsn" using any "options" valid on
   the TSO UNMOUNT command.
@@ -5163,7 +5163,7 @@ return
 
 doUSS:
 /*
-### ..USS       unixcommand
+### ..USS unixcommand
 
   This generates a job step to executes the specified command in the Unix System
   Services environment.
@@ -5224,7 +5224,7 @@ return
 
 doWhen:
 /*
-### ..WHEN      expr [action]
+### ..WHEN expr [action]
 
   This is part of a select-when-otherwise-end construct:
 
@@ -5315,7 +5315,7 @@ return
 
 doXEQ:
 /*
-### ..XEQ      [alias]
+### ..XEQ [alias]
 
   This will generate XEQ and JOBPARM cards for the specified system alias,
   or else from the system currently specified by the "alias" variable.
@@ -5354,7 +5354,7 @@ return
 
 doXMIT:
 /*
-### ..XMIT      dsn [system [userid [options...]]]
+### ..XMIT dsn [system [userid [options...]]]
 
    This generates JCL to issue the TSO TRANSMIT to send dataset
    "dsn" to userid "userid" at system "system".

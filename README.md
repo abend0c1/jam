@@ -531,7 +531,7 @@ Where,
 - [..WHEN](#when-expr-action)
 - [..XEQ](#xeq-alias)
 - [..XMIT](#xmit-dsn-system-userid-options)
-### ...         [JAM comment]
+### ... [JAM comment]
 
 This is used to add comments to a JAM input file. These comments
 are ignored by the JAM processor and do not produce any output.
@@ -544,7 +544,7 @@ preceding comments:
     ...
     .. job
 
-### ..*         [comment]
+### ..* [comment]
 
   This will generate a comment using the specified comment text.
   The default comment style is `jcl`. Other built-in
@@ -572,7 +572,7 @@ preceding comments:
       //*
 
 
-### ..ARGS      var [var...]
+### ..ARGS var [var...]
 
 This will parse any supplied command-line arguments into the
 specified list of variables. For example, suppose you had a JAM
@@ -599,10 +599,10 @@ input file called MY.JAM.INPUT containing:
 
       The parameters passed are TEST, 0 and 10
 
-### ..ASK       var [default [prompt]]
-### ..ASKU      var [default [prompt]]
-### ..ASKQ      var [default [prompt]]
-### ..ASKQU     var [default [prompt]]
+### ..ASK var [default [prompt]]
+### ..ASKU var [default [prompt]]
+### ..ASKQ var [default [prompt]]
+### ..ASKQU var [default [prompt]]
 
    These JAM statements will ask the user for terminal input.
 
@@ -666,7 +666,7 @@ input file called MY.JAM.INPUT containing:
    that was specified ("system" in the above examples) and will
    replace the content bounded by the square brackets.
 
-### ..AUTO      [text]
+### ..AUTO [text]
 
    This is used to automatically run the JAM processor when a file is edited.
 
@@ -686,12 +686,12 @@ input file called MY.JAM.INPUT containing:
 
      IMACRO NONE
 
-### ..BACKUP    dsn backup        [options...]
+### ..BACKUP dsn backup [options...]
 
   This will generate a job step that will backup dataset(s) "dsn" to
   a backup dataset called "backup" using ADRDSSU DUMP.
 
-### ..BR14      [label]
+### ..BR14 [label]
 
   This will generate a dummy (IEFBR14) JCL step.
 
@@ -707,7 +707,7 @@ input file called MY.JAM.INPUT containing:
 
     //STEP1   EXEC PGM=IEFBR14
 
-### ..CATALOG   dsn volser [catalog]
+### ..CATALOG dsn volser [catalog]
 
   This will generate a job step that will catalog dataset "dsn" on
   volume "volser" in the specified catalog, or else in
@@ -718,21 +718,21 @@ input file called MY.JAM.INPUT containing:
   | -------- | ----------- |
   | cat      | The master catalog for the alias system. |
 
-### ..COMPRESS  dsn [volser]
+### ..COMPRESS dsn [volser]
 
   This will generate a job step that will compress partitioned dataset "dsn" on
   volume "volser", or else will compress the cataloged dataset
   if the volume is omitted.
 
-### ..COPY      fromdsn todsn
-### ..COPY      frompds(member,member,...) todsn [tovol] [fromvol]
-### ..COPY      fromgdg(n) todsn [tovol]
-### ..COPY      frompath todsn [options...]
-### ..COPY      fromdsn topath [options...]
-### ..COPY      frompath topath
-### ..COPY      * todsn
-### ..COPY      [fromsite]:fromdsn [tosite]:todsn [options...]
-### ..COPY      [fromsite]:frompath [tosite]:topath [options...]
+### ..COPY fromdsn todsn
+### ..COPY frompds(member,member,...) todsn [tovol] [fromvol]
+### ..COPY fromgdg(n) todsn [tovol]
+### ..COPY frompath todsn [options...]
+### ..COPY fromdsn topath [options...]
+### ..COPY frompath topath
+### ..COPY * todsn
+### ..COPY [fromsite]:fromdsn [tosite]:todsn [options...]
+### ..COPY [fromsite]:frompath [tosite]:topath [options...]
 
   This will generate a job step that, depending on the operands, will copy either:
   - Dataset "fromdsn" to dataset "todsn"
@@ -754,13 +754,13 @@ input file called MY.JAM.INPUT containing:
   a user-defined LPAR alias, and it defaults to the LPAR on which the
   job is to be run.
 
-### ..DATEVARS  [date [+|-days]] [stem.]
-### ..DATEVARS  NEXT dayname [AFTER date] [+|-days] [stem.]
-### ..DATEVARS  PREV dayname [BEFORE date] [+|-days] [stem.]
-### ..DATEVARS  FIRST dayname IN month [+|-days] [stem.]
-### ..DATEVARS  LAST dayname IN month [+|-days] [stem.]
-### ..DATEVARS  LAST dayname [+|-days] [stem.]
-### ..DATEVARS  EASTER [year] [+|-days] [stem.]
+### ..DATEVARS [date [+|-days]] [stem.]
+### ..DATEVARS NEXT dayname [AFTER date] [+|-days] [stem.]
+### ..DATEVARS PREV dayname [BEFORE date] [+|-days] [stem.]
+### ..DATEVARS FIRST dayname IN month [+|-days] [stem.]
+### ..DATEVARS LAST dayname IN month [+|-days] [stem.]
+### ..DATEVARS LAST dayname [+|-days] [stem.]
+### ..DATEVARS EASTER [year] [+|-days] [stem.]
 
   The `..datevars` JAM verb is a very powerful date manipulation facility.
 
@@ -886,14 +886,14 @@ input file called MY.JAM.INPUT containing:
       first sunday in october 2021 aedt.  Sunday 3 Oct 2021            (Australian daylight savings start)
       first sunday in april 2022 aest.    Sunday 3 Apr 2022            (Australian daylight savings end)
 
-### ..DELETE    dsn [catalog] [options...]
+### ..DELETE dsn [catalog] [options...]
 
   This will generate a job step that will delete dataset "dsn" from the
   specified catalog, or else from the catalog appropriate
   for the "alias" system. You can also specify any options
   valid for IDCAMS DELETE in "options".
 
-### ..ELSE      [action]
+### ..ELSE [action]
 
   This is part of an if-else-end construct:
 
@@ -910,9 +910,9 @@ input file called MY.JAM.INPUT containing:
 
 ### ..END
 
-  This closes the previous matching `..if` or `..select` JAM statement.
+This closes the previous matching `..if` or `..select` JAM statement.
 
-### ..GET       fromdsn fromsys [todsn [locsiteoptions...]]
+### ..GET fromdsn fromsys [todsn [locsiteoptions...]]
 
   This generates a job step that uses FTP to get a dataset called
   "fromdsn" from system "fromsys" and optionally store
@@ -920,13 +920,13 @@ input file called MY.JAM.INPUT containing:
   specify options for the FTP client's LOCSITE subcommand (for example
   RECFM=VB etc).
 
-### ..GETOUT    fromdsn fromsys todsn
+### ..GETOUT fromdsn fromsys todsn
 
   This generates a job step that uses FTP to submit dataset called
   "fromdsn" on system "fromsys" and store the resulting
   output locally in dataset "todsn".
 
-### ..IF        cond [action]
+### ..IF cond [action]
 
   This is part of an if-else-end construct:
 
@@ -947,7 +947,7 @@ input file called MY.JAM.INPUT containing:
   until the matching `..end` or `..else` statement
   is found.
 
-### ..FOR       READ dsn MACRO macroname
+### ..FOR READ dsn MACRO macroname
 
   This invokes the macro called "macroname" once for each
   line in the dataset "dsn"
@@ -959,7 +959,7 @@ input file called MY.JAM.INPUT containing:
       ..macro end
       ..for read sys1.parmlib(ieasys00) macro show
 
-### ..FOR       str1 str2 ... strn MACRO macroname
+### ..FOR str1 str2 ... strn MACRO macroname
 
   Invokes the macro called "macroname" once for each
   string in the list "str1 str2 ... strn"
@@ -971,7 +971,7 @@ input file called MY.JAM.INPUT containing:
       ..macro end
       ..for A B C macro duplicate
 
-### ..FOR       x TO y [BY z] MACRO macroname
+### ..FOR x TO y [BY z] MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range "x" to "y" (by "z" steps)
@@ -984,7 +984,7 @@ input file called MY.JAM.INPUT containing:
       ..for 1 to 10 by 2 macro show
 
 
-### ..FOR       n MACRO macroname
+### ..FOR n MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range 1 to "n"
@@ -997,31 +997,31 @@ input file called MY.JAM.INPUT containing:
       ..macro end
       ..for 5 macro dd
 
-### ..INCLUDE   dsn
+### ..INCLUDE dsn
   This includes the contents of dataset "dsn"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
-### ..INCLUDE   dsn(member)
+### ..INCLUDE dsn(member)
   This includes the contents of partitioned dataset "dsn" member "member"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
-### ..INCLUDE   (member)
+### ..INCLUDE (member)
 
   Includes the contents of "member" from the pds currently being edited
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
-### ..JCL       [stmt]
+### ..JCL [stmt]
 
   This reformats the specified JCL statement with continuations
   if necessary.
 
-### ..JOB       [system[/jobnamesuffix] [description]]
+### ..JOB [system[/jobnamesuffix] [description]]
 
   This generates a JOB card, an XEQ card and a JOBPARM card
   for the system specified by "system", or else for the
@@ -1039,7 +1039,7 @@ input file called MY.JAM.INPUT containing:
   If preceded by "..option hold" then TYPRUN=HOLD is appended
   to the job card.
 
-### ..LISTCAT   dsn [catalog] [options...]
+### ..LISTCAT dsn [catalog] [options...]
 
   This generates a job step that will invoke IDCAMS to LIST dataset "dsn" in the
   specified catalog, or else in the standard catalog
@@ -1050,13 +1050,13 @@ input file called MY.JAM.INPUT containing:
   | -------- | ----------------------------------------- |
   | cat      | The master catalog for the alias system.  |
 
-### ..LISTVTOC  dsn volser
+### ..LISTVTOC dsn volser
 
    This generates a job step that will list datasets specified by
    "dsn" in the VTOC of the volume specified by "volser".
    The dataset name can be generic (e.g. SYS1.XXX*).
 
-### ..MACRO     DEFINE macroname [parameters...]
+### ..MACRO DEFINE macroname [parameters...]
 
   This defines a named group of lines, bounded by `..macro define`
   and `..macro end` statements, that can be subsequently
@@ -1066,17 +1066,17 @@ input file called MY.JAM.INPUT containing:
   parameter names but can be any valid operand of the
   REXX "parse value" statement.
 
-### ..MACRO     EXIT
+### ..MACRO EXIT
   This exits from the macro at run time, otherwise the macro terminates at
   the `..macro end` JAM statement.
 
-### ..MACRO     END
+### ..MACRO END
 
   This terminates a named group of lines (bounded by `..macro define`
   and `..macro end` statements) that can be subsequently
   included by invoking the `..macro macroname` statement.
 
-### ..MACRO     macroname [arguments]
+### ..MACRO macroname [arguments]
 
   This invokes a macro called "macroname" that has been previously
   defined by a `..macro define` statement and terminated by
@@ -1111,7 +1111,7 @@ input file called MY.JAM.INPUT containing:
       Job name is JOB2
       Step name is STEP2
 
-### ..MAP       dsn
+### ..MAP dsn
 
   This maps tabular data in dataset "dsn" (containing column headings) to REXX variables
   that are indexed by the value of the first column.
@@ -1146,7 +1146,7 @@ input file called MY.JAM.INPUT containing:
 
       XYZ's phone is 2222 567 890 and email is user2@example.org
 
-### ..MAP       dsn column1 [column2 ... columnn]
+### ..MAP dsn column1 [column2 ... columnn]
 
   Maps the tabular data in a dataset (containing no column headings) to REXX variables.
   The column headings to be used are specified on the `..map` JAM statement.
@@ -1187,17 +1187,17 @@ input file called MY.JAM.INPUT containing:
 
       XYZ's phone is 2222 567 890 and email is user2@example.org
 
-### ..MOUNT     dsn path [options...]
-### ..MOUNT     path dsn [options...]
+### ..MOUNT dsn path [options...]
+### ..MOUNT path dsn [options...]
 
   This generates a job step to mount file system "dsn" at mount point "path" using any
   "options" valid on the TSO MOUNT command. The "path"
   must contain a "/" character to distinguish it from the
   "dsn" operand.
 
-### ..OPTION    [NO]option...
-### ..OPTION    PUSH
-### ..OPTION    POP
+### ..OPTION [NO]option...
+### ..OPTION PUSH
+### ..OPTION POP
 
   This sets (or resets) one or more named option flags.
 
@@ -1261,7 +1261,7 @@ input file called MY.JAM.INPUT containing:
   otherwise "action" (if present) and all subsequent statements until `..end`
   statement that closes the corresponding `..select` statement is found
 
-### ..PUT       fromdsn tosystem [todsn [siteoptions...]]
+### ..PUT fromdsn tosystem [todsn [siteoptions...]]
 
   This generates a job step that uses FTP to transfer local dataset
   "fromdsn" to system "tosystem" and optionally
@@ -1269,7 +1269,7 @@ input file called MY.JAM.INPUT containing:
   system. Use "siteoptions" to specify options for the FTP client
   SITE subcommand (for example, to specify RECFM=VB etc).
 
-### ..QUEUE     [line]
+### ..QUEUE [line]
 
   This appends the specified line to a queue of input JAM
   statements to be processed when a subsquent `..queued`
@@ -1287,7 +1287,7 @@ input file called MY.JAM.INPUT containing:
       ..queue //          DSN=MY.DATASET, []
       ..queue //          RECFM=V,BLKSIZE=27990,LRECL=255
 
-### ..QUEUED
+### ..QUEUED 
 
   This processes any JAM statements that were queued by
   earlier `..queue` JAM statements and then clears the
@@ -1297,32 +1297,32 @@ input file called MY.JAM.INPUT containing:
   output using `..queue` but you want to place it in a particular place
   after the macro has been invoked.
 
-### ..QUIT      [CANCEL] [quitmsg]
+### ..QUIT [CANCEL] [quitmsg]
 
   This stops the JAM processor. If "quitmsg" is present
   then that message is displayed as the reason for
   quitting. If "CANCEL" is present then the ISPF EDIT
   session is also cancelled.
-### ..RECOVER   dsn fromvol tovol [options...]
+### ..RECOVER dsn fromvol tovol [options...]
 
   This generates a job step that will copy dataset "dsn" from
   volume "fromvol" to volume "tovol" using ADRDSSU
   options "option" (for example, REPLACE, TOL(ENQF) etc).
 
-### ..RENAME    dsn todsn [volser]
-### ..RENAME    pds(mem1[,mem2...]) (new1[,new2...]) [volser]
-### ..RENAME    path topath
+### ..RENAME dsn todsn [volser]
+### ..RENAME pds(mem1[,mem2...]) (new1[,new2...]) [volser]
+### ..RENAME path topath
 
   This generates a job step that will rename a dataset, members in a
   partitioned dataset, or a Unix System Services file or directory.
 
-### ..REPRO     fromdsn todsn [fromrec [count]]
+### ..REPRO fromdsn todsn [fromrec [count]]
 
   This generates a job step that will copy dataset "fromdsn" to
   dataset "todsn" starting at record number "fromrec"
   and continuing for "count" records (or End Of File)
 
-### ..RESTORE   dsn [backup | =]  [options...]
+### ..RESTORE dsn [backup | =] [options...]
 
   This generates a job step that will restore datasets "dsn" from
   a backup dataset "backup" that was created by ADRDSSU
@@ -1330,11 +1330,11 @@ input file called MY.JAM.INPUT containing:
   as "=") then the most recently specified "backup"
   dataset is used.
 
-### ..REXX      statement
+### ..REXX statement
 
   This executes the specified REXX statement.
 
-### ..RUNON     [system[/jobnamesuffix][/via]] [description]
+### ..RUNON [system[/jobnamesuffix][/via]] [description]
 
   This generates JCL to run the following JCL on the system
   alias specified by "system".
@@ -1363,16 +1363,16 @@ input file called MY.JAM.INPUT containing:
   submitted to the target system with TYPRUN=HOLD (and no
   output is retrieved).
 
-### ..SAY       text
+### ..SAY text
 
   This displays the specified message text on the user's terminal.
 
-### ..SCRATCH   dsn volser
+### ..SCRATCH dsn volser
 
   This generates a job step that will delete dataset "dsn" from
   volume "volser".
 
-### ..SELECT    [expr]
+### ..SELECT [expr]
 
   This is part of a select-when-otherwise-end construct:
 
@@ -1425,7 +1425,7 @@ input file called MY.JAM.INPUT containing:
       This is an unknown LPAR
       ..end
 
-### ..SET       var = expr
+### ..SET var = expr
 
   This evaluates the expression "expr" and assigns the result to a REXX
   variable called "var". Any valid REXX expression can be used.
@@ -1434,7 +1434,7 @@ input file called MY.JAM.INPUT containing:
   with information about that system alias. Use
   `..set ?` to list these variables.
 
-### ..SHIP      dsn tosystem [todsn [options...]]
+### ..SHIP dsn tosystem [todsn [options...]]
 
   This transfers a dataset to another system.
 
@@ -1452,7 +1452,7 @@ input file called MY.JAM.INPUT containing:
   member names in parentheses after the dataset name. For example,
   `dsn(member1 member2...)`.
 
-### ..STEP      args
+### ..STEP args
 
   This generates an EXEC card with the specified arguments.
 
@@ -1469,7 +1469,7 @@ input file called MY.JAM.INPUT containing:
   The step number is automatically incremented each time the
   `..step` JAM statement is used.
 
-### ..STYLE     name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
+### ..STYLE name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
 
   This creates a named set of global REXX variables that are used by the
   `..*` JAM statements to generate styled comment lines.
@@ -1559,7 +1559,7 @@ input file called MY.JAM.INPUT containing:
       *----------------------------------------------------------*
       *
 
-### ..SUBMIT    dsn [tosystem [outdsn]]
+### ..SUBMIT dsn [tosystem [outdsn]]
 
   This submits the JCL in dataset "dsn" to the system alias specified by
   "tosystem", or to the system specified by the
@@ -1575,18 +1575,18 @@ input file called MY.JAM.INPUT containing:
   JESINTERFACELEVEL level is configured as 2, then you can choose any job
   name that you want (subject to RACF authorisations).
 
-### ..SUDO      unixcommand
+### ..SUDO unixcommand
 
   This generates a job step to execute the specified command as superuser in the Unix
   System Services environment. The invoker will need to be permitted
   RACF READ access to BPX.SUPERUSER (or have uid=0) for this to be
   effective.
 
-### ..TABLE     dsn
+### ..TABLE dsn
   This reads tabular data in dataset "dsn" (containing column headings) into REXX variables
   that are indexed by row number. See below for more detail.
 
-### ..TABLE     dsn col1 [col2 ...]
+### ..TABLE dsn col1 [col2 ...]
 
   This reads tabular data in dataset "dsn" (with no column headings) into REXX variables
   that are indexed by row number. The column headings are supplied on the `..table`
@@ -1624,7 +1624,7 @@ input file called MY.JAM.INPUT containing:
         ..table (mytab) user phone email
         ..for 1 to [user.0] macro list
 
-### ..TSO       tsocommand
+### ..TSO tsocommand
 
   This generates a job step to executes the specified TSO command in batch
 
@@ -1633,17 +1633,17 @@ input file called MY.JAM.INPUT containing:
   This generates a job step to uncatalogs dataset "dsn" from the specified catalog, or
   else from the catalog appropriate for the "alias" system.
 
-### ..UNMOUNT   dsn [options...]
+### ..UNMOUNT dsn [options...]
 
   This generates a job step to unmount file system "dsn" using any "options" valid on
   the TSO UNMOUNT command.
 
-### ..USS       unixcommand
+### ..USS unixcommand
 
   This generates a job step to executes the specified command in the Unix System
   Services environment.
 
-### ..WHEN      expr [action]
+### ..WHEN expr [action]
 
   This is part of a select-when-otherwise-end construct:
 
@@ -1698,7 +1698,7 @@ input file called MY.JAM.INPUT containing:
       This is an unknown LPAR
       ..end
 
-### ..XEQ      [alias]
+### ..XEQ [alias]
 
   This will generate XEQ and JOBPARM cards for the specified system alias,
   or else from the system currently specified by the "alias" variable.
@@ -1719,7 +1719,7 @@ input file called MY.JAM.INPUT containing:
 
   Note: This verb is rarely needed. See `..runon` and `..job`.
 
-### ..XMIT      dsn [system [userid [options...]]]
+### ..XMIT dsn [system [userid [options...]]]
 
    This generates JCL to issue the TSO TRANSMIT to send dataset
    "dsn" to userid "userid" at system "system".
