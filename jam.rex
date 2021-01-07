@@ -2510,19 +2510,19 @@ each line of input does the following:
 */
 
   call queueHelpForVerb 'Help'
-  /* Generate Table of Contents in GitHub markdown syntax */
+  /* Generate Table of Contents in GitHub Flavoured Markdown syntax */
+  sAllowed = 'abcdefghikjlmnopqrstuvwxyz0123456789_- ' /* Valid GitHub link characters */
   do i = 1 to words(g.0VERBS)
     sVerb = word(g.0VERBS,i)
-    parse value sourceline(g.0HELPBEG.sVerb) with '..'sSyntax 0 . sVerb .
-    /*                  e.g. sourceline = '### ..ARGS      var [var...]' */
-    /*                          sSyntax =       'ARGS      var [var...]' */
-    /*                            sVerb =     '..ARGS'                   */
-    sLink = translate(sSyntax,'ff'x,' ')     /* 'ARGS\\\\\\var\[var...]' */
-    sLink = translate(sLink,'','[].,=+|/*')  /* 'ARGS\\\\\\var\ var    ' */
-    sLink = space(sLink,0)                   /* 'ARGS\\\\\\var\var'      */
-    sLink = translate(sLink,'-','ff'x)       /* 'ARGS------var-var'      */
-    sLink = toLower(sLink)                   /* 'args------var-var'      */
-    queue '- ['sVerb'](#'sLink')' /* - [..ARGS](#args------var-var)  */
+    parse value sourceline(g.0HELPBEG.sVerb) with sLevel sSyntax 0 . sVerb .
+    /*                  e.g. sourceline = '### ..ARGS      var [var...]  ' */
+    /*                          sLevel  = '###'                            */
+    /*                          sSyntax =     '..ARGS      var [var...]  ' */
+    /*                            sVerb =     '..ARGS'                     */
+    sLink = toLower(space(sSyntax))          /* 'args var [var...]'        */
+    sLink = only(sLink,sAllowed)             /* 'args var var'             */
+    sLink = translate(sLink,'-',' ')         /* 'args-var-var'             */              
+    queue '- ['sVerb'](#'sLink')' /* - [..ARGS](#args-var-var)             */
   end
   /* Generate help text for each verb */
   do i = 1 to words(g.0VERBS)
@@ -5975,6 +5975,18 @@ isText: procedure expose g.
   parse arg sData
 return verify(sData,g.0EBCDIC,'NOMATCH') = 0
 
+only: procedure expose g.
+  parse arg sText,sAllowed
+  nFirstBad = verify(sText,sAllowed,'NOMATCH')
+  do while nFirstBad > 0
+    nNextGood = verify(sText,sAllowed,'MATCH',nFirstBad)
+    if nNextGood > 0
+    then sText = delstr(sText,nFirstBad,nNextGood-nFirstBad)
+    else sText = delstr(sText,nFirstBad)
+    nFirstBad = verify(sText,sAllowed,'NOMATCH')
+  end
+return sText
+
 quote: procedure expose g.
   parse arg s
   if pos(g.0APOST,s) > 0 then s = replace(g.0APOST,g.0APOST2,s)
@@ -6212,6 +6224,7 @@ return sLine
 toString:
   /* Convert a REXX stem to a string */
   parse arg __stem .
+  __stem = strip(__stem,'TRAILING','.')
   __string = ''
   interpret '__size =' __stem'.0'
   if datatype(__size,'WHOLE') & __size > 0
