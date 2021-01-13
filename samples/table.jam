@@ -1,0 +1,11 @@
+..table ./samples/mytab user phone email
+..say Number of rows is [user.0]
+..say Row 2 of the table contains:
+..say   user: [user.2]
+..say  phone: [phone.2]
+..say  email: [email.2]
+
+..macro define list # 
+..  say u=[user.#] p=[phone.#] e=[email.#]
+..macro end
+..for 1 to [user.0] macro list

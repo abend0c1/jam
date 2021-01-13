@@ -1712,24 +1712,26 @@ return
 
 doDateVars:
 /*
-### ..DATEVARS [date [+|-days]] [stem.]
-### ..DATEVARS NEXT dayname [AFTER date] [+|-days] [stem.]
-### ..DATEVARS PREV dayname [BEFORE date] [+|-days] [stem.]
-### ..DATEVARS FIRST dayname IN month [+|-days] [stem.]
-### ..DATEVARS LAST dayname IN month [+|-days] [stem.]
-### ..DATEVARS LAST dayname [+|-days] [stem.]
-### ..DATEVARS EASTER [year] [+|-days] [stem.]
-
+### ..DATEVARS [dateexpr] [+|-days] [stem.]
+  
   The `..datevars` JAM verb is a very powerful date manipulation facility.
 
   It accepts a date expression and generates several REXX
   variables representing different aspects of that date (such as day name, year
   number, month name, month number etc).
 
-  The date passed to `..datevars` can have a variety of formats - including some that
-  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc).
+  The "dateexpr" can have a variety of formats - including some that
+  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc). Computed date expressions
+  can be:
 
-  Optionally, you can specify an offset in days (`+|-days`) to be added to the date
+      NEXT dayname [AFTER date]
+      PREV dayname [BEFORE date]
+      FIRST dayname IN month
+      LAST dayname IN month
+      LAST dayname
+      EASTER [year]
+  
+  If "+|-days" is specified, then that offset (in days) is added to the date
   before generating the REXX variables.
 
   If "stem." is specified, then the generated REXX variables will be
@@ -1745,7 +1747,7 @@ doDateVars:
 
   Unrecognised date specifications are silently assumed to be the current date.
 
-  Examples of acceptable date formats include:
+  Examples of acceptable date expressions include:
 
   | Date expression|  Interpreted as                          |
   | -------------- |  --------------------------------------- |
@@ -1771,7 +1773,7 @@ doDateVars:
   | +7             |             (the current date + 7 days)  |
   | -7             |             (the current date - 7 days)  |
   | easter 1966    |  1966/04/10                              |
-  | <unrecognised> |  yyyy/mm/dd (the current date)           |
+  | *unrecognised* |  yyyy/mm/dd (the current date)           |
 
   The resulting REXX variables created for the specified date are:
 
@@ -3028,7 +3030,6 @@ doJCL:
   end
   else do /* TODO: implement the JCL logic */
     do i = 1 to g.0
-      say 'doJCL' i 'of' g.0 '<<'g.i'>>'
       parse var g.i . __jcl
       call queueJCL __jcl
     end
@@ -3037,7 +3038,6 @@ return
 
 queueJCL:
   parse arg __stmt 1 __id +2 3 __char3 +1
-  say 'id<'__id'> char3<'__char3'> stmt<'__stmt'>'
   __name = ''
   __oper = ''
   __parms = ''
@@ -3052,14 +3052,25 @@ queueJCL:
       __oper = ''
     end
     __parms = strip(__parms)
-    say '  name<'__name'> oper<'__oper'> parms<'__parms'>'
     if pos(' ',__parms) > 0
     then __parms = hardBlanks(__parms)
     call getParmMap __parms
+    do __i = 1 to g.0PARM.0
+      parse var g.0PARM.__i __key'='__value
+      say __i '<'__key'> = <'__value'>'
+    end
     __nameoper = justify(__name __oper,max(12,length(__name __oper)))
-    queue '//'__nameoper g.0PARM.1
-    do __i = 2 to g.0PARM.0
-      queue '//             'g.0PARM.__i
+    nParms = g.0PARM.0
+    if nParms = 1 
+    then do
+      queue '//'__nameoper g.0PARM.1
+    end
+    else do
+      queue '//'__nameoper g.0PARM.1','
+      do __i = 2 to nParms-1
+        queue '//             'g.0PARM.__i','
+      end
+      queue '//             'g.0PARM.nParms
     end
   end
   else do
@@ -3087,7 +3098,7 @@ hardBlanks: procedure expose g.
       when c = ' ' & bInString then c = 'fa'x
       otherwise nop
     end
-    sOut = sOut || c1
+    sOut = sOut || c
   end
   if i <= length(sLine)
   then do
@@ -3127,13 +3138,15 @@ getParmMap: procedure expose g.
   /* Process the positional operands */
   select
     when nComma = 0 & nEquals = 0 & sParms <> '' then do
+      /* No key=value operands */
       nParm = nParm + 1
       g.0PARM.nParm = softBlanks(sParms)
       sParms = ''
     end
-    when nComma > 0 & nComma < nEquals then do
+    when nComma > 0 & nComma < nEquals then do 
+      /* Positional operands before key=value operands */
       nPos = lastpos(',',sParms,nEquals)
-      sPositionals = left(sParms,nPos)
+      sPositionals = left(sParms,nPos-1)
       nParm = nParm + 1
       g.0PARM.nParm = softBlanks(sPositionals)
       sParms = substr(sParms,nPos+1)
@@ -3141,26 +3154,30 @@ getParmMap: procedure expose g.
     otherwise nop
   end
   /* Process the keyword=value operands */
+  sSymbolChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&.'
   do while sParms <> '' & pos('=',sParms) > 0
     parse var sParms sKey'='sValue
     select
       when left(sValue,1) = '(' then do /* K=(...) */
-        nValue = getInBracketsLength(sValue) + 1
-        parse var sValue sValue +(nValue) sParms
+        nValue = getInBracketsLength(sValue)
+        sParms = substr(sValue,nValue+2)
+        sValue = left(sValue,nValue)
+        say 'K=(...):' sKey '=' sValue 'sParms='sParms
       end
       when left(sValue,1) = "'" then do /* K='...' */
-        nValue = getInQuotesLength(sValue) + 1
-        parse var sValue sValue +(nValue) sParms
+        nValue = getInQuotesLength(sValue)
+        sParms = substr(sValue,nValue+2)
+        sValue = left(sValue,nValue)
+        say "K='...':" sKey '=' sValue 'sParms='sParms
       end
       otherwise do /* K=V         */
                    /* K=S=(...)   */
                    /* K=S='...'   */
                    /* K=S=X       */
-        sSymbol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&.'
-        nSymbol = verify(sValue' ',sSymbol,'NOMATCH')
-        if nSymbol > 0
+        nFirstInvalid = verify(sValue' ',sSymbolChars,'NOMATCH')
+        if nFirstInvalid > 0
         then do
-          c = substr(sValue,nSymbol,1)
+          c = substr(sValue,nFirstInvalid,1)
           if c = '='
           then do /* K=S=...*/
             parse var sValue sSubKey'='sParms
@@ -3174,18 +3191,21 @@ getParmMap: procedure expose g.
                 parse var sParms sSubValue +(nSubValue) sParms
               end
               otherwise do                      /* K=S=... */
-                nSymbol = verify(sParms,sSymbol,'NOMATCH')
-                parse var sParms sSubValue +(nSymbol) sParms
+                nFirstInvalid = verify(sParms' ',sSymbolChars,'NOMATCH')
+                parse var sParms sSubValue +(nFirstInvalid) sParms
+                sSubValue = left(sSubValue,nFirstInvalid-1)
               end
             end
             sValue = sSubKey'='sSubValue
           end
           else do /* K=V,... */
-            parse var sValue sValue +(nSymbol) sParms
+            parse var sValue sValue +(nFirstInvalid) sParms
+            sValue = left(sValue,nFirstInvalid-1)
           end
         end
         else do /* K=V,... */
-          parse var sValue sValue +(nSymbol) sParms
+          parse var sValue sValue +(nFirstInvalid) sParms
+          sValue = left(sValue,nFirstInvalid-1)
         end
       end
     end
@@ -3200,8 +3220,8 @@ getParmMap: procedure expose g.
   g.0PARM.0 = nParm
 return
 
-/* (abc) --> 5 */
 getInBracketsLength: procedure
+  /* (abc,(def)) --> 11 */
   parse arg sValue
   nLvl = 0
   do i = 1 to length(sValue) until nLvl = 0
@@ -3214,8 +3234,8 @@ getInBracketsLength: procedure
   end
 return i
 
-/* 'abc' --> 5 */
 getInQuotesLength: procedure
+  /* 'abc' --> 5 */
   parse arg sValue
   bEndOfString = 0
   do i = 2 to length(sValue) until bEndOfString
@@ -4967,8 +4987,13 @@ doTable:
         .      .
       col1.y col2.y ... colx.y    <-- Values of row y fields
 
+  For example, supposing a PDS member called "mytab" contains:
 
-  * Example 1:
+      U001     555-1111 u001@example.org
+      U002     555-2222 u002@example.org
+      U003     555-3333 u003@example.org
+
+  * Example 1 (list row 2):
 
         ..table (mytab) user phone email
         ..say Number of rows is [user.0]
@@ -4977,14 +5002,27 @@ doTable:
         ..say  phone: [phone.2]
         ..say  email: [email.2]
 
-  * Example 2:
+    generates:
 
-        ..macro define list user phone email
-        ..  say u=[user] p=[phone] e=[email]
+        Number of rows is 3
+        Row 2 of the table contains:
+         user: U002
+        phone: 555-2222
+        email: u002@example.org
+
+  * Example 2 (list all rows):
+
+        ..macro define list # 
+        ..  say u=[user.#] p=[phone.#] e=[email.#]
         ..macro end
         ..table (mytab) user phone email
         ..for 1 to [user.0] macro list
 
+    generates:
+
+        u=U001 p=555-1111 e=u001@example.org
+        u=U002 p=555-2222 e=u002@example.org
+        u=U003 p=555-3333 e=u003@example.org
 */
   parse var g.1 . sParms .
   if sParms = '' | sParms = '?'

@@ -281,7 +281,7 @@ In more detail, it performs the following types of transformation on the input f
         /*
 
     The particular z/OS utility program chosen to perform the copy function depends on the
-    operands (and may not be your preferred utility, but all is not lost). For example,
+    operands (and may not be your preferred utility, but all is not lost...see below). For example,
 
         ..copy ~/my.file ~/some/path/some.file
 
@@ -296,9 +296,11 @@ In more detail, it performs the following types of transformation on the input f
     - Modify the JAM exec to create your own preferred JCL (this is free open source software afterall).
     - Create your own JAM verb by adding a `doXXX` procedure to the JAM exec
       to do what you want. Submitting a git pull request afterwards would be nice but is not required.
+    - Use the `..macro define xxx` and `..macro end` JAM verbs to encapsulate the JCL that you prefer to use,
+      and then invoke it using either the `..macro xxx` or `..for [forspec] macro xxx` JAM verbs.
     - Don't use JAM, but write your own &lt;insert language of your choice here&gt; program instead.
     - Don't use JAM, or write a program, but continue using the same bizarre JCL
-      syntax you've been using since the 1970's (you are already using the best expensive closed source software afterall).
+      syntax you've been using since the 1970's (you are using expensive closed source software afterall).
 
 1. Certain JAM statements can be chained together by appending a comma (`,`).
 
@@ -318,7 +320,7 @@ In more detail, it performs the following types of transformation on the input f
         SELECT MEMBER=MEM2
         SELECT MEMBER=MEM3
 
-    Side note: the above can actually be done by a single JAM statement:
+    Side note: the above is by way of an example and can actually be done by a single JAM statement in this case:
 
         ..copy my.pds(mem1,mem2,mem3) your.pds
 
@@ -329,7 +331,7 @@ In more detail, it performs the following types of transformation on the input f
    dollar value is right-justified. The following JAM input file (with
    REXX stem variables appropriately set):
 
-    q   NASDAQ      Company            Value
+       NASDAQ      Company            Value
        [s.1 ] [     com.1     ] [  value.1]
        [s.2 ] [     com.2     ] [  value.2]
        [s.3 ] [     com.3     ] [  value.3]
@@ -485,7 +487,7 @@ Where,
 - [..CATALOG](#catalog-dsn-volser-catalog)
 - [..COMPRESS](#compress-dsn-volser)
 - [..COPY](#copy-fromdsn-todsn)
-- [..DATEVARS](#datevars-date--days-stem)
+- [..DATEVARS](#datevars-dateexpr--days-stem)
 - [..DELETE](#delete-dsn-catalog-options)
 - [..ELSE](#else-action)
 - [..END](#end)
@@ -754,24 +756,26 @@ input file called MY.JAM.INPUT containing:
   a user-defined LPAR alias, and it defaults to the LPAR on which the
   job is to be run.
 
-### ..DATEVARS [date [+|-days]] [stem.]
-### ..DATEVARS NEXT dayname [AFTER date] [+|-days] [stem.]
-### ..DATEVARS PREV dayname [BEFORE date] [+|-days] [stem.]
-### ..DATEVARS FIRST dayname IN month [+|-days] [stem.]
-### ..DATEVARS LAST dayname IN month [+|-days] [stem.]
-### ..DATEVARS LAST dayname [+|-days] [stem.]
-### ..DATEVARS EASTER [year] [+|-days] [stem.]
-
+### ..DATEVARS [dateexpr] [+|-days] [stem.]
+  
   The `..datevars` JAM verb is a very powerful date manipulation facility.
 
   It accepts a date expression and generates several REXX
   variables representing different aspects of that date (such as day name, year
   number, month name, month number etc).
 
-  The date passed to `..datevars` can have a variety of formats - including some that
-  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc).
+  The "dateexpr" can have a variety of formats - including some that
+  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc). Computed date expressions
+  can be:
 
-  Optionally, you can specify an offset in days (`+|-days`) to be added to the date
+      NEXT dayname [AFTER date]
+      PREV dayname [BEFORE date]
+      FIRST dayname IN month
+      LAST dayname IN month
+      LAST dayname
+      EASTER [year]
+  
+  If "+|-days" is specified, then that offset (in days) is added to the date
   before generating the REXX variables.
 
   If "stem." is specified, then the generated REXX variables will be
@@ -787,7 +791,7 @@ input file called MY.JAM.INPUT containing:
 
   Unrecognised date specifications are silently assumed to be the current date.
 
-  Examples of acceptable date formats include:
+  Examples of acceptable date expressions include:
 
   | Date expression|  Interpreted as                          |
   | -------------- |  --------------------------------------- |
@@ -813,7 +817,7 @@ input file called MY.JAM.INPUT containing:
   | +7             |             (the current date + 7 days)  |
   | -7             |             (the current date - 7 days)  |
   | easter 1966    |  1966/04/10                              |
-  | <unrecognised> |  yyyy/mm/dd (the current date)           |
+  | *unrecognised* |  yyyy/mm/dd (the current date)           |
 
   The resulting REXX variables created for the specified date are:
 
@@ -1606,8 +1610,13 @@ This closes the previous matching `..if` or `..select` JAM statement.
         .      .
       col1.y col2.y ... colx.y    <-- Values of row y fields
 
+  For example, supposing a PDS member called "mytab" contains:
 
-  * Example 1:
+      U001     555-1111 u001@example.org
+      U002     555-2222 u002@example.org
+      U003     555-3333 u003@example.org
+
+  * Example 1 (list row 2):
 
         ..table (mytab) user phone email
         ..say Number of rows is [user.0]
@@ -1616,14 +1625,27 @@ This closes the previous matching `..if` or `..select` JAM statement.
         ..say  phone: [phone.2]
         ..say  email: [email.2]
 
-  * Example 2:
+    generates:
 
-        ..macro define list user phone email
-        ..  say u=[user] p=[phone] e=[email]
+        Number of rows is 3
+        Row 2 of the table contains:
+         user: U002
+        phone: 555-2222
+        email: u002@example.org
+
+  * Example 2 (list all rows):
+
+        ..macro define list # 
+        ..  say u=[user.#] p=[phone.#] e=[email.#]
         ..macro end
         ..table (mytab) user phone email
         ..for 1 to [user.0] macro list
 
+    generates:
+
+        u=U001 p=555-1111 e=u001@example.org
+        u=U002 p=555-2222 e=u002@example.org
+        u=U003 p=555-3333 e=u003@example.org
 ### ..TSO tsocommand
 
   This generates a job step to executes the specified TSO command in batch
