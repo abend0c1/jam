@@ -1407,7 +1407,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
 
   The following examples are equivalent:
 
-  Example 1 - A `..select` clause with `expr` omitted:
+  Example 1 (A `..select` clause with `expr` omitted):
 
       ..select
       ..  when [lpar = 'TEST']
@@ -1418,7 +1418,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
       This is an unknown LPAR
       ..end
 
-  Example 2 - A `..select` clause with `expr` present:
+  Example 2 (A `..select` clause with `expr` present):
 
       ..select [lpar]
       ..  when 'TEST'
@@ -1698,7 +1698,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
 
   The following examples are equivalent:
 
-  Example 1 - A `..select` clause with `expr` omitted:
+  Example 1 (A `..select` clause with `expr` omitted):
 
       ..select
       ..  when [lpar = 'TEST']
@@ -1709,7 +1709,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
       This is an unknown LPAR
       ..end
 
-    Example 1 - A `..select` clause with `expr` present:
+  Example 2 (A `..select` clause with `expr` present):
 
       ..select [lpar]
       ..  when 'TEST'

@@ -4477,7 +4477,7 @@ doSelect:
 
   The following examples are equivalent:
 
-  Example 1 - A `..select` clause with `expr` omitted:
+  Example 1 (A `..select` clause with `expr` omitted):
 
       ..select
       ..  when [lpar = 'TEST']
@@ -4488,7 +4488,7 @@ doSelect:
       This is an unknown LPAR
       ..end
 
-  Example 2 - A `..select` clause with `expr` present:
+  Example 2 (A `..select` clause with `expr` present):
 
       ..select [lpar]
       ..  when 'TEST'
@@ -5295,7 +5295,7 @@ doWhen:
 
   The following examples are equivalent:
 
-  Example 1 - A `..select` clause with `expr` omitted:
+  Example 1 (A `..select` clause with `expr` omitted):
 
       ..select
       ..  when [lpar = 'TEST']
@@ -5306,7 +5306,7 @@ doWhen:
       This is an unknown LPAR
       ..end
 
-    Example 1 - A `..select` clause with `expr` present:
+  Example 2 (A `..select` clause with `expr` present):
 
       ..select [lpar]
       ..  when 'TEST'
