@@ -3554,9 +3554,10 @@ doMap:
   that are indexed by the value of the first column.
 
   For "dsn" you can specify either:
-  - A fully qualified unquoted dataset name: dsn
-  - A member in a partitioned dataset:       dsn(member)
-  - A member in the dataset being edited:    (member)
+  - A fully qualified unquoted dataset name. For example, `MY.DATASET`
+  - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
+  - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
+  - (On Linux or Windows) An absolute or relative path name. For example, `~/somepath/myfile`
 
   The column data in the file need not be aligned, but if a cell value
   contains spaces then that value must be enclosed in quotation marks
@@ -4974,9 +4975,10 @@ doTable:
   command itself.
 
   For "dsn" you can specify either:
-  - A fully qualified unquoted dataset name: dsn
-  - A member in a partitioned dataset:       dsn(member)
-  - A member in the dataset being edited:    (member)
+  - A fully qualified unquoted dataset name. For example, `MY.DATASET`
+  - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
+  - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
+  - (On Linux or Windows) An absolute or relative path name. For example, `~/somepath/myfile`
 
   Table data is stored in REXX variables in the traditional manner as follows:
 
