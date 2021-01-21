@@ -17,12 +17,11 @@
 ..askq sourcefile samples/getcmd.asm Enter the name of the source file
 ..askq reason 'Added missing STORAGE RELEASE macro. This fixes a memory leak.' Enter reason for change
 ..askqu me AJA Enter your initials
-..set _h = 0
 ..set _hist.0 = 0
 ..macro define hist _line
-..  set _h = _h + 1
-..  set _hist.0 = _h
-..  set _hist._h = _line
+..  set # = _hist.0 + 1
+..  set _hist.0 = #
+..  set _hist.# = _line
 ..macro end
 ..for read [sourcefile] '[beg_history]' '[end_history]' macro hist
 ..if [_hist.0 = 0]
