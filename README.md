@@ -101,8 +101,17 @@ Because of this, large loops can be a little slow but in practice that is not no
 
     The columns can be in any order except for the first column which **must** be the system alias that you have
     assigned to each LPAR. The remaining columns are the minimum required to make JAM useful on z/OS sites.
-    You can add your own columns if you wish. This table is "mapped" (i.e. loaded into REXX variables) by
-    the JAMSITE REXX procedure. The cell values can be accessed by REXX stem variables indexed by
+    
+    The `njenet` column is used to determine whether JCL can be submitted via NJE (Network Job Entry)
+    from one LPAR to another LPAR. The `njenet` value can be any user-defined string 
+    and is not related to any z/OS configuration setting. If LPARs share the same `njenet`
+    value then it is assumed that they have NJE connectivity. 
+    If no NJE connectivity exists, then FTP will be used to submit JCL (assuming that
+    there is TCPIP connectivity). The use of FTP instead of NJE can be forced by 
+    setting the "useftp" option: `..option useftp` (or `..set useftp = 1`).
+    
+    You can add your own columns if you wish. This table is "mapped" (i.e. loaded into REXX stem variables) by
+    the JAMSITE REXX procedure. The cell values can be accessed via REXX stem variables indexed by
     the system alias, for example: [`sysname.TST1`] will resolve to `R2D2`. If any cell needs to have a null
     value then you can either code `''` or (in my opinion) a slightly cleaner looking `.` to represent
     the missing value - whichever you prefer.
