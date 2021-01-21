@@ -3509,7 +3509,7 @@ doMacro:
         sMacroName = toUpper(sMacroName)
         if g.0MACRUN.sMacroName = 1
         then do
-          say 'JAM007E Recursion detected. Macro' sMacroName 'already running'
+          say 'JAM007E Recursion detected. Macro "'sMacroName'" is already running'
           call popStack   /* discard saved state */
         end
         else do
