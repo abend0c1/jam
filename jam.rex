@@ -3524,6 +3524,7 @@ doMacro:
           end
           else do
             say "JAM003E Macro '"sMacroName"' not defined"
+            g.0MACRUN.sMacroName = 0 /* Macro is not running */
             call popStack   /* discard saved state */
           end
         end
