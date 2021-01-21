@@ -2710,17 +2710,42 @@ return
 
 doFor:
 /*
-### ..FOR READ dsn MACRO macroname
+### ..FOR READ dsn [limit1 [limit2]] [PARSE template WHERE condexpr] MACRO macroname
 
-  This invokes the macro called "macroname" once for each
-  line in the dataset "dsn"
+  This reads lines from the file "dsn" constrained by the limits "limit1" and "limit2"
+  and invokes the macro called "macroname" once for each selected line as follows:
 
-  Example (prints the contents of a member):
+  | limit1    | limit2    | Lines read                                                     |
+  | ------    | ------    | ----------                                                     |
+  | (omitted) | (omitted) | Reads all lines (i.e. no limits)                               |
+  | n         | (omitted) | Reads the first "n" lines                                      |
+  | n         | m         | Reads lines starting at line "n" for "m" lines                 |
+  | n         | string    | Reads lines starting at line "n" until "string" is found       |
+  | string    | m         | Reads "m" lines starting at the first line containing "string" |
+  | string1   | string2   | Reads the first block of lines bounded by the strings "string1" and "string2"     |
+
+  If a string argument contains spaces then it must be enclosed with `'` or `"` characters.
+
+  If `PARSE template WHERE condexpr` is also specified, then each of the selected lines are further
+  parsed (using the REXX `parse var line [template]` statement) and the conditional 
+  expression "condexpr" is applied (using the REXX `if [condexpr]` statement). If `condexpr`
+  evaluates to 1 (true) then the line is selected, else it is not selected.
+  This enables lines to be selected using more complex logic.
+
+  Example 1 (prints the contents of a member):
 
       ..macro define show nextline
       ..  say [nextline]
       ..macro end
       ..for read sys1.parmlib(ieasys00) macro show
+
+  Example 2 (prints keyword=value lines of a member):
+
+      ..macro define output _line
+      [_line]
+      ..macro end
+      ..for read sys1.parmlib(ieasys00) parse 1 c +1 0 key'='value',' where c <> '*' & key <> '' macro output
+
 
 ### ..FOR str1 str2 ... strn MACRO macroname
 
@@ -2765,19 +2790,44 @@ doFor:
   if sParms = '' | sParms = '?'
   then call queueHelpForVerb 'For'
   else do i = 1 to g.0
-    parse upper var g.i . sOperands 'MACRO' sMac
+    /* Allow keywords to be mixed case but preserve the case of operands */
+    g.i = strip(g.i,'LEADING')
+    sUpperCaseLine = toUpper(g.i)
+    nMacro = lastpos('MACRO',sUpperCaseLine)
+    if nMacro = 0
+    then do
+      say 'JAM0022W Missing MACRO operand on: ..'g.i
+      g.i = g.i 'MACRO'
+      sUpperCaseLine = toUpper(g.i)
+      nMacro = lastpos('MACRO',sUpperCaseLine)
+    end
+    parse var sUpperCaseLine +(nMacro) . sMac .
+    nParse = pos('PARSE',sUpperCaseLine)
+    nWhere = lastpos('WHERE',sUpperCaseLine)
+    if nParse > 0 & nWhere > nParse /* Both PARSE and WHERE must be present if at all */
+    then do /* ..FOR READ file [limit1 [limit2]] PARSE template WHERE condexpr MACRO macname */
+      sOperands = substr(g.i,5,nParse-6)
+      sTemplate = substr(g.i,nParse+6,nWhere-nParse-7)
+      sCondExpr = substr(g.i,nWhere+6,nMacro-nWhere-7)
+    end
+    else do /* ..FOR READ file [limit1 [limit2]] MACRO macname */
+      sOperands = substr(g.i,5,nMacro-6)
+      sTemplate = ''
+      sCondExpr = ''
+    end
     if sMac = ''
     then call queueHelpForVerb 'For'
     else do
       sOperands = strip(sOperands)
-      parse var sOperands sOperand1 sOperand2 .
+      parse upper var sOperands sOperand1 sOperand2 .
       sMac      = strip(sMac)
       select
-        when sOperand1 = 'READ' then do /* for READ dsn MACRO mac */
-          parse var sOperands . sDSN .
-          nLines = readFile(getFileName(sDSN))
+        when sOperand1 = 'READ' then do /* for READ dsn [limits] MACRO mac */
+          parse var sOperands . sDSN sLimits
+          n = getArgs(sLimits)
+          nLines = readFile(getFileName(sDSN),g.0ARG.1,g.0ARG.2,sTemplate,sCondExpr)
           do j = 1 to line.0
-            call appendMacroOverride '..macro' sMac toStr(line.j) '[]'
+            call appendMacroOverride '..macro' sMac toStr(line.j)'[]'
           end
         end
         when sOperand1 = 'EXEC' then do /* for EXEC cmd MACRO mac */
@@ -2788,7 +2838,7 @@ doFor:
           end
         end
         when sOperand2 = 'TO'   then do /* for x TO y BY z MACRO mac */
-          parse var sOperands nFrom 'TO' nTo 'BY' nBy .
+          parse upper var sOperands nFrom 'TO' nTo 'BY' nBy .
           if \datatype(nFrom,'WHOLE') then nFrom = 1
           if \datatype(nTo,  'WHOLE') then nTo   = nFrom
           if \datatype(nBy,  'WHOLE') then nBy   = 1
@@ -2839,7 +2889,6 @@ appendMacroOverride: procedure expose g.
   */
   if g.0MACDEF then return /* nothing to do when we are defining a macro */
 
-  sLine = normaliseSquareBrackets(sLine)
   if g.0MACRUN             /* if a macro is running */
   then do                  /* override the current macro line */
     sMac = g.0MACRO        /* get current macro name, or blank */
@@ -2859,42 +2908,136 @@ appendMacroOverride: procedure expose g.
 return
 
 readFile: procedure expose g. line.
+  parse arg sFile,limit1,limit2,sTemplate,sCondExpr
+  nLimit1 = length(limit1)
+  nLimit2 = length(limit2)
+  /* The limit arguments can be: */
+  /*    (omitted)  - Read all lines starting at line 1 */
+  /*    nFor       - Read nFor lines starting at line 1 */
+  /*    nFrom nFor - Read nFor lines starting at line number nFrom */
+  /*    nFrom sTo  - Read lines starting at line number nFrom until string sTo is found */
+  /*    sFrom nFor - Read nFor lines starting at the line containing string sFrom */
+  /*    sFrom sTo  - Read lines bounded by the strings sFrom and sTo */
+  /* The sTemplate can be any valid operand of the REXX "parse var sLine" statement */
+  /* The sCondExpr can be any valid expression on a REXX "if" statement */
   select
     when g.0ZOS then do
-      parse upper arg sDSN
-      sDSN = strip(sDSN,'BOTH',"'")
-      sFileStatus = sysdsn("'"sDSN"'")
+      upper sFile
+      if \isNum(nLineLimit) then nLineLimit = '*'
+      sFile = strip(sFile,'BOTH',"'")
+      sFileStatus = sysdsn("'"sFile"'")
       if sFileStatus = 'OK'
       then do
-        call quietly "ALLOCATE FILE(JAM) DSNAME('"sDSN"')",
+        call quietly "ALLOCATE FILE(JAM) DSNAME('"sFile"')",
                     'INPUT SHR REUSE'
-        'EXECIO * DISKR JAM (FINIS STEM line.'
+        'EXECIO' nLineLimit 'DISKR JAM (FINIS STEM line.'
         call quietly 'FREE FILE(JAM)'
       end
       else do
-        say '     JAM009W Could not read dataset:' sDSN '-' sFileStatus
+        say '     JAM009W Could not read dataset:' sFile '-' sFileStatus
         line.0 = 0
       end
     end
     otherwise do
-      parse arg sFileName
       line.0 = 0
-      hFile = openFile(sFileName)
+      hFile = openFile(sFile)
       if g.0RC = 0
-      then do i = 1 while g.0RC = 0
-        sLine = getLine(hFile)
-        if g.0RC = 0
-        then do
-          line.0 = i
-          line.i = sLine
+      then do
+        select
+          when nLimit1 = 0 & nLimit2 = 0 then do /* READ */
+            /* Read all lines */
+            do while g.0RC = 0
+              sLine = getLine(hFile)
+              if g.0RC = 0
+              then call filterLine sLine,sTemplate,sCondExpr
+            end
+          end
+          when isNum(limit1) & nLimit2 = 0 then do /* READ nFor */
+            /* Read the first "limit1" lines */
+            do i = 1 to limit1 while g.0RC = 0
+              sLine = getLine(hFile)
+              if g.0RC = 0
+              then call filterLine sLine,sTemplate,sCondExpr
+            end
+          end
+          when isNum(limit1) & isNum(limit2) then do /* READ nFrom nFor */
+            /* Read from line number "limit1" for "limit2" lines */
+            do i = 1 to limit1-1 while g.0RC = 0 /* discard nFrom-1 lines */
+              sLine = getLine(hFile)
+            end
+            do i = 1 to limit2 while g.0RC = 0 /* return nFrom to nFrom+nFor-1 lines */
+              sLine = getLine(hFile)
+              if g.0RC = 0
+              then call filterLine sLine,sTemplate,sCondExpr
+            end
+          end
+          when isNum(limit2) then do /* READ sFrom nFor */
+            /* Read starting at the line containing string "limit1" for "limit2" lines */
+            bFoundLimit1 = 0
+            do while g.0RC = 0 & \bFoundLimit1
+              sLine = getLine(hFile)
+              bFoundLimit1 = pos(limit1,sLine) > 0 /* will be false at EOF */
+            end
+            if bFoundLimit1
+            then do
+              line.0 = 1
+              line.1 = sLine
+              do i = 2 to limit2 while g.0RC = 0
+                sLine = getLine(hFile)
+                if g.0RC = 0
+                then call filterLine sLine,sTemplate,sCondExpr
+              end
+            end
+          end
+          otherwise do /* READ sFrom sTo */
+            /* Read starting at the line containing string "limit1" to the line containing string "limit2" */
+            bFoundLimit1 = 0
+            do while g.0RC = 0 & \bFoundLimit1
+              sLine = getLine(hFile)
+              bFoundLimit1 = pos(limit1,sLine) > 0 /* will be false at EOF */
+            end
+            if bFoundLimit1
+            then do
+              call filterLine sLine,sTemplate,sCondExpr
+              bFoundLimit2 = 0
+              do i = 2 while g.0RC = 0 & \bFoundLimit2
+                sLine = getLine(hFile)
+                if g.0RC = 0
+                then do
+                  call filterLine sLine,sTemplate,sCondExpr
+                  bFoundLimit2 = pos(limit2,sLine) > 0
+                end
+              end
+            end
+          end
         end
       end
       else do
-        say '     JAM009W Could not read file:' sFileName
+        say '     JAM009W Could not read file:' sFile
       end
     end
   end
 return line.0
+
+filterLine: procedure expose line.
+  /* Apply the parse template and conditional expression if specified */
+  parse arg sLine,sTemplate,sCondExpr
+  if sTemplate <> ''
+  then do
+    interpret 'parse var sLine' sTemplate'; bSelected =' sCondExpr
+    if bSelected
+    then do
+      o = line.0 + 1
+      line.0 = o
+      line.o = sLine
+    end
+  end
+  else do
+    o = line.0 + 1
+    line.0 = o
+    line.o = sLine
+  end
+return
 
 doInclude:
 /*
@@ -3063,14 +3206,14 @@ queueJCL:
     nParms = g.0PARM.0
     if nParms = 1 
     then do
-      queue '//'__nameoper g.0PARM.1
+      queue '//'__nameoper strip(g.0PARM.1)
     end
     else do
-      queue '//'__nameoper g.0PARM.1','
+      queue '//'__nameoper strip(g.0PARM.1)','
       do __i = 2 to nParms-1
-        queue '//             'g.0PARM.__i','
+        queue '//             'strip(g.0PARM.__i)','
       end
-      queue '//             'g.0PARM.nParms
+      queue '//             'strip(g.0PARM.nParms)
     end
   end
   else do
@@ -3244,6 +3387,43 @@ getInQuotesLength: procedure
     else bEndOfString = substr(sValue,i,1) = "'"
   end
 return i
+
+getInDoubleQuotesLength: procedure
+  /* 'abc' --> 5 */
+  /* "abc" --> 5 */
+  parse arg sValue,sDelim
+  if sDelim = '' then sDelim = "'"   /* An apostrophe is the default string delimiter */
+  if sDelim <> "'" then sDelim = '"' /* Else a quotation mark is the string delimiter */
+  sDoubleDelim = sDelim || sDelim
+  bEndOfString = 0
+  do i = 2 to length(sValue) until bEndOfString
+    if substr(sValue,i,2) = sDoubleDelim
+    then i = i + 1 /* Skip over '' or "" */
+    else bEndOfString = substr(sValue,i,1) = sDelim
+  end
+return i
+
+getArgs: procedure expose g.
+  parse arg sArgs
+  n = 0
+  sArgs = strip(sArgs,'LEADING')
+  do while length(sArgs) > 0
+    c = left(sArgs,1)
+    if c = '"' | c = "'" /* arg is a string */
+    then do
+      nValue = getInQuotesLength(sArgs,c)
+      parse var sArgs sValue +(nValue) sArgs
+      n = n + 1
+      interpret 'g.0ARG.n =' sValue /* get the value inside the quotes */
+    end 
+    else do /* arg is not a string */
+      parse var sArgs sValue sArgs
+      n = n + 1
+      g.0ARG.n = sValue
+    end
+    sArgs = strip(sArgs,'LEADING')
+  end
+return n
 
 doJob:
 /*
