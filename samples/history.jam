@@ -1,0 +1,51 @@
+... This is an example of how to write JAM macros to read lines from a file
+... and how to use the toBlock() built-in function to spread comment text
+... across multiple lines.
+...
+... It will ask the user for the name of a source file and the reason for 
+... changing it. It will then read the change history comments and then output 
+... those comments with the supplied reason at the top of the list.
+...
+... In this case, the change history is identified by comment lines starting with:
+...
+..set beg_history = '** HISTORY '
+...
+... and ending with an empty comment line as follows:
+...
+..set end_history = '**                                                                   **'
+...
+..askq sourcefile samples/getcmd.asm Enter the name of the source file
+..askq reason 'Added missing STORAGE RELEASE macro. This fixes a memory leak.' Enter reason for change
+..askqu me AJA Enter your initials
+..set _h = 0
+..set _hist.0 = 0
+..macro define hist _line
+..  set _h = _h + 1
+..  set _hist.0 = _h
+..  set _hist._h = _line
+..macro end
+..for read [sourcefile] '[beg_history]' '[end_history]' macro hist
+..if [_hist.0 = 0]
+..  quit cancel No history was found in [sourcefile]
+..else 
+...
+... Display the latest addition to the change history
+...
+..  datevars 
+..  set size = toBlock(reason,'r.',41)
+..  set latest = [yyyy][mm][dd] [left(me,3)]
+** HISTORY  - Date     By  Reason (most recent at the top please)    **
+**            -------- --- ----------------------------------------- **
+**            [latest    ] [r.1                                    ] **
+..  macro define shownew #
+**                         [r.#                                    ] **
+..  macro end
+..  for 2 to [r.0] macro shownew
+...
+... Display the existing change history
+...
+..  macro define show #
+[_hist.#]
+..  macro end
+..  for 3 to [_hist.0] macro show
+..end

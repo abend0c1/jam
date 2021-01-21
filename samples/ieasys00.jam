@@ -1,0 +1,26 @@
+... This is an example of how to read keyword=value parameters from a file.
+...
+..askq sourcefile samples/ieasys00.ini Enter the name of the source file
+
+Extracted keyword=value pairs from [sourcefile]:
+
+Input                       Keyword Value
+--------------------       -------- --------------------
+..macro define kv _line 0 _key'='_value .
+.. set _key   = strip(_key,  'TRAILING',',')
+.. set _value = strip(_value,'TRAILING',',')
+[_line                   ] [  _key] [_value]
+..macro end
+..for read [sourcefile] -
+..    parse key'='value . -
+..    where value <> '' -
+..    macro kv
+
+Keywords without a value:
+
+Input                       Keyword
+--------------------       --------
+..for read [sourcefile] -
+..    parse key'='value . -
+..    where value = '' -
+..    macro kv
