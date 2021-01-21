@@ -707,7 +707,7 @@ getSub:
     then say 'JAM006W Missing terminating bracket:' g.0ERRLINE
   end
   if length(sSubLine) > 0 then sOut = sOut || sSubLine
-return softBrackets(sOut)
+return strip(softBrackets(sOut),'TRAILING')
 
 hardBrackets: procedure
   /* Convert double brackets to "hard" brackets: 'FB'x and 'FE'x     */
