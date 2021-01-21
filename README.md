@@ -115,8 +115,9 @@ Because of this, large loops can be a little slow but in practice that is not no
     value then you can either code `''` or (in my opinion) a slightly cleaner looking `.` to represent
     the missing value - whichever you prefer.
 
-4. If you use Microsoft VSCode as your primary editor, you may want to install the JAMZ Syntax Highlighter
-   extension. This will highlight JAM statements and any embedded REXX expressions. In VSCode, press
+4. If you use Microsoft VSCode as your primary editor, you may want to install the [JAMZ Syntax Highlighter
+   extension](https://marketplace.visualstudio.com/items?itemName=androidarmstrong.jam-for-zos). 
+   This will highlight JAM statements and any embedded REXX expressions. In VSCode, press
    `Ctrl+Shift+X` and type `jamz` into the search box, then install the **JAMZ Syntax Highlighter** extension.
    To also highlight REXX expressions you will need to also install the REXX syntax highlighter of your choice.
 
