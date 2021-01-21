@@ -58,7 +58,7 @@ Because of this, large loops can be a little slow but in practice that is not no
     Assigning PF4 is optional but highly recommended as it will improve your
     work flow.
 
-1. To run JAM on Linux or windows, you will need to install a REXX interpreter
+2. To run JAM on Linux or windows, you will need to install a REXX interpreter
    such as:
     * Regina REXX      (http://regina-rexx.sourceforge.net)
     * Open Object REXX (http://www.oorexx.org/)
@@ -71,7 +71,6 @@ Because of this, large loops can be a little slow but in practice that is not no
     The REXX interpreter can then be invoked in a command window by issuing, for example:
 
         rexx jam.rex recipe.jam jamtart.txt
-
 
 ## INSTALLATION
 
@@ -116,6 +115,10 @@ Because of this, large loops can be a little slow but in practice that is not no
     value then you can either code `''` or (in my opinion) a slightly cleaner looking `.` to represent
     the missing value - whichever you prefer.
 
+4. If you use Microsoft VSCode as your primary editor, you may want to install the JAMZ Syntax Highlighter
+   extension. This will highlight JAM statements and any embedded REXX expressions. In VSCode, press
+   `Ctrl+Shift+X` and type `jamz` into the search box, then install the **JAMZ Syntax Highlighter** extension.
+   To also highlight REXX expressions you will need to also install the REXX syntax highlighter of your choice.
 
 ## HOW JAM WORKS
 
