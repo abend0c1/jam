@@ -1809,6 +1809,7 @@ For example:
   | jesnode  | JES2 node number                    |
   | jobname  | Job name                            |
   | mc       | Message class                       |
+  | njenet   | Network Job Entry group name        |
   | sysclone | Sysclone system variable            |
   | sysname  | Sysname (the SMF id of this system) |
   | sysplex  | Sysplex name                        |
@@ -1831,7 +1832,7 @@ For example:
   | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi                       | `..set month = 2`<br/>`..if [inRange(month,1,12)]` | 1
   | inSet(element,list)        | Return 1 if element is in a list of words       | `..set lpar = 'PRD1'`<br/>`..if [inset(lpar,'TST1 PRD1')]`<br/>ok<br/>`..end` | ok
   | intersect(set1,set2)       | Return elements common to both set1 and set2    | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich and famous: [intersect(rich,famous)]` | Rich and famous: Gates Musk
-  | isASCII(text)              | Return 1 if text is ASCII                       | `..say [isASCII('6162'x)]` | 1
+  | isASCII(text)              | Return 1 if text is ASCII                       | `..say [isASCII('6A616D'x)]` | 1
   | isDatasetName(name)        | Return 1 if name is a valid dataset name        | `..say [isDatasetName('SYS1.PARMLIB')]` | 1
   | isDDName(name)             | Return 1 if name is a valid DD name             | `..say [isDDName('SYSIN')]` | 1
   | isHex(hex)                 | Return 1 if hex is valid hex                    | `..say [isHex('0C1')]` | 1
