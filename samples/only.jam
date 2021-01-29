@@ -1,2 +1,2 @@
 ..option debug
-..say <[only('the quick','abcdefghijklmnopqrstuvwxyz ')]>
+..say <[only('the quick brown fox #3','abcdefghijklmnopqrstuvwxyz')]>
