@@ -15,7 +15,8 @@
 ..set end_history = '**                                                                   **'
 ...
 ..askq sourcefile samples/getcmd.asm Enter the name of the source file
-..askq reason 'Added missing STORAGE RELEASE macro. This fixes a memory leak.' Enter reason for change
+..askq reason 'Added missing STORAGE RELEASE macro. This fixes a memory leak.' -
+..             Enter reason for change
 ..askqu me AJA Enter your initials
 ..set _hist.0 = 0
 ..macro define hist _line
