@@ -1,0 +1,30 @@
+..auto This will generate JCL to retrieve a dataset from multiple systems
+..option quiet
+... Load the table of lpars for this site
+..map [jam_lpars]
+..if [g.0ZOS]
+..  set this = mvsvars('SYMDEF','SMFNAME')
+..else
+..  set this = alias.1
+..end
+... Prompt the user for input
+..askqu this [this]       Enter alias of the destination system
+..askqu dsn  SYS1.PARMLIB Enter dataset to be retrieved from a remote system
+..askqu tag  PROD         Enter a tag common to all remote systems of interest
+... Define a macro to filter the remote systems by tag
+..macro define getit #
+..  set lpar = alias.#
+..  if [inSet(tag,tags.lpar)]
+..    set localdsn = toUpper('[u].[lpar].[dsn]')
+//*         [lpar]     [localdsn]
+..    queue ..copy [lpar]:[dsn] [this]:[localdsn], []
+..  end
+..macro end
+... Create the JCL to retreive the datasets
+..runon [this] get datasets
+..* Get [dsn] from systems tagged [tag]
+//*         Source   Local dataset
+..for [alias.0] macro getit
+//*
+... Now process all the chained ..copy verbs as a single job step:
+..queued
