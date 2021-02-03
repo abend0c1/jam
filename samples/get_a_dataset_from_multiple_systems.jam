@@ -22,7 +22,7 @@
 ..    queue ..copy [lpar]:[dsn] [this]:[localdsn], []
 ..  end
 ..macro end
-... Create the JCL to retreive the datasets
+... Create the JCL to retrieve the datasets
 ..runon [this] get datasets
 ..* Get [dsn] from systems tagged with [tag]
 //*         Source   Local dataset
