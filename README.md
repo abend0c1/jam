@@ -1,4 +1,5 @@
-# JAM - Just Another Macro language for z/OS
+![JAMZ icon](images/jamz.png)
+# JAMz - Just Another Macro language for z/OS
 
 ## TABLE OF CONTENTS
 
