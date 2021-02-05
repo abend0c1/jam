@@ -1777,6 +1777,11 @@ job is to be run by specifying:
 
     ..set alias = 'SY1'
 
+Alternatively, you can use the more general `..rexx` JAM statement. This
+allows you to insert REXX snippets that do more complex things. For example,
+
+    ..rexx max = 5; do j = 1 to max; say 'MSG001I Hi there' j; end
+
 You can create as many REXX variables as you want and you can assign any
 valid REXX expression to them. For example, you can create a variable
 that contains the current date and time by coding:
