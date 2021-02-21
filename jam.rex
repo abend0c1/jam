@@ -3468,9 +3468,9 @@ doJob:
 return
 
 
-getJobName: procedure
+getJobName: procedure expose userid
   parse upper arg sJobSuffix
-return toUpper(left(userid()sJobSuffix,8))
+return toUpper(left(userid||sJobSuffix,8))
 
 queueJob:
   /* TODO: Fix this so arbitrary job parameters can be continued */
@@ -4726,8 +4726,16 @@ doSet:
       then do
         say ' 'VarName "= '"value(sVarName)"'"
       end
-      if translate(sVarName) = 'ALIAS' /* Special case: ..set alias = system */
+      sVarName = translate(sVarName)   /* Convert to uppercase */
+      if sVarName = 'ALIAS'            /* Special case: ..set alias = system */
       then call setAlias alias         /* Set variables for this system */
+      if inSet(sVarName,'U USER USERID')  /* Special case: userid is explicitly set */
+      then do /* Ensure that U, USER and USERID all have the new userid value */
+        sVarValue = value(sVarName)
+        u = sVarValue
+        user = sVarValue
+        userid = sVarValue
+      end
     end
   end
 return
