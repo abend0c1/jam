@@ -32,15 +32,15 @@
 ... Display the latest addition to the change history
 ...
 ..  datevars 
-..  set size = toBlock(reason,'r.',41)
-..  set latest = [yyyy][mm][dd] [left(me,3)]
+..  set rows = toBlock(reason,'r.',41)
+..  set latest = yyyy||mm||dd left(me,3)
 ** HISTORY  - Date     By  Reason (most recent at the top please)    **
 **            -------- --- ----------------------------------------- **
 **            [latest    ] [r.1                                    ] **
 ..  macro define shownew #
 **                         [r.#                                    ] **
 ..  macro end
-..  for 2 to [r.0] macro shownew
+..  for 2 to [rows] macro shownew
 ...
 ... Display the existing change history
 ...

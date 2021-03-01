@@ -1,5 +1,12 @@
-..option debug
-..job tst1
-..job r2d3
-..job scum
+..set userid = 'SM0204'
+..say u=[u     ] user=[user  ] userid=[userid ] userid()=[userid()]
+..set user   = 'C0982'
+..say u=[u     ] user=[user  ] userid=[userid ] userid()=[userid()]
+..set u      = 'TZARMS'
+..say u=[u     ] user=[user  ] userid=[userid ] userid()=[userid()]
 ..job
+..job tst1
+..job prd1
+..job this is a test
+..job prd1 this is prod job 1
+..job prd1/b this is prod job b
