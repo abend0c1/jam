@@ -839,8 +839,8 @@ sayDebug: procedure expose g.
   parse arg sDebugMessage
   sDebugMessage = translate(sDebugMessage,'<>','[]')
   if g.0EMIT
-  then say '|'sDebugMessage
-  else say '-'sDebugMessage
+  then say '|'sDebugMessage /* We are emitting this line   */
+  else say '-'sDebugMessage /* We are supressing this line */
 return
 
 queueHelpForVerb: procedure expose g.
