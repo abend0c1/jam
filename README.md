@@ -164,24 +164,28 @@ In more detail, it performs the following types of transformation on the input f
         ..askqu lucky_number 7 Hey [name], what's your lucky number?
         ..say So your lucky number is [lucky_number]?
 
-    prompts the user for a number, offering a default if they reply with a null
+    prompts the user for a number, offering a default of `7` if they reply with a null
     line, and assigns the user's response (converted to upper case) to a REXX
-    variable called "lucky_number".
+    variable called `lucky_number`.
 
         Hey Andrew, what's your lucky number? (7):
         three
         So your lucky number is THREE?
 
-    If the user had pressed Enter, the default lucky number (7) would be assigned
-    to the "lucky_number" REXX variable.
+    If the user had pressed Enter without supplying a reply, the default lucky number `7` would be assigned to the `lucky_number` REXX variable.
 
     If the user had replied with "q" (for quit) then the JAM processor would
     have exited immediately. This is an easy way for the user to abort a
-    JAM session. If you don't want this escape mechanism then you could use the
-    `..asku` JAM verb, and if you don't want the conversion to upper case
-    then you could use the `..ask` JAM verb. And finally, you could use the
-    `..askq` verb to avoid case conversion but still allow the user to enter
-    "q" to quit.
+    JAM session. 
+
+    The variations of the `ask` verbs are summarised below:
+
+   | Verb  | Convert reply to uppercase? | Reply Q to Quit? |
+   | ----- | --------------------------- | ---------------- |
+   | ASK   | No                          | No               |
+   | ASKU  | Yes                         | No               |
+   | ASKQ  | No                          | Yes              |
+   | ASKQU | Yes                         | Yes              |
 
     To write a message to the user's terminal you use the `..say` verb.
 
