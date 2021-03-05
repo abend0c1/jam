@@ -220,7 +220,8 @@ In more detail, it performs the following types of transformation on the input f
 
    This makes it easy to produce complex output from simple tabular input.
 
-   - The `..table` verb stores each column in an array using the traditional REXX
+   - The `..table` verb allows you to access tabular data by row number. 
+      It stores each column in an array using the traditional REXX
       convention of having the number of elements stored in `column.0` and each
       element stored in `column.row` (where `row` is from `1` to `[column.0]`).
       For example, assume you had a file called my.user.list containing:
@@ -230,16 +231,16 @@ In more detail, it performs the following types of transformation on the input f
           U002   'Don Quixote' 555-2222
           U003   'Don McLean'  555-3333
 
-        You can access the details of the second row by:
+      You can access the details of the second row by:
 
           ..table my.user.list
           [userid.2]'s name is [name.2] and phone is [phone.2]
           The number of rows in this table is [userid.0]
 
-        and the output would be:
+      and the output would be:
 
-            U002's name is Don Quixote and phone is 555-2222
-            The number of rows in this table is 3
+          U002's name is Don Quixote and phone is 555-2222
+          The number of rows in this table is 3
 
       If row 1 of your table file does not contain column headings, then you must
       supply the column headings on the `..table` verb itself. For example,
@@ -249,24 +250,22 @@ In more detail, it performs the following types of transformation on the input f
       Generally, it's better to have column headings in the table file because
       the file then becomes self-documenting.
 
-   - An alternative to accessing tabular data by row number is to use the `..map` verb to
-      map the data by key. When you map tabular data the value
-      in column 1 is assumed to be a unique key for that row, and each column can be
+   - The `..map` verb allows you to access tabular data by key. 
+      The value in column 1 is the unique key for that row, and each column can be
       referenced by that row's key by using `[column.key]`.
-
 
       For example, using the above table again, the key column is
       "userid" and the other columns are indexed by userid. You can now access U002's
-      details by name:
+      details by userid:
 
           ..map my.user.list
           U002's name is [name.U002] and phone is [phone.U002]
           The number of rows in this table is [userid.0]
 
-        and the output will still be:
+      and the output will still be:
 
-            U002's name is Don Quixote and phone is 555-2222
-            The number of rows in this table is 3
+          U002's name is Don Quixote and phone is 555-2222
+          The number of rows in this table is 3
 
 
 1. JAM can transform some simple JAM statements into more complex JCL fragments. This provides a
@@ -320,7 +319,7 @@ In more detail, it performs the following types of transformation on the input f
     - Don't use JAM, or write a program, but continue using the same bizarre JCL
       syntax you've been using since the 1970's (you are using expensive closed source software afterall).
 
-1. Certain JAM statements can be chained together by appending a comma (`,`).
+1. Most JAM statements can be chained together by appending a comma (`,`).
 
     This is useful when, for example, you want to copy several datasets but
     don't want to create a single job step per copy operation. To do this you would
