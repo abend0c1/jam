@@ -1,0 +1,4 @@
+user     phone             email              name
+U001     555-1111          u001@example.org   Don McLean
+U002     '+61 2 5555 2222' u002@example.org   Don Quixote
+U003     555-3333          u003@example.org   Don Juan

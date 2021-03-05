@@ -1,0 +1,12 @@
+..map ./samples/userids
+Number of rows is [user.0]
+Data for user U002 is:
+ phone: [phone.U002]
+ email: [email.U002]
+ name:  [name.U002]
+..macro define list # 
+..  set key = user.#
+ user=[key] phone=[phone.key     ] email=[email.key       ] name=[name.key]
+..macro end
+Table data:
+..for 1 to [user.0] macro list
