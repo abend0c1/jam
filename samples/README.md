@@ -19,28 +19,28 @@
 
 | File          | Description |
 | ----          | ----------- |
-| alias.jam     | [How to use system aliases](#alias.jam) |
-| ask.jam       | [How to get input from a user](#ask.jam) |
-| comments.jam  | [How to generate comments in various formats](#comments.jam) |
-| datevars.jam  | [How to use dates and date arithmetic](#datevars.jam) |
-| for.jam       | [How to invoke JAM macros using the `..for` JAM verb](#for.jam) |
-| getmulti.jam  | [How to get a dataset from multiple systems](#getmulti.jam) |
-| help.jam      | [How to display all JAM help information](#help.jam) |
-| history.jam   | [How to update the history comments in a file](#history.jam) |
-| ieasys00.jam  | [How to read keyword=value parameters from a file](#ieasys00.jam) |
-| inline.jam    | [How to request user input using inline expressions](#inline.jam) |
-| intersect.jam | [How to use the `intersect` built-in function](#intersect.jam) |
-| map.jam       | [How to access table data by key](#map.jam) |
-| only.jam      | [How to filter strings using the `only` built-in function](#only.jam) |
-| queue.jam     | [How to explicitly place queued data in the output](#queue.jam) |
-| range.jam     | [How to generate a range of numbers](#range.jam) |
-| recipe.jam    | [How to generate a jam tart recipe](#recipe.jam) |
-| runon.jam     | [How to run a job on a specified system](#runon.jam) |
-| sortstem.jam  | [How to sort a REXX stem variable](#sortstem.jam) |
-| sortwords.jam | [How to sort words in a REXX string](#sortwords.jam) |
-| table.jam     | [How to access table data by row number](#table.jam) |
-| toblock.jam   | [How to convert a string to an array (and vice versa)](#toblock.jam) |
-| union.jam     | [How to use the `union` built-in function](#union.jam) |
+| alias.jam     | [How to use system aliases](#aliasjam) |
+| ask.jam       | [How to get input from a user](#askjam) |
+| comments.jam  | [How to generate comments in various formats](#commentsjam) |
+| datevars.jam  | [How to use dates and date arithmetic](#datevarsjam) |
+| for.jam       | [How to invoke JAM macros using the `..for` JAM verb](#forjam) |
+| getmulti.jam  | [How to get a dataset from multiple systems](#getmultijam) |
+| help.jam      | [How to display all JAM help information](#helpjam) |
+| history.jam   | [How to update the history comments in a file](#historyjam) |
+| ieasys00.jam  | [How to read keyword=value parameters from a file](#ieasys00jam) |
+| inline.jam    | [How to request user input using inline expressions](#inlinejam) |
+| intersect.jam | [How to use the `intersect` built-in function](#intersectjam) |
+| map.jam       | [How to access table data by key](#mapjam) |
+| only.jam      | [How to filter strings using the `only` built-in function](#onlyjam) |
+| queue.jam     | [How to explicitly place queued data in the output](#queuejam) |
+| range.jam     | [How to generate a range of numbers](#rangejam) |
+| recipe.jam    | [How to generate a jam tart recipe](#recipejam) |
+| runon.jam     | [How to run a job on a specified system](#runonjam) |
+| sortstem.jam  | [How to sort a REXX stem variable](#sortstemjam) |
+| sortwords.jam | [How to sort words in a REXX string](#sortwordsjam) |
+| table.jam     | [How to access table data by row number](#tablejam) |
+| toblock.jam   | [How to convert a string to an array (and vice versa)](#toblockjam) |
+| union.jam     | [How to use the `union` built-in function](#unionjam) |
 
 
 ## alias.jam
@@ -246,13 +246,13 @@ to the two supplied lists of words.
 
 It could be useful to remove duplicate words from a list.
 
-See also the [union JAM verb](#union.jam) to combine words into a single list.
+See also the [union JAM verb](#unionjam) to combine words into a single list.
 
 ## map.jam
 
 This sample JAM file shows how to access a table of columnar data by key.
 
-An alternative is to [access table data by row number](#table.jam) using the `..table` JAM verb.
+An alternative is to [access table data by row number](#tablejam) using the `..table` JAM verb.
 
 The table data should have headings and the first column is the key.
 The remaining columns can be accessed by the key value of each row.
@@ -401,7 +401,7 @@ This sample JAM file shows how to sort a list of words in a string.
 
 This sample JAM file shows how to access a table of columnar data by row number.
 
-An alternative is to [access table data by key](#map.jam) using the `..map` JAM verb.
+An alternative is to [access table data by key](#mapjam) using the `..map` JAM verb.
 
 
 ## toblock.jam
@@ -425,5 +425,5 @@ This sample JAM file shows how to use the `union` built-in function.
 The `union` built-in function returns a list all of words that are in two supplied lists
 but with no duplicates.
 
-See also the [intersect built-in function](#intersect.jam) to extract words common to two lists.
+See also the [intersect built-in function](#intersectjam) to extract words common to two lists.
 
