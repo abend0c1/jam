@@ -1,1 +1,3 @@
+..say [range(1,5)]
+..say [range(1,5,2)]
 ..say [range(1,5,2,'-')]

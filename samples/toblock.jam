@@ -1,5 +1,5 @@
-..set size = toBlock('The quality of mercy is not strained','a.',12)
-..say Reblocked to [size] lines:
+..set rows = toBlock('The quality of mercy is not strained','a.',12)
+..say Reblocked to [rows] lines:
 ..say '[a.1]'
 ..say '[a.2]'
 ..say '[a.3]'

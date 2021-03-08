@@ -1,5 +1,3 @@
-..say You said [blah?]
-..say The blah REXX variable contains: <[blah]>
-..say Color is [color What's your favourite color?]
-blah=[blah]
-color=[color]
+..say You said [reply?]
+..say The reply REXX variable contains: '[reply]'
+..say The color REXX variable contains: '[color What's your favourite color?]'

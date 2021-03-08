@@ -2,7 +2,7 @@
 ..say You said <[reply]>
 ..asku reply orange ASKU - What's your favourite color?
 ..say You said <[reply]>
-..askq reply yellow ASKQ - What's your favourite color?
+..askq reply yellow ASKQ - What's your favourite color (Q to quit)?
 ..say You said <[reply]>
-..askqu reply green ASKQU - What's your favourite color?
+..askqu reply green ASKQU - What's your favourite color (Q to quit)?
 ..say You said <[reply]>

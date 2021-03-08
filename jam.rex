@@ -1769,7 +1769,7 @@ doDateVars:
   | 66056          |  1966/02/25 (Julian yyddd)               |
   | 66.056         |  1966/02/25 (Julian yy.ddd)              |
   | 250266         |  1966/02/25 (ddmmyy)                     |
-  | 717756         |  1966/02/25 (days since 1/1/1900)        |
+  | 717756         |  1966/02/25 (days since 1/1/0001)        |
   | +7             |             (the current date + 7 days)  |
   | -7             |             (the current date - 7 days)  |
   | easter 1966    |  1966/04/10                              |
@@ -1780,7 +1780,7 @@ doDateVars:
   | Variable  | Example         | Description                         |
   | --------  | --------------  | ----------------------------------- |
   | datevar   | 25/2/1966       | The input date passed to ..datevars |
-  | basedate  | 717756          | Days since 1900/01/01               |
+  | basedate  | 717756          | Days since 0001/01/01               |
   | date      | Fri 25 Feb 1966 | REXX default date format            |
   | dayname   | Friday          | Long day name                       |
   | day       |  Fri            | Short day name                      |
