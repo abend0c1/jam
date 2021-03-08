@@ -1,0 +1,11 @@
+..macro define mydd #
+//DD[#] DD DISP=SHR,DSN=SYS1.MY.FILE[#]
+..macro end
+..* Invoke macro for each string
+..for A B C macro mydd
+..* Invoke macro for a range of numbers
+..for 1 to 5 macro mydd
+..* Invoke macro for a range of stepped numbers
+..for 2 to 6 by 2 macro mydd 
+..* Invoke macro a fixed number of times
+..for 3 macro mydd
