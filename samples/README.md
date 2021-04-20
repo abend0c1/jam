@@ -358,7 +358,7 @@ For example,
     ..set list.2 = 'cat'
     ..set list.3 = 'sat'
 
-Alternatively, you can built your array using the `toArray` built-in function:
+Alternatively, you can build your array using the `toArray` built-in function:
 
     ..set elements = toArray('the cat sat','list.')
 
@@ -385,12 +385,12 @@ The `sortstem` built-in function does **not** modify the original stem variables
 it returns a stem variable called `sorted.` which contains the number of elements in `sorted.0`
 and the index of the next input element in the desired sort order. For example:
 
-| n     | list.n | sorted.n   | Description |
-| ----- | -----  | -------    | ----------- |
+| n     | list.n | sorted.n   | Description        |
+| ----- | -----  | -------    | -----------        |
 | 0     | 3      | 3          | Number of elements |
-| 1     | the    | 2          | cat         |
-| 2     | cat    | 3          | sat         |
-| 3     | sat    | 1          | the         |
+| 1     | the    | 2          | list.2 = cat       |
+| 2     | cat    | 3          | list.3 = sat       |
+| 3     | sat    | 1          | list.1 = the       |
 
 
 ## sortwords.jam
