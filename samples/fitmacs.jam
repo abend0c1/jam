@@ -1,0 +1,65 @@
+.. . These macros can be used to reformat text to fit between the specified
+.. . columns. For example:
+.. . ..macro fitbetween 10 20 This text appears between columns 10 and 20
+.. . Produces:
+.. . Col1     Col10     Col20
+.. . |        |         |
+.. . V        V         V
+.. .          This text
+.. .          appears
+.. .          between
+.. .          columns 10
+.. .          and 20
+.. . You specify the column limits (and optionally the text to be reformatted) by 
+.. . using the `fitbetween` macro. You can specify subsequent text to be reformatted
+.. . (applying the same limits) by invoking the `fit` macro one or more times. 
+.. . For example:
+.. . ..macro fit This is some more text to be fitted between the specified columns
+.. . Produces:
+.. . Col1     Col10     Col20
+.. . |        |         |
+.. . V        V         V
+.. .          This is
+.. .          some more
+.. .          text to be
+.. .          fitted 
+.. .          between the
+.. .          specified
+.. .          columns
+..macro define fitbetween _fromcol _tocol _text
+..  if [\isNum(_fromcol)]
+..    set _fromcol = 1
+..  end
+..  if [_fromcol < 1]
+..    set _fromcol = 1
+..  end
+..  if [\isNum(_tocol)]
+..    set _tocol = 72
+..  end
+..  if [_tocol < 1]
+..    set _fromcol = 1
+..  end
+..  if [_fromcol > _tocol]
+..    set _temp = _tocol
+..    set _tocol = _fromcol
+..    set _fromcol = _temp
+..  end
+..  set _fitpad = left('',_fromcol-1)
+..  set _fitwidth = _tocol - _fromcol + 1
+..  if [_text <> '']
+..    macro fit [_text]
+..  end
+..macro end
+.. . Queue the reblocked text:
+..macro define fitq #
+..  queue [_fitpad][fit.#]
+..macro end
+.. . Reblock the specified text into column width chunks
+..macro define fit _fittext
+..  set lines = toBlock(_fittext,'fit.',_fitwidth)
+..  for [lines] macro fitq
+..  queued
+..  rexx drop fit.
+..macro end
+.. . Set the default fit column limits:
+..macro fitbetween 1 72

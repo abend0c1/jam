@@ -1,0 +1,24 @@
+..include ./samples/fitmacs.jam
+..macro fitbetween 10 20
+Col1     Col10     Col20
+|        |         |
+V        V         V
+..macro fit The quality of mercy is not strain'd;
+..macro fit It droppeth as the gentle rain
+..macro fit upon the place beneath.
+.. .
+.. . The above should produce:
+.. .
+.. . Col1     Col10     Col20
+.. . |        |         |
+.. . V        V         V
+.. .          The quality
+.. .          of mercy is
+.. .          not
+.. .          strain'd;
+.. .          It droppeth
+.. .          as the
+.. .          gentle rain
+.. .          upon the
+.. .          place
+.. .          beneath.

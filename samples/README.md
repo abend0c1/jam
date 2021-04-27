@@ -1,5 +1,6 @@
-![JAMZ icon](../images/jamz.png)
 # Samples
+
+![JAMZ icon](../images/jamz.png)
 
 * On Linux or Windows, the JAM files in the `./samples` directory can be run by issuing the following command:
 
@@ -15,14 +16,13 @@
 
     ...assuming the sample files have been stored in a partitioned dataset without the `.jam` suffix.
 
-
-
 | File          | Description |
 | ----          | ----------- |
 | alias.jam     | [How to use system aliases](#aliasjam) |
 | ask.jam       | [How to get input from a user](#askjam) |
 | comments.jam  | [How to generate comments in various formats](#commentsjam) |
 | datevars.jam  | [How to use dates and date arithmetic](#datevarsjam) |
+| fittext.jam   | [How to reformat text to fit between columns](#fittextjam) |
 | for.jam       | [How to invoke JAM macros using the `..for` JAM verb](#forjam) |
 | getmulti.jam  | [How to get a dataset from multiple systems](#getmultijam) |
 | help.jam      | [How to display all JAM help information](#helpjam) |
@@ -42,10 +42,9 @@
 | toblock.jam   | [How to convert a string to an array (and vice versa)](#toblockjam) |
 | union.jam     | [How to use the `union` built-in function](#unionjam) |
 
-
 ## alias.jam
-This sample JAM file shows how to use system aliases.
 
+This sample JAM file shows how to use system aliases.
 
 System aliases are the names you assign to each z/OS system and are not
 related to any z/OS configuration item.  You can define your own personal
@@ -75,7 +74,6 @@ for that system.
 
 The alias information is used by the `..job` and `..runon` JAM verbs to build an
 appropriate JOB card.
-
 
 ## ask.jam
 
@@ -129,6 +127,45 @@ For example, you can build an ISO 8601 datetime format by:
 
     ..datevars easter 2021
     ..set datetime = '[yyyy]-[mm]-[dd]T[time('LONG')]+1000'
+
+## fittext.jam
+
+This sample JAM file shows how to reformat arbitrary text so that it can
+fit in between the specified columns.
+
+The sample reformats the following input text:
+
+    The quality of mercy is not strain'd;
+    It droppeth as the gentle rain
+    upon the place beneath.
+
+...so that it fits between columns 10 and 20 as follows:
+
+    Col1     Col10     Col20
+    |        |         |
+    V        V         V
+             The quality
+             of mercy is
+             not
+             strain'd;
+             It droppeth
+             as the
+             gentle rain
+             upon the
+             place
+             beneath.
+
+You first specify the column bounds by invoking the `fitbetween` macro:
+
+    ..macro fitbetween 10 20
+
+...and then specify the text to be reformatted by invoking the `fit` macro:
+
+    ..macro fit The quality of mercy is not strain'd;
+    ..macro fit It droppeth as the gentle rain
+    ..macro fit upon the place beneath.
+
+The default column bounds are 1 and 72.
 
 ## for.jam
 
@@ -199,7 +236,6 @@ Because not all comments can fit on one line, the sample shows how to use
 the `toBlock` built-in function to split long comments into REXX stem 
 variables so that they can span multiple lines.
 
-
 ## ieasys00.jam
 
 This sample JAM file shows how to parse `keyword=value` lines from a file.
@@ -220,7 +256,6 @@ key and value. For example,
     AUTOR=OFF,                    AUTOR OFF
     .
     .
-
 
 ## inline.jam
 
@@ -276,9 +311,6 @@ The following produces exactly the same output:
     ..map mytab
     ..set key = 'U002'
     [key]: [phone.key] [email.key] [name.key]
-
-
-
 
 ## only.jam
 
@@ -368,7 +400,7 @@ assuming that `myfile` contains:
     the
     cat
     sat
-    
+
 You could then load the list of words using:
 
     ..table myfile list
@@ -392,7 +424,6 @@ and the index of the next input element in the desired sort order. For example:
 | 2     | cat    | 3          | list.3 = sat       |
 | 3     | sat    | 1          | list.1 = the       |
 
-
 ## sortwords.jam
 
 This sample JAM file shows how to sort a list of words in a string.
@@ -402,7 +433,6 @@ This sample JAM file shows how to sort a list of words in a string.
 This sample JAM file shows how to access a table of columnar data by row number.
 
 An alternative is to [access table data by key](#mapjam) using the `..map` JAM verb.
-
 
 ## toblock.jam
 
@@ -417,7 +447,6 @@ This is useful when formatting comments in JCL or any file that has a fixed widt
 This same also shows how to perform the reverse transformation: to convert an
 array of strings into a single string using the `toString` built-in function.
 
-
 ## union.jam
 
 This sample JAM file shows how to use the `union` built-in function.
@@ -426,4 +455,3 @@ The `union` built-in function returns a list all of words that are in two suppli
 but with no duplicates.
 
 See also the [intersect built-in function](#intersectjam) to extract words common to two lists.
-
