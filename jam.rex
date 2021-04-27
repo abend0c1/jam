@@ -4724,7 +4724,7 @@ doSet:
       interpret sVarName '=' sExpression
       if debug = 1
       then do
-        say ' 'VarName "= '"value(sVarName)"'"
+        say ' 'sVarName "= '"value(sVarName)"'"
       end
       sVarName = translate(sVarName)   /* Convert to uppercase */
       if sVarName = 'ALIAS'            /* Special case: ..set alias = system */
