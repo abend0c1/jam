@@ -3089,19 +3089,30 @@ getFileName: procedure expose g. dataset
 return sDSN
 
 getLinesFromFile: procedure expose g.
-  parse upper arg sDSN
-  sFileStatus = sysdsn("'"sDSN"'")
-  if sFileStatus = 'OK'
+  parse arg sDSN
+  if g.0ZOS
   then do
-    g.0INC = g.0INC + 1
-    sDD = 'INC'g.0INC  /* Build unique DD name for each included file */
-    call quietly "ALLOCATE FILE("sDD") DSNAME('"sDSN"') INPUT SHR REUSE"
-    'EXECIO * DISKR' sDD '(FINIS STEM i.'
-    call quietly 'FREE FILE('sDD')'
-    call insertIncludeLines
+    upper sDSN
+    sFileStatus = sysdsn("'"sDSN"'")
+    if sFileStatus = 'OK'
+    then do
+      g.0INC = g.0INC + 1
+      sDD = 'INC'g.0INC  /* Build unique DD name for each included file */
+      call quietly "ALLOCATE FILE("sDD") DSNAME('"sDSN"') INPUT SHR REUSE"
+      'EXECIO * DISKR' sDD '(FINIS STEM i.'
+      call quietly 'FREE FILE('sDD')'
+      call insertIncludeLines
+    end
+    else do
+      say 'JAM002W Could not INCLUDE dataset:' sDSN '-' sFileStatus
+    end
   end
   else do
-    say 'JAM002W Could not INCLUDE dataset:' sDSN '-' sFileStatus
+    sFileIn = sDSN
+    call readIntoStem sFileIn
+    if i.0 > 0
+    then call insertIncludeLines
+    else say 'JAM002W Could not INCLUDE file:' sFileIn
   end
 return
 
@@ -3699,7 +3710,7 @@ doMacro:
           if isNum(g.0MAC.sMacroName.0) /* size of macro in lines */
           then do
             g.0MACRUN = 1 /* retrieve next line(s) from the macro */
-            interpret "parse value '"sMacroParms"' with" g.0MAC.sMacroName.0ARGS
+            interpret "parse value '"toStr(sMacroParms)"' with" g.0MAC.sMacroName.0ARGS
             g.0MACRO = sMacroName    /* current macro name */
             g.0MACLINE = 0           /* current macro line */
           end
