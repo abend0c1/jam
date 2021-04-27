@@ -184,7 +184,7 @@ The `..for` JAM verb can be used to invoke the nominated JAM macro for:
 In all cases, each word, number, or line of the file is passed to the nominated JAM
 macro for processing.
 
-The `..for read` syntax can optionally limit the range of lines read from 
+The `..for read` syntax can optionally limit the range of lines read from
 the file and/or only pass those lines that satisfy a filter condition as follows:
 
     ..FOR READ dsn [limit1 [limit2]] [PARSE template WHERE condexpr] MACRO macroname
@@ -204,7 +204,7 @@ and invokes the macro called "macroname" once for each selected line as follows:
 If a string argument contains spaces then it must be enclosed with `'` or `"` characters.
 
 If `PARSE template WHERE condexpr` is also specified, then each of the selected lines are further
-parsed (using the REXX `parse var line [template]` statement) and the conditional 
+parsed (using the REXX `parse var line [template]` statement) and the conditional
 expression "condexpr" is applied (using the REXX `if [condexpr]` statement). When `condexpr`
 evaluates to 1 (true) then the line is selected, else it is not selected.
 This enables lines to be selected using more complex logic.
@@ -223,7 +223,7 @@ This sample JAM file will display help information for all JAM verbs.
 ## history.jam
 
 This sample JAM file shows how to extract the change history comments from
-a specified file, then prompt for a new change history comment and insert it 
+a specified file, then prompt for a new change history comment and insert it
 with today's date.
 
 For this example, the format of each change history line needs to be:
@@ -233,7 +233,7 @@ For this example, the format of each change history line needs to be:
     **            yyyymmdd xxx Some reason                               **
 
 Because not all comments can fit on one line, the sample shows how to use
-the `toBlock` built-in function to split long comments into REXX stem 
+the `toBlock` built-in function to split long comments into REXX stem
 variables so that they can span multiple lines.
 
 ## ieasys00.jam
@@ -260,16 +260,16 @@ key and value. For example,
 ## inline.jam
 
 This JAM sample file shows how to prompt the user for input by using
-the inline variable syntax. 
+the inline variable syntax.
 
 An inline variable is a REXX variable name suffixed by a question mark
 surrounded by square brackets. For example, `[reply?]`. When the JAM
 processor sees this it will prompt the user with `Enter reply:`.
 
 You can supply your own prompt by coding, for example, `[reply What is your answer?]`
-which will prompt the user with `What is your answer?`. 
+which will prompt the user with `What is your answer?`.
 
-In both cases, the user's reply will be assigned to the nominated REXX 
+In both cases, the user's reply will be assigned to the nominated REXX
 variable (`reply` in this case).
 
 ## intersect.jam
@@ -306,7 +306,7 @@ Then user U002's data can be accessed by:
 
 ...as long as the REXX variable U002 contains `'U002'`.
 
-The following produces exactly the same output: 
+The following produces exactly the same output:
 
     ..map mytab
     ..set key = 'U002'
@@ -325,7 +325,7 @@ This is useful when the lines created by a JAM macro are themselves JAM statemen
 you want to process them at a particular place, rather than as they are created.
 
 A handy tip if you are generating "linked" JAM statements is to append `,[]` to each
-queued line. That prevents the JAM processor from trying to process the "linked" statements 
+queued line. That prevents the JAM processor from trying to process the "linked" statements
 at creation time (i.e. the lines so queued do not end in a comma, but when they
 are subsequently emitted by the `..queued` JAM verb they *will* end in a comma and
 therefore be treated as "linked" JAM statements).  For example,
@@ -344,7 +344,7 @@ because each `..queue` statement does not end in a comma.
 
 This sample JAM file shows how to use the built-in `range` function.
 
-The `range` built-in function generates a range of numbers optionally separated by 
+The `range` built-in function generates a range of numbers optionally separated by
 a specified number of pad characters.
 
 ## recipe.jam
@@ -356,13 +356,13 @@ output based on that input.
 
 The sample JAM file shows how to run a job on a specified system.
 
-The `..runon` JAM verb treats the first operand as the alias for the system on which to 
-run the subsequent JCL. If the first operand is not a known alias, then the JCL will 
+The `..runon` JAM verb treats the first operand as the alias for the system on which to
+run the subsequent JCL. If the first operand is not a known alias, then the JCL will
 run on the submitter's system. The remaining operands become the 'programmer name' field
 on the JOB card.
 
 The job name is automatically built based on the submitter's userid and the last character
-of the submitting system's alias. However, a single character job name suffix can be supplied 
+of the submitting system's alias. However, a single character job name suffix can be supplied
 after a forward slash (`/`). For example:
 
     ..runon prd1/A this is my A job
@@ -371,7 +371,7 @@ after a forward slash (`/`). For example:
     ..br14
 
 The job class and message class used is specified in the LPARS file that is loaded by the
-JAMSITE REXX procedure. If you want to override this or any other LPAR-related parameter, 
+JAMSITE REXX procedure. If you want to override this or any other LPAR-related parameter,
 then you can set it yourself using:
 
     ..set jc.PRD1 = 'B' /* Set job class for the PRD1 alias */
@@ -405,7 +405,7 @@ You could then load the list of words using:
 
     ..table myfile list
 
-Now you can invoke the `sortstem` built-in function to sort the stem variable. 
+Now you can invoke the `sortstem` built-in function to sort the stem variable.
 
     ..set alreadysorted = sortstem('list.')
 
