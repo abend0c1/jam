@@ -1,5 +1,6 @@
-![JAMZ icon](images/jamz.png)
 # JAMz - Just Another Macro language for z/OS
+
+![JAMZ icon](images/jamz.png)
 
 ## TABLE OF CONTENTS
 
@@ -20,8 +21,8 @@
   - [How to use JAM in ISPF/EDIT](#How-to-use-JAM-in-ISPFEDIT)
   - [How to use JAM in BATCH](#How-to-use-JAM-in-BATCH)
 
-
 ## OVERVIEW
+
 JAM is a z/OS productivity tool that transforms an input file, containing a
 mixture of JAM statements and ordinary text, to an output file containing the
 transformed content.
@@ -51,18 +52,18 @@ Because of this, large loops can be a little slow but in practice that is not no
 ## PREREQUISITES
 
 1. To run JAM on z/OS you should:
-    * Store the JAM, JAMINIT and JAMEDIT rexx procedures in a RECFM=VB LRECL=255
+    - Store the JAM, JAMINIT and JAMEDIT rexx procedures in a RECFM=VB LRECL=255
        dataset in your SYSEXEC concatenation
-    * Assign PF4 to "JAM" using the KEYS command in ISPF/EDIT
-    * Assign PF4 to "TSO JAM" using the KEYS command in other ISPF environments
+    - Assign PF4 to "JAM" using the KEYS command in ISPF/EDIT
+    - Assign PF4 to "TSO JAM" using the KEYS command in other ISPF environments
 
     Assigning PF4 is optional but highly recommended as it will improve your
     work flow.
 
 2. To run JAM on Linux or windows, you will need to install a REXX interpreter
    such as:
-    * Regina REXX      (http://regina-rexx.sourceforge.net)
-    * Open Object REXX (http://www.oorexx.org/)
+    - Regina REXX      (http://regina-rexx.sourceforge.net)
+    - Open Object REXX (http://www.oorexx.org/)
 
     On Linux, there is usually a REXX package that you can install using your
     package manager. On Ubuntu you can install it by issuing:
@@ -84,7 +85,6 @@ Because of this, large loops can be a little slow but in practice that is not no
    | JAMINIT | An ISPF/EDIT initial macro. This will cause the JAM processor to run automatically when you edit a JAM file containing `..auto` on the first line. | z/OS Only
    | JAMSITE | Contains JAM statements that configure local site options (including the name of your JAM configuration library) | z/OS, Linux, Windows
 
-
 2. Install the following files in your JAM configuration library:
 
    | File    | Description
@@ -101,7 +101,7 @@ Because of this, large loops can be a little slow but in practice that is not no
 
     The columns can be in any order except for the first column which **must** be the system alias that you have
     assigned to each LPAR. The remaining columns are the minimum required to make JAM useful on z/OS sites.
-    
+
     The `njenet` column is used to determine whether JCL can be submitted via NJE (Network Job Entry)
     from one LPAR to another LPAR. The `njenet` value can be any user-defined string 
     and is not related to any z/OS configuration setting. If LPARs share the same `njenet`
@@ -109,7 +109,7 @@ Because of this, large loops can be a little slow but in practice that is not no
     If no NJE connectivity exists, then FTP will be used to submit JCL (assuming that
     there is TCPIP connectivity). The use of FTP instead of NJE can be forced by 
     setting the "useftp" option: `..option useftp` (or `..set useftp = 1`).
-    
+
     You can add your own columns if you wish. This table is "mapped" (i.e. loaded into REXX stem variables) by
     the JAMSITE REXX procedure. The cell values can be accessed via REXX stem variables indexed by
     the system alias, for example: [`sysname.TST1`] will resolve to `R2D2`. If any cell needs to have a null
@@ -125,7 +125,9 @@ Because of this, large loops can be a little slow but in practice that is not no
 ## HOW JAM WORKS
 
 JAM scans the input file looking for two things:
+
 - `..` in columns 1 and 2 which indicate JAM verbs to be processed - some of which may generate multiple output lines.
+
 - REXX expressions surrounded by square brackets (e.g. `[date()]`). JAM replaces each instance (including the brackets) with the evaluated expression.
 
 Any other input is simply copied to the output file as-is.
@@ -155,7 +157,6 @@ In more detail, it performs the following types of transformation on the input f
     To avoid premature death, you should perform your own input validation.
     There are a  number of [JAM built-in functions](#built-in-functions)
     that you can invoke to help you accomplish that.
-
 
 1. JAM interacts with the user via the terminal (yes, in a JAM session) using the
    `..ask`, `..asku`, `..askq`, `..askqu` and `..say` verbs. For example,
@@ -188,7 +189,6 @@ In more detail, it performs the following types of transformation on the input f
    | ASKQU | Yes                         | Yes              |
 
     To write a message to the user's terminal you use the `..say` verb.
-
 
 1. JAM performs conditional transformation using the `..if`, `..else`, `..end` and
    `..select`, `..when`, `..otherwise`, `..end` constructs. These should already be familiar
@@ -266,7 +266,6 @@ In more detail, it performs the following types of transformation on the input f
 
           U002's name is Don Quixote and phone is 555-2222
           The number of rows in this table is 3
-
 
 1. JAM can transform some simple JAM statements into more complex JCL fragments. This provides a
    productivity boost for z/OS fan boys because you never have to remember the
@@ -370,13 +369,11 @@ In more detail, it performs the following types of transformation on the input f
     | ``[ s ]`` | Centred                 |
     | ``[s]``   | No justification        |
 
-
     When justification *is* used, the width of each output column equals the number of
     characters bounded by the square brackets including the square brackets
     themselves. Any content longer than that width is truncated. When justification
     is not used, no truncation occurs and the width of the output cell is simply
     the width of the content.
-
 
 1. JAM has a useful macro facility which can be used to encapsulate frequently
    generated content. For example, suppose you wanted to concatenate varying
@@ -414,19 +411,17 @@ In more detail, it performs the following types of transformation on the input f
 
 An example JAM input file is:
 
-<pre>
-..auto Building JCL to copy a file
-..askqu dsnin MY.INPUT.FILE Enter the input dataset name
-..askqu dsnout MY.OUTPUT.FILE Enter the output dataset name
-..if [dsnin = dsnout]
-..  quit cancel You can't copy a file to itself
-..else
-..  say Creating JCL to copy [dsnin] to [dsnout]
-..end
-..runon test
-..copy [dsnin] [dsnout]
-..say Examine the JCL and submit when ready
-</pre>
+    ..auto Building JCL to copy a file
+    ..askqu dsnin MY.INPUT.FILE Enter the input dataset name
+    ..askqu dsnout MY.OUTPUT.FILE Enter the output dataset name
+    ..if [dsnin = dsnout]
+    ..  quit cancel You can't copy a file to itself
+    ..else
+    ..  say Creating JCL to copy [dsnin] to [dsnout]
+    ..end
+    ..runon test
+    ..copy [dsnin] [dsnout]
+    ..say Examine the JCL and submit when ready
 
 The meanings of the JAM statements are:
 
@@ -459,35 +454,31 @@ table of 1000 datasets. The number of JAM statements to do that would be in the
 
 More examples of input and output files can be found in the /samples folder of this repository.
 
-
-
 ## COMMAND SYNTAX
 
 ### On z/OS only
+
 On z/OS you can use JAM either as an ISPF/EDIT macro or a standalone REXX. The syntax is:
 
 `JAM arguments...`
 
 In batch, JAM reads from DD:IN and writes to DD:OUT.
 
-
 ### On Linux or Windows
+
 On Linux or Windows the syntax is:
 
 `JAM filein [fileout | -] [--options...]`
 
-
 Where,
 
-* `filein` - Identifies the JAM input file.
-* `fileout` - Identifies the transformed output file to be created.
+- `filein` - Identifies the JAM input file.
+- `fileout` - Identifies the transformed output file to be created.
               The default is the path and file name of the input file with a `.txt` extension appended.
               If `-` is specified then the output is written to the terminal.
-* `options` are specified after a double-dash:
+- `options` are specified after a double-dash:
 
-
-# List of JAM verbs
-
+## List of JAM verbs
 
   JAM is self-documenting. You can obtain help for individual JAM verbs by specifying `?` as the verb's
   operand and then running the JAM processor. For example:
@@ -550,6 +541,7 @@ Where,
 - [..WHEN](#when-expr-action)
 - [..XEQ](#xeq-alias)
 - [..XMIT](#xmit-dsn-system-userid-options)
+
 ### ... [JAM comment]
 
 This is used to add comments to a JAM input file. These comments
@@ -590,7 +582,6 @@ preceding comments:
       //*-------------------------------------------------------------------*
       //*
 
-
 ### ..ARGS var [var...]
 
 This will parse any supplied command-line arguments into the
@@ -600,7 +591,7 @@ input file called MY.JAM.INPUT containing:
       ..args system lo hi
       The parameters passed are [system], [lo] and [hi]
 
-* You can run JAM in batch as follows:
+- You can run JAM in batch as follows:
 
       //STEP1 EXEC PGM=IKJEFT01,PARM='JAM TEST 0 10'
       //IN      DD DISP=SHR,DSN=MY.JAM.INPUT
@@ -610,7 +601,7 @@ input file called MY.JAM.INPUT containing:
 
       The parameters passed are TEST, 0 and 10
 
-* You can invoke JAM interactively (on the ISPF EDIT command line) as follows:
+- You can invoke JAM interactively (on the ISPF EDIT command line) as follows:
 
       JAM TEST 0 10
 
@@ -619,8 +610,11 @@ input file called MY.JAM.INPUT containing:
       The parameters passed are TEST, 0 and 10
 
 ### ..ASK var [default [prompt]]
+
 ### ..ASKU var [default [prompt]]
+
 ### ..ASKQ var [default [prompt]]
+
 ### ..ASKQU var [default [prompt]]
 
    These JAM statements will ask the user for terminal input.
@@ -744,22 +738,36 @@ input file called MY.JAM.INPUT containing:
   if the volume is omitted.
 
 ### ..COPY fromdsn todsn
+
 ### ..COPY frompds(member,member,...) todsn [tovol] [fromvol]
+
 ### ..COPY fromgdg(n) todsn [tovol]
+
 ### ..COPY frompath todsn [options...]
+
 ### ..COPY fromdsn topath [options...]
+
 ### ..COPY frompath topath
+
 ### ..COPY * todsn
+
 ### ..COPY [fromsite]:fromdsn [tosite]:todsn [options...]
+
 ### ..COPY [fromsite]:frompath [tosite]:topath [options...]
 
   This will generate a job step that, depending on the operands, will copy either:
-  - Dataset "fromdsn" to dataset "todsn"
-  - Member(s) in "frompds" to PDS "todsn"
-  - Generation data group "n" to dataset "todsn"
-  - USS path "frompath" to dataset "todsn"
-  - Dataset "fromdsn" to USS path "topath"
-  - USS path "frompath" to USS path "topath"
+
+- Dataset "fromdsn" to dataset "todsn"
+
+- Member(s) in "frompds" to PDS "todsn"
+
+- Generation data group "n" to dataset "todsn"
+
+- USS path "frompath" to dataset "todsn"
+
+- Dataset "fromdsn" to USS path "topath"
+
+- USS path "frompath" to USS path "topath"
 
   If "=" is specified for the "tovol", then the volser
   from the catalog is used.
@@ -803,7 +811,7 @@ input file called MY.JAM.INPUT containing:
       ..say Easter 2020 is [a.date] and Easter 2021 is [b.date]
 
   will generate:
-      
+
       Easter 2020 is 19 Apr 2020 and Easter 2021 is 4 Apr 2021
 
   Unrecognised date specifications are silently assumed to be the current date.
@@ -859,7 +867,6 @@ input file called MY.JAM.INPUT containing:
   | ddmmyyyy  |  25/02/1966     | Long European date format           |
   | days      |  -20000         | Days since today                    |
 
-
   For example:
 
         Input                               Resulting date               Comment
@@ -888,7 +895,6 @@ input file called MY.JAM.INPUT containing:
         [aedt.datevar                    ]  [aedt.dayname aedt.date   ]  (Australian daylight savings start)
       ..datevars first sunday in april 2022 aest.
         [aest.datevar                    ]  [aest.dayname aest.date   ]  (Australian daylight savings end)
-    
 
   will generate:
 
@@ -1004,12 +1010,10 @@ This closes the previous matching `..if` or `..select` JAM statement.
       ..macro end
       ..for 1 to 10 by 2 macro show
 
-
 ### ..FOR n MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range 1 to "n"
-
 
   Example (creates some DD statements):
 
@@ -1019,12 +1023,14 @@ This closes the previous matching `..if` or `..select` JAM statement.
       ..for 5 macro dd
 
 ### ..INCLUDE dsn
+
   This includes the contents of dataset "dsn"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
 ### ..INCLUDE dsn(member)
+
   This includes the contents of partitioned dataset "dsn" member "member"
   at this point in the JAM input file.
 
@@ -1088,6 +1094,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   REXX "parse value" statement.
 
 ### ..MACRO EXIT
+
   This exits from the macro at run time, otherwise the macro terminates at
   the `..macro end` JAM statement.
 
@@ -1138,6 +1145,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   that are indexed by the value of the first column.
 
   For "dsn" you can specify either:
+
   - A fully qualified unquoted dataset name. For example, `MY.DATASET`
   - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
   - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
@@ -1178,6 +1186,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   any other column by that value.
 
   For "dsn" you can specify either:
+  
   - A fully qualified unquoted dataset name: dsn
   - A member in a partitioned dataset:       dsn(member)
   - A member in the dataset being edited:    (member)
@@ -1210,6 +1219,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
       XYZ's phone is 2222 567 890 and email is user2@example.org
 
 ### ..MOUNT dsn path [options...]
+
 ### ..MOUNT path dsn [options...]
 
   This generates a job step to mount file system "dsn" at mount point "path" using any
@@ -1218,7 +1228,9 @@ This closes the previous matching `..if` or `..select` JAM statement.
   "dsn" operand.
 
 ### ..OPTION [NO]option...
+
 ### ..OPTION PUSH
+
 ### ..OPTION POP
 
   This sets (or resets) one or more named option flags.
@@ -1309,7 +1321,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
       ..queue //          DSN=MY.DATASET, []
       ..queue //          RECFM=V,BLKSIZE=27990,LRECL=255
 
-### ..QUEUED 
+### ..QUEUED
 
   This processes any JAM statements that were queued by
   earlier `..queue` JAM statements and then clears the
@@ -1325,6 +1337,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   then that message is displayed as the reason for
   quitting. If "CANCEL" is present then the ISPF EDIT
   session is also cancelled.
+
 ### ..RECOVER dsn fromvol tovol [options...]
 
   This generates a job step that will copy dataset "dsn" from
@@ -1332,7 +1345,9 @@ This closes the previous matching `..if` or `..select` JAM statement.
   options "option" (for example, REPLACE, TOL(ENQF) etc).
 
 ### ..RENAME dsn todsn [volser]
+
 ### ..RENAME pds(mem1[,mem2...]) (new1[,new2...]) [volser]
+
 ### ..RENAME path topath
 
   This generates a job step that will rename a dataset, members in a
@@ -1461,6 +1476,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   This transfers a dataset to another system.
 
   Generates JCL to:
+
   - Convert "dsn" to NETDATA format using the TSO TRANSMIT command,
   - Transfer that archive to remote system "tosystem" using FTP,
   - Receive the archive on the remote system into a dataset called "todsn"
@@ -1615,6 +1631,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
   command itself.
 
   For "dsn" you can specify either:
+  
   - A fully qualified unquoted dataset name. For example, `MY.DATASET`
   - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
   - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
@@ -1665,6 +1682,7 @@ This closes the previous matching `..if` or `..select` JAM statement.
         u=U001 p=555-1111 e=u001@example.org
         u=U002 p=555-2222 e=u002@example.org
         u=U003 p=555-3333 e=u003@example.org
+
 ### ..TSO tsocommand
 
   This generates a job step to executes the specified TSO command in batch
@@ -1769,10 +1787,9 @@ This closes the previous matching `..if` or `..select` JAM statement.
    The default "system" is the invoking system.
    The default "userid" is the invoking userid.
 
-
 # USAGE
 
-# Defining JAM variables
+## Defining JAM variables
 
 You can define your own variables by using the `..set` JAM statement.
 For example, you can set the system on which your
@@ -1792,7 +1809,7 @@ that contains the current date and time by coding:
     ..set timestamp = date() time()
     ..set begin = timestamp
 
-# Using JAM variables
+## Using JAM variables
 
 JAM will substitute the value of any REXX expression (which includes just REXX variable names)
 that you have enclosed in square brackets.
@@ -1803,7 +1820,7 @@ For example:
     ..* This job was created on [timestamp] by [userid()]
     ..br14
 
-# Pre-defined variables
+## Pre-defined variables
 
   The following variables are re-evaluated whenever you use a
   `..job` or `..runon` JAM verb, or whenever you assign a
@@ -1833,7 +1850,7 @@ For example:
   | user     | Userid (with a shorter variable name) | U12345      |
   | u        | Userid (even shorter variable name)   | U12345      |
 
-# Built-in functions
+## Built-in functions
 
   | Function                   | Description                                     | Example | Result
   | -------------------------- | ----------------------------------------------  | ------- | ---
@@ -1862,8 +1879,7 @@ For example:
   | toUpper(text)              | Convert text to upper case | `..say toUpper('abc123')` | ABC123
   | union(set1,set2)           | Return the union of set1 and set2 | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich or famous: [union(rich,famous)]` | Rich or famous: Gates Musk Cheesecake Einstein
 
-
-# How to use JAM in ISPF/EDIT
+## How to use JAM in ISPF/EDIT
 
 You should, before first use, do some initial set up as follows.
 
@@ -1876,7 +1892,7 @@ You should, before first use, do some initial set up as follows.
    you edit a file if the first line of that file contains
    `..auto [message]`.
 
-# How to use JAM in BATCH
+## How to use JAM in BATCH
 
 1. Edit the following JCL:
 
