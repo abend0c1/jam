@@ -845,18 +845,54 @@ return
 
 queueHelpForVerb: procedure expose g.
   parse upper arg sVerb .
+  sLogicalLine = ''
   do i = g.0HELPBEG.sVerb to g.0HELPEND.sVerb
-    queue replace('&ast;','*',sourceline(i))
+    sInputLine = replace('&ast;','*',sourceline(i))
+    nInputLine = length(sInputLine)
+    if nInputLine > 0
+    then do
+      if right(sInputLine,1) = '+' /* If input line is continued */
+      then do
+        sLogicalLine = sLogicalLine || left(sInputLine, nInputLine-1)
+      end
+      else do /* Input line is not continued */
+        queue sLogicalLine || sInputLine
+        sLogicalLine = ''
+      end
+    end
+    else do
+      queue sLogicalLine
+    end
   end
+  if length(sLogicalLine) > 0
+  then queue slogicalline
 return
 
 queueHelpFromLabel: procedure
   parse arg sLabel
   do i = 1 until sourceline(i) = sLabel
   end
+  sLogicalLine = ''
   do i = i+2 while sourceline(i) <> '*/'
-    queue sourceline(i)
+    sInputLine = sourceline(i)
+    nInputLine = length(sInputLine)
+    if nInputLine > 0
+    then do
+      if right(sInputLine,1) = '+' /* If input line is continued */
+      then do
+        sLogicalLine = sLogicalLine || left(sInputLine, nInputLine-1)
+      end
+      else do /* Input line is not continued */
+        queue sLogicalLine || sInputLine
+        sLogicalLine = ''
+      end
+    end
+    else do
+      queue sLogicalLine
+    end
   end
+  if length(sLogicalLine) > 0
+  then queue slogicalline
 return
 
 doJAMComment:
@@ -904,11 +940,10 @@ doComment:
       -->
 
       //&ast;
-      //&ast;-------------------------------------------------------------------*
-      //&ast; This is a JCL comment                                             *
-      //&ast;-------------------------------------------------------------------*
+      //&ast;------------------------------------------------------------------*
+      //&ast; This is a JCL comment                                            *
+      //&ast;------------------------------------------------------------------*
       //&ast;
-
 
 */
   parse var g.1 . sComment
@@ -928,7 +963,8 @@ doComment:
     if nInternalWidth <= 0 then nInternalWidth = nWidth
     nMaxWidth = nInternalWidth - length(sLeft) - 2
     if length(sBorderFill) > 0 /* If top and bottom borders are required */
-    then sBorder = left(sBorderLeft,nInternalWidth,left(sBorderFill,1))sBorderRight
+    then sBorder = left(sBorderLeft,nInternalWidth,,
+                        left(sBorderFill,1))sBorderRight
     else sBorder = '' /* else don't output a border */
     if length(sFirst) > 0 then queue sFirst
     if length(sBorder) > 0 then queue sBorder
@@ -969,7 +1005,8 @@ addJCLComment: procedure expose g.
   if nInternalWidth <= 0 then nInternalWidth = nWidth
   nMaxWidth = nInternalWidth - length(sLeft) - 1
   if length(sBorderFill) > 0 /* If top and bottom borders are required */
-  then sBorder = left(sBorderLeft,nInternalWidth,left(sBorderFill,1))sBorderRight
+  then sBorder = left(sBorderLeft,nInternalWidth,,
+                      left(sBorderFill,1))sBorderRight
   else sBorder = '' /* else don't output a border */
   if length(sFirst) > 0 then queue sFirst
   if length(sBorder) > 0 then queue sBorder
@@ -1013,7 +1050,8 @@ input file called MY.JAM.INPUT containing:
 
       The parameters passed are TEST, 0 and 10
 
-* You can invoke JAM interactively (on the ISPF EDIT command line) as follows:
+* You can invoke JAM interactively (on the ISPF EDIT command line) as
+  follows:
 
       JAM TEST 0 10
 
@@ -1036,18 +1074,22 @@ return
 doAsk:
 /*
 ### ..ASK var [default [prompt]]
+
 ### ..ASKU var [default [prompt]]
+
 ### ..ASKQ var [default [prompt]]
+
 ### ..ASKQU var [default [prompt]]
 
    These JAM statements will ask the user for terminal input.
 
    The text specified by "prompt" is displayed to the user and
-   the user's reply is assigned to REXX variable "var". The default reply
-   is specified by "default" and if it contains spaces then it must be
-   enclosed in apostrophes. The user can accept the default value by
-   pressing Enter without supplying a reply. The default value, if
-   present, will be shown enclosed in parentheses after the prompt text.
+   the user's reply is assigned to REXX variable "var". The default
+   reply is specified by "default" and if it contains spaces then it
+   must be enclosed in apostrophes. The user can accept the default
+   value by pressing Enter without supplying a reply. The default
+   value, if present, will be shown enclosed in parentheses after the
+   prompt text.
    For example,
 
    `..ask reply 'red door' Which door do you choose?`
@@ -1145,14 +1187,15 @@ doAuto:
 /*
 ### ..AUTO [text]
 
-   This is used to automatically run the JAM processor when a file is edited.
+   This is used to automatically run the JAM processor when a file is
+   edited.
 
-   When this statement is detected by the JAMINIT ISPF/EDIT initial macro
-   in the **first** line of the file that the user chooses to EDIT or VIEW
-   then the JAM processor is automatically run. This saves the user from
-   having to manually invoke the JAM processor on the edit command line.
-   The "text" (if present) is displayed to the user and
-   can be used to let the user know what is happening.
+   When this statement is detected by the JAMINIT ISPF/EDIT initial
+   macro in the **first** line of the file that the user chooses to
+   EDIT or VIEW then the JAM processor is automatically run. This saves
+   the user from having to manually invoke the JAM processor on the
+   edit command line. The "text" (if present) is displayed to the user
+   and can be used to let the user know what is happening.
 
    To enable this facility you need to issue (one time only) the
    following ISPF/EDIT command:
@@ -1312,8 +1355,8 @@ doCompress:
 /*
 ### ..COMPRESS dsn [volser]
 
-  This will generate a job step that will compress partitioned dataset "dsn" on
-  volume "volser", or else will compress the cataloged dataset
+  This will generate a job step that will compress partitioned dataset
+  "dsn" on volume "volser", or else will compress the cataloged dataset
   if the volume is omitted.
 
 */
@@ -1352,22 +1395,32 @@ return
 doCopy:
 /*
 ### ..COPY fromdsn todsn
+
 ### ..COPY frompds(member,member,...) todsn [tovol] [fromvol]
+
 ### ..COPY fromgdg(n) todsn [tovol]
+
 ### ..COPY frompath todsn [options...]
+
 ### ..COPY fromdsn topath [options...]
+
 ### ..COPY frompath topath
+
 ### ..COPY * todsn
+
 ### ..COPY [fromsite]:fromdsn [tosite]:todsn [options...]
+
 ### ..COPY [fromsite]:frompath [tosite]:topath [options...]
 
-  This will generate a job step that, depending on the operands, will copy either:
-  - Dataset "fromdsn" to dataset "todsn"
-  - Member(s) in "frompds" to PDS "todsn"
-  - Generation data group "n" to dataset "todsn"
-  - USS path "frompath" to dataset "todsn"
-  - Dataset "fromdsn" to USS path "topath"
-  - USS path "frompath" to USS path "topath"
+  This will generate a job step that, depending on the operands, will
+  copy either:
+
+  * Dataset "fromdsn" to dataset "todsn"
+  * Member(s) in "frompds" to PDS "todsn"
+  * Generation data group "n" to dataset "todsn"
+  * USS path "frompath" to dataset "todsn"
+  * Dataset "fromdsn" to USS path "topath"
+  * USS path "frompath" to USS path "topath"
 
   If "=" is specified for the "tovol", then the volser
   from the catalog is used.
@@ -1713,16 +1766,17 @@ return
 doDateVars:
 /*
 ### ..DATEVARS [dateexpr] [+|-days] [stem.]
-  
-  The `..datevars` JAM verb is a very powerful date manipulation facility.
+
+  The `..datevars` JAM verb is a very powerful date manipulation
+  facility.
 
   It accepts a date expression and generates several REXX
-  variables representing different aspects of that date (such as day name, year
-  number, month name, month number etc).
+  variables representing different aspects of that date (such as day
+  name, year number, month name, month number etc).
 
   The "dateexpr" can have a variety of formats - including some that
-  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc). Computed date expressions
-  can be:
+  are computed (e.g. FRIDAY, NEXT SATURDAY, EASTER 2021, etc).
+  Computed date expressions can be:
 
       NEXT dayname [AFTER date]
       PREV dayname [BEFORE date]
@@ -1730,9 +1784,9 @@ doDateVars:
       LAST dayname IN month
       LAST dayname
       EASTER [year]
-  
-  If "+|-days" is specified, then that offset (in days) is added to the date
-  before generating the REXX variables.
+
+  If "+|-days" is specified, then that offset (in days) is added to the
+  date before generating the REXX variables.
 
   If "stem." is specified, then the generated REXX variables will be
   prefixed by that stem. For example:
@@ -1742,10 +1796,11 @@ doDateVars:
       ..say Easter 2020 is [a.date] and Easter 2021 is [b.date]
 
   will generate:
-      
+
       Easter 2020 is 19 Apr 2020 and Easter 2021 is 4 Apr 2021
 
-  Unrecognised date specifications are silently assumed to be the current date.
+  Unrecognised date specifications are silently assumed to be the
+  current date.
 
   Examples of acceptable date expressions include:
 
@@ -1798,7 +1853,6 @@ doDateVars:
   | ddmmyyyy  |  25/02/1966     | Long European date format           |
   | days      |  -20000         | Days since today                    |
 
-
   For example:
 
         Input                               Resulting date               Comment
@@ -1808,43 +1862,62 @@ doDateVars:
       ..datevars Easter 2021
         [datevar                         ]  [dayname date             ]
       ..datevars last saturday in march 2021
-        [datevar                         ]  [dayname date             ]  (Earth Hour 20:30-21:30 local time)
+        [datevar                         ]  [dayname date             ]  +
+(Earth Hour 20:30-21:30 local time)
       ..datevars prev friday before easter 2021
-        [datevar                         ]  [dayname date             ]  (Good Friday)
+        [datevar                         ]  [dayname date             ]  +
+(Good Friday)
       ..datevars easter 2021 -47
-        [datevar                         ]  [dayname date             ]  (Shrove Tuesday)
+        [datevar                         ]  [dayname date             ]  +
+(Shrove Tuesday)
       ..datevars easter 2021 -46
-        [datevar                         ]  [dayname date             ]  (Ash Wednesday)
+        [datevar                         ]  [dayname date             ]  +
+(Ash Wednesday)
       ..datevars first monday in january 2021
-        [datevar                         ]  [dayname date             ]  (1st Monday)
+        [datevar                         ]  [dayname date             ]  +
+(1st Monday)
       ..datevars [date] +7
-        [datevar                         ]  [dayname date             ]  (2nd Monday)
+        [datevar                         ]  [dayname date             ]  +
+(2nd Monday)
       ..datevars [date] +7
-        [datevar                         ]  [dayname date             ]  (3rd Monday)
+        [datevar                         ]  [dayname date             ]  +
+(3rd Monday)
       ..datevars [date] +7
-        [datevar                         ]  [dayname date             ]  (4th Monday)
+        [datevar                         ]  [dayname date             ]  +
+(4th Monday)
       ..datevars first sunday in october 2021 aedt.
-        [aedt.datevar                    ]  [aedt.dayname aedt.date   ]  (Australian daylight savings start)
+        [aedt.datevar                    ]  [aedt.dayname aedt.date   ]  +
+(Australian daylight savings start)
       ..datevars first sunday in april 2022 aest.
-        [aest.datevar                    ]  [aest.dayname aest.date   ]  (Australian daylight savings end)
-    
+        [aest.datevar                    ]  [aest.dayname aest.date   ]  +
+(Australian daylight savings end)
 
   will generate:
 
       Input                               Resulting date               Comment
       ---------------------------------   --------------------------   -------
-      25/2/1966                           Friday 25 Feb 1966         
-      Easter 2021                         Sunday 4 Apr 2021          
-      last saturday in march 2021         Saturday 27 Mar 2021         (Earth Hour 20:30-21:30 local time)
-      prev friday before easter 2021      Friday 2 Apr 2021            (Good Friday)
-      easter 2021 -47                     Tuesday 16 Feb 2021          (Shrove Tuesday)
-      easter 2021 -46                     Wednesday 17 Feb 2021        (Ash Wednesday)
-      first monday in january 2021        Monday 4 Jan 2021            (1st Monday)
-      4 Jan 2021 +7                       Monday 11 Jan 2021           (2nd Monday)
-      11 Jan 2021 +7                      Monday 18 Jan 2021           (3rd Monday)
-      18 Jan 2021 +7                      Monday 25 Jan 2021           (4th Monday)
-      first sunday in october 2021 aedt.  Sunday 3 Oct 2021            (Australian daylight savings start)
-      first sunday in april 2022 aest.    Sunday 3 Apr 2022            (Australian daylight savings end)
+      25/2/1966                           Friday 25 Feb 1966
+      Easter 2021                         Sunday 4 Apr 2021
+      last saturday in march 2021         Saturday 27 Mar 2021         +
+(Earth Hour 20:30-21:30 local time)
+      prev friday before easter 2021      Friday 2 Apr 2021            +
+(Good Friday)
+      easter 2021 -47                     Tuesday 16 Feb 2021          +
+(Shrove Tuesday)
+      easter 2021 -46                     Wednesday 17 Feb 2021        +
+(Ash Wednesday)
+      first monday in january 2021        Monday 4 Jan 2021            +
+(1st Monday)
+      4 Jan 2021 +7                       Monday 11 Jan 2021           +
+(2nd Monday)
+      11 Jan 2021 +7                      Monday 18 Jan 2021           +
+(3rd Monday)
+      18 Jan 2021 +7                      Monday 25 Jan 2021           +
+(4th Monday)
+      first sunday in october 2021 aedt.  Sunday 3 Oct 2021            +
+(Australian daylight savings start)
+      first sunday in april 2022 aest.    Sunday 3 Apr 2022            +
+(Australian daylight savings end)
 
 */
   parse var g.1 . date
@@ -1962,8 +2035,8 @@ getBaseDate: procedure
       end
     end
     when pos('/',date) > 0 then do /* Possibly d/m/y or d-m-y etc */
-      parse var date d'/'m'/'y . /* Euro date separators already converted to '/' */
-      select
+      parse var date d'/'m'/'y . /* Euro date separators have already */
+      select                     /* been converted to '/' */
         when isDay(d) & isMonth(m) then do
           /* Possibly dd/mm/yy or dd/mm */
           basedate = getBaseYMD(y,m,d)
@@ -2013,7 +2086,8 @@ getBaseDate: procedure
             then basedate = getBaseYMD(t3,t2,t1) /* d month y */
             else basedate = getBaseYMD(t1,t2,t3) /* y month d */
         end
-        when inSet(left(t1,3),months) then do  /* month, or month x, or month x x */
+        when inSet(left(t1,3),months) then do  /* month, or month x,
+                                                  or month x x */
             if isDay(t2)
             then basedate = getBaseYMD(t3,t1,t2) /* month d, or month d y */
             else basedate = getBaseYMD(t2,t1,t3) /* month, or month y */
@@ -2024,26 +2098,44 @@ getBaseDate: procedure
           then select                 /* t1   t2       t3    t4    */
             when t1 = 'NEXT'  then do /* NEXT dayname [AFTER date] */
               if t3 = 'AFTER'
-              then basedate = dayAfter(d2,getBaseDate(t4 t5 t6)) /* NEXT dayname AFTER date */
-              else basedate = dayAfter(d2,date('BASE'))          /* NEXT dayname (...after today) */
+              then basedate = dayAfter(d2,getBaseDate(t4 t5 t6))
+                   /* NEXT dayname AFTER date */
+              else basedate = dayAfter(d2,date('BASE'))
+                   /* NEXT dayname (...after today) */
             end
             when t1 = 'PREV'  then do /* PREV dayname [BEFORE date] */
               if t3 = 'BEFORE'
-              then basedate = dayBefore(d2,getBaseDate(t4 t5 t6)) /* PREV dayname BEFORE date */
-              else basedate = dayBefore(d2,date('BASE'))          /* PREV dayname (...before today) */
+              then basedate = dayBefore(d2,getBaseDate(t4 t5 t6))
+                   /* PREV dayname BEFORE date */
+              else basedate = dayBefore(d2,date('BASE'))
+                   /* PREV dayname (...before today) */
             end
-            when t1 = 'FIRST' then do /* FIRST dayname [IN month | AFTER date] */
+            when t1 = 'FIRST' then do
+              /* FIRST dayname [IN month | AFTER date] */
               select
-                when t3 = 'IN'     then basedate = dayAfter(d2,thisMonth(getBaseDate(t4 t5 t6))-1) /* FIRST dayname IN month */
-                when t3 = 'AFTER'  then basedate = dayAfter(d2,getBaseDate(t4 t5 t6))              /* FIRST dayname AFTER date */
-                otherwise               basedate = dayAfter(d2,date('BASE'))                       /* FIRST dayname (...in this month) */
+                when t3 = 'IN' then
+                     basedate = dayAfter(d2,,
+                                thisMonth(getBaseDate(t4 t5 t6))-1)
+                     /* FIRST dayname IN month */
+                when t3 = 'AFTER' then
+                     basedate = dayAfter(d2,getBaseDate(t4 t5 t6))
+                     /* FIRST dayname AFTER date */
+                otherwise basedate = dayAfter(d2,date('BASE'))
+                     /* FIRST dayname (...in this month) */
               end
             end
-            when t1 = 'LAST'  then do /* LAST dayname [IN month | BEFORE date] */
+            when t1 = 'LAST'  then do
+              /* LAST dayname [IN month | BEFORE date] */
               select
-                when t3 = 'IN'     then basedate = dayBefore(d2,nextMonth(getBaseDate(t4 t5 t6)))  /* LAST dayname IN month */
-                when t3 = 'BEFORE' then basedate = dayBefore(d2,getBaseDate(t4 t5 t6))             /* LAST dayname BEFORE date */
-                otherwise               basedate = dayBefore(d2,date('BASE'))                      /* LAST dayname (...before today) */
+                when t3 = 'IN'     then
+                     basedate = dayBefore(d2,,
+                                nextMonth(getBaseDate(t4 t5 t6)))
+                     /* LAST dayname IN month */
+                when t3 = 'BEFORE' then
+                     basedate = dayBefore(d2,getBaseDate(t4 t5 t6))
+                     /* LAST dayname BEFORE date */
+                otherwise basedate = dayBefore(d2,date('BASE'))
+                     /* LAST dayname (...before today) */
               end
             end
             otherwise basedate = date('BASE') /* Unrecognisable date */
@@ -2083,7 +2175,8 @@ dayAfter: procedure
 return nBaseDate
 
 dayBefore: procedure
-  /* Returns base date of the previous day (eg Monday) after the specified date */
+  /* Returns base date of the previous day (eg Monday) */
+  /* after the specified date */
   arg nDay,nBaseDate
   nDiff = nBaseDate // 7 - nDay
   if nDiff > 0
@@ -2191,8 +2284,8 @@ doDelete:
 /*
 ### ..DELETE dsn [catalog] [options...]
 
-  This will generate a job step that will delete dataset "dsn" from the
-  specified catalog, or else from the catalog appropriate
+  This will generate a job step that will delete dataset "dsn" from
+  the specified catalog, or else from the catalog appropriate
   for the "alias" system. You can also specify any options
   valid for IDCAMS DELETE in "options".
 
@@ -2277,8 +2370,6 @@ This closes the previous matching `..if` or `..select` JAM statement.
         say 'JAM005E END found without preceding IF or SELECT'
       end
     end
-/*  say left('',2*g.0T),
-    'END : emit='g.0EMIT '('sClause') sel='g.0SELVALUE 'when='g.0WHEN */
   end
 return
 
@@ -2383,7 +2474,7 @@ return
 
 doHelp:
 /*
-### ..HELP 
+### ..HELP
 
 The `..help` JAM statement displays help information about all of the
 JAM verbs. If you want to display help information about a particular
@@ -2392,26 +2483,26 @@ help for the `..job` verb, specify:
 
     ..job ?
 
-
 #### What JAM does
 
-The JAM processor copies an input text file to an output text file and for
-each line of input does the following:
+The JAM processor copies an input text file to an output text file and
+for each line of input does the following:
 
-*  JAM performs REXX expression substitutions.
+* JAM performs REXX expression substitutions.
 
-   Expressions are surrounded by square brackets, for example `[expression]`,
-   and can be anything that you could specify on the right hand side of
-   a REXX assignment statement. For example `[2+2]`, or `[step+1]`, or `[date() time()]`.
-   There are several pre-defined system variable names that
-   you can use in expressions but you can easily define and use your
-   own variables. For example:
+   Expressions are surrounded by square brackets, for example
+   `[expression]`, and can be anything that you could specify on the
+   right hand side of a REXX assignment statement.
+   For example: `[2+2]`, or `[step+1]`, or `[date() time()]`.
+   There are several pre-defined system variable names that you can use
+   in expressions but you can easily define and use your own variables.
+   For example:
 
        The current time is [time()]
        ..set mytime = time()
        The current time is now [mytime]
 
-*  JAM performs conditional input record selection using if/else/end and
+* JAM performs conditional input record selection using if/else/end and
    select/when/otherwise/end JAM statements (with unlimited nesting of
    such statements). For example:
 
@@ -2421,20 +2512,22 @@ each line of input does the following:
        The return code is not zero
        ..end
 
-*  JAM can read tabular data from files so that they can be accessed
+* JAM can read tabular data from files so that they can be accessed
    from REXX variables. See the [`..table`](#..TABLE-dsn) and
-   [`..map`](#..MAP-dsn) JAM verb documention below for more information.
+   [`..map`](#..MAP-dsn) JAM verb documention below for more
+   information.
 
-*  JAM generates complex JCL steps from simple JAM statements. For example,
+* JAM generates complex JCL steps from simple JAM statements.
+  For example,
 
        ..copy my.pds(mem1,mem2,mem3) your.pds
 
    generates an IEBCOPY step:
 
        //&ast;
-       //&ast;-------------------------------------------------------------------*
-       //&ast; Copy members                                                      *
-       //&ast;-------------------------------------------------------------------*
+       //&ast;-----------------------------------------------------------------*
+       //&ast; Copy members                                                    *
+       //&ast;-----------------------------------------------------------------*
        //&ast;
        //STEP1   EXEC PGM=IEBCOPY
        //SYSPRINT  DD SYSOUT=*
@@ -2447,8 +2540,8 @@ each line of input does the following:
          SELECT MEMBER=(MEM3)
        /&ast;
 
-*  JAM supports a reasonably powerful macro syntax that allows you generate
-   dynamic output. For example:
+* JAM supports a reasonably powerful macro syntax that allows you
+  generate dynamic output. For example:
 
        ..macro define mydd # hlq
        //DD[#] DD DISP=SHR,DSN=[hlq].MY.FILE[#]
@@ -2463,26 +2556,28 @@ each line of input does the following:
        //DD4 DD DISP=SHR,DSN=SYS1.MY.FILE4
        //DD5 DD DISP=SHR,DSN=SYS1.MY.FILE5
 
-
 #### The JAM Syntax
-   * A JAM statement is identified by two dots (`..`) in columns 1 and 2 and has
-   the following syntax:
+
+* A JAM statement is identified by two dots (`..`) in columns 1 and 2
+  and has the following syntax:
 
       ..verb parameters
 
-   There can be spaces before and after the verb and the case of the verb
-   is not important, so both of the following have the same result:
+   There can be spaces before and after the verb and the case of the
+   verb is not important, so both of the following have the same
+   result:
 
       ..delete my.dataset
       ..   Delete MY.DATASET
 
    Whether or not the parameters are converted to uppercase depends
-   on the JAM verb. For example, the `..uss` JAM verb does not convert its
-   parameters to uppercase because Unix System Services commands are case-sensitive.
+   on the JAM verb. For example, the `..uss` JAM verb does not convert
+   its parameters to uppercase because Unix System Services commands
+   are case-sensitive.
 
-   * You can "chain" JAM statements together so that a single job step can
-   perform multiple operations. Statements are chained if they terminate
-   with a comma (`,`).
+* You can "chain" JAM statements together so that a single job step can
+   perform multiple operations. Statements are chained if they
+   terminate with a comma (`,`).
 
    For example:
 
@@ -2494,7 +2589,7 @@ each line of input does the following:
        ..copy my.pds(mem2) your.pds,
        ..copy my.pds(mem3) your.pds
 
-   * You can continue JAM statements over multiple lines. Statements are
+* You can continue JAM statements over multiple lines. Statements are
    continued if they terminate with a hypen (`-`) and the next line
    begins with `..`, for example:
 
@@ -2503,9 +2598,10 @@ each line of input does the following:
 
 # List of JAM verbs
 
-
-  JAM is self-documenting. You can obtain help for individual JAM verbs by specifying `?` as the verb's
-  operand and then running the JAM processor. For example:
+  JAM is self-documenting. You can obtain help for individual JAM verbs
+  by specifying `?` as the verb's operand and then running the JAM
+  processor.
+  For example:
 
       ..job ?
 
@@ -2513,19 +2609,21 @@ each line of input does the following:
 
   call queueHelpForVerb 'Help'
   /* Generate Table of Contents in GitHub Flavoured Markdown syntax */
-  sAllowed = 'abcdefghikjlmnopqrstuvwxyz0123456789_- ' /* Valid GitHub link characters */
+  sAllowed = 'abcdefghikjlmnopqrstuvwxyz0123456789_- '
+             /* ...valid GitHub link characters */
   do i = 1 to words(g.0VERBS)
     sVerb = word(g.0VERBS,i)
     parse value sourceline(g.0HELPBEG.sVerb) with sLevel sSyntax 0 . sVerb .
-    /*                  e.g. sourceline = '### ..ARGS      var [var...]  ' */
-    /*                          sLevel  = '###'                            */
-    /*                          sSyntax =     '..ARGS      var [var...]  ' */
-    /*                            sVerb =     '..ARGS'                     */
-    sLink = toLower(space(sSyntax))          /* 'args var [var...]'        */
-    sLink = only(sLink,sAllowed)             /* 'args var var'             */
-    sLink = translate(sLink,'-',' ')         /* 'args-var-var'             */              
-    queue '- ['sVerb'](#'sLink')' /* - [..ARGS](#args-var-var)             */
+    /*            e.g. sourceline = '### ..ARGS      var [var...]  ' */
+    /*                    sLevel  = '###'                            */
+    /*                    sSyntax =     '..ARGS      var [var...]  ' */
+    /*                      sVerb =     '..ARGS'                     */
+    sLink = toLower(space(sSyntax))    /* 'args var [var...]'        */
+    sLink = only(sLink,sAllowed)       /* 'args var var'             */
+    sLink = translate(sLink,'-',' ')   /* 'args-var-var'             */
+    queue '* ['sVerb'](#'sLink')' /* * [..ARGS](#args-var-var)       */
   end
+  queue
   /* Generate help text for each verb */
   do i = 1 to words(g.0VERBS)
     sVerb = word(g.0VERBS,i)
@@ -2546,17 +2644,17 @@ job is to be run by specifying:
 
     ..set alias = 'SY1'
 
-You can create as many REXX variables as you want and you can assign any
-valid REXX expression to them. For example, you can create a variable
-that contains the current date and time by coding:
+You can create as many REXX variables as you want and you can assign
+any valid REXX expression to them. For example, you can create a
+variable that contains the current date and time by coding:
 
     ..set timestamp = date() time()
     ..set begin = timestamp
 
 # Using JAM variables
 
-JAM will substitute the value of any REXX expression (which includes just REXX variable names)
-that you have enclosed in square brackets.
+JAM will substitute the value of any REXX expression (which includes
+just REXX variable names) that you have enclosed in square brackets.
 For example:
 
     ..set timestamp = date() time()
@@ -2602,39 +2700,78 @@ HelpVars:
 
 # Built-in functions
 
-  | Function                   | Description                                     | Example | Result
-  | -------------------------- | ----------------------------------------------  | ------- | ---
-  | getHost(addr_or_name)      | Resolve host name from IP address or host name  | `..say [getHost('localhost')]` | 127.0.0.1
-  | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi                       | `..set month = 2`<br/>`..if [inRange(month,1,12)]` | 1
-  | inSet(element,list)        | Return 1 if element is in a list of words       | `..set lpar = 'PRD1'`<br/>`..if [inset(lpar,'TST1 PRD1')]`<br/>ok<br/>`..end` | ok
-  | intersect(set1,set2)       | Return elements common to both set1 and set2    | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich and famous: [intersect(rich,famous)]` | Rich and famous: Gates Musk
-  | isASCII(text)              | Return 1 if text is ASCII                       | `..say [isASCII('6A616D'x)]` | 1
-  | isDatasetName(name)        | Return 1 if name is a valid dataset name        | `..say [isDatasetName('SYS1.PARMLIB')]` | 1
-  | isDDName(name)             | Return 1 if name is a valid DD name             | `..say [isDDName('SYSIN')]` | 1
-  | isHex(hex)                 | Return 1 if hex is valid hex                    | `..say [isHex('0C1')]` | 1
-  | isIPAddr(addr)             | Return 1 if addr is a valid IP address          | `..say [isIPAddr(127.0.0.1)]` | 1
-  | isMemberName(name)         | Return 1 if name is a valid member name         | `..say [isMemberName('$$README')]` | 1
-  | isNum(n)                   | Return 1 if n is a whole number                 | `..say [isNum(3.14159265358979)]` | 0
-  | isText(text)               | Return 1 if text is EBCDIC                      | `..say [isText('The cat sat on the mat')]` | 1
-  | range(from,to,space,fill)  | Return a range of values between from and to    | `..say [range(1,3,2,'-')]`<br/>`..say [range(1,3)]` | 1--2--3<br/>1 2 3
-  | replace(from,to,text)      | Return text after changing all occurrences of "from" to "to" | `..say [replace('ur',"you're",'ur good']` | you're good
-  | sortStem(stem,ascending)   | Return "sorted." stem that indexes the elements of "stem." in ascending (1) or descending (0) order | `..set count = toArray('charlie bob alice','name.')`<br/>`..set alreadysorted = sortStem('name.')`<br/>`..set first = sorted.1`<br/>`..say First is [name.first] of [count]` | First is alice of 3
-  | sortWords(words,ascending) | Return words sorted into ascending (1) or descending (0) order | `..say [sortWords('charlie bob alice')]` | alice bob charlie
-  | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX "stem."  | `..set count = toArray('charlie bob alice','name.')`<br/>`..say name.1='[name.1]'`<br/>`..say name.2='[name.2]'`<br/>`..say name.3='[name.3]'` | name.1='charlie'<br/>name.2='bob'<br/>name.3='alice'
-  | toASCII(text)              | Convert text to ASCII from EBCDIC | `..say [c2x(toASCII('C1C2C3'x))]` | 414243
-  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with elements no wider than "maxlen" | `size = toBlock('The quality of mercy is not strained','a.',12)`<br/>`..say Reblocked to [size] lines:`<br/>`..say a.1='[a.1]'`<br/>`..say a.2='[a.2]'`<br/>`..say a.3='[a.3]'` | Reblocked to 3 lines:<br/>a.1='The quality'<br/>a.2='of mercy is'<br/>a.3='not strained'
-  | toEBCDIC(text)             | Convert text to EBCDIC from ASCII | `..say [c2x(toEBCDIC('414243'x))]` | C1C2C3
-  | toLower(text)              | Convert text to lower case | `..say [toLower('ABC123')]` | abc123
-  | toString(stem)             | Convert a REXX "stem." variable to a string | `..say '[toString('a.')]'` | 'The quality of mercy is not strained'
-  | toUpper(text)              | Convert text to upper case | `..say toUpper('abc123')` | ABC123
-  | union(set1,set2)           | Return the union of set1 and set2 | `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk Gates'`</br>`..say Rich or famous: [union(rich,famous)]` | Rich or famous: Gates Musk Cheesecake Einstein
+  | Function                   | Description                                   +
+| Example | Result
+  | -------------------------- | ----------------------------------------------+
+| ------- | ---
+  | getHost(addr_or_name)      | Resolve host name from IP address or host name+
+| `..say [getHost('localhost')]` | 127.0.0.1
+  | inRange(n,lo,hi)           | Return 1 if lo <= n <= hi                     +
+| `..set month = 2`<br/>`..if [inRange(month,1,12)]` | 1
+  | inSet(element,list)        | Return 1 if element is in a list of words     +
+| `..set lpar = 'PRD1'`<br/>`..if [inset(lpar,'TST1 PRD1')]`<br/>ok<br/>`..end`+
+ | ok
+  | intersect(set1,set2)       | Return elements common to both set1 and set2  +
+| `..set rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk +
+Gates'`</br>`..say Rich and famous: [intersect(rich,famous)]` +
+| Rich and famous: Gates Musk
+  | isASCII(text)              | Return 1 if text is ASCII                     +
+| `..say [isASCII('6A616D'x)]` | 1
+  | isDatasetName(name)        | Return 1 if name is a valid dataset name      +
+| `..say [isDatasetName('SYS1.PARMLIB')]` | 1
+  | isDDName(name)             | Return 1 if name is a valid DD name           +
+| `..say [isDDName('SYSIN')]` | 1
+  | isHex(hex)                 | Return 1 if hex is valid hex                  +
+| `..say [isHex('0C1')]` | 1
+  | isIPAddr(addr)             | Return 1 if addr is a valid IP address        +
+| `..say [isIPAddr(127.0.0.1)]` | 1
+  | isMemberName(name)         | Return 1 if name is a valid member name       +
+| `..say [isMemberName('$$README')]` | 1
+  | isNum(n)                   | Return 1 if n is a whole number               +
+| `..say [isNum(3.14159265358979)]` | 0
+  | isText(text)               | Return 1 if text is EBCDIC                    +
+| `..say [isText('The cat sat on the mat')]` | 1
+  | range(from,to,space,fill)  | Return a range of values between from and to  +
+| `..say [range(1,3,2,'-')]`<br/>`..say [range(1,3)]` | 1--2--3<br/>1 2 3
+  | replace(from,to,text)      | Return text after changing all occurrences +
+of "from" to "to" | `..say [replace('ur',"you're",'ur good']` | you're good
+  | sortStem(stem,ascending)   | Return "sorted." stem that indexes the +
+elements of "stem." in ascending (1) or descending (0) order | `..set count = +
+toArray('charlie bob alice','name.')`<br/>`..set alreadysorted = +
+sortStem('name.')`<br/>`..set first = sorted.1`<br/>`..say First is +
+[name.first] of [count]` | First is alice of 3
+  | sortWords(words,ascending) | Return words sorted into ascending (1) or +
+descending (0) order | `..say [sortWords('charlie bob alice')]` | alice bob +
+charlie
+  | toArray(text,stem,delim)   | Convert text delimited by "delim" into a REXX +
+"stem."  | `..set count = toArray('charlie bob alice','name.')`<br/>`..say +
+name.1='[name.1]'`<br/>`..say name.2='[name.2]'`<br/>`..say name.3='[name.3]'` +
+| name.1='charlie'<br/>name.2='bob'<br/>name.3='alice'
+  | toASCII(text)              | Convert text to ASCII from EBCDIC | `..say +
+[c2x(toASCII('C1C2C3'x))]` | 414243
+  | toBlock(text,stem,maxlen)  | Convert text into a REXX "stem." with +
+elements no wider than "maxlen" | `size = toBlock('The quality of mercy is not +
+strained','a.',12)`<br/>`..say Reblocked to [size] lines:`<br/>`..say +
+a.1='[a.1]'`<br/>`..say a.2='[a.2]'`<br/>`..say a.3='[a.3]'` | Reblocked to 3 +
+lines:<br/>a.1='The quality'<br/>a.2='of mercy is'<br/>a.3='not strained'
+  | toEBCDIC(text)             | Convert text to EBCDIC from ASCII | `..say +
+[c2x(toEBCDIC('414243'x))]` | C1C2C3
+  | toLower(text)              | Convert text to lower case | `..say +
+[toLower('ABC123')]` | abc123
+  | toString(stem)             | Convert a REXX "stem." variable to a string +
+| `..say '[toString('a.')]'` | 'The quality of mercy is not strained'
+  | toUpper(text)              | Convert text to upper case | `..say +
+toUpper('abc123')` | ABC123
+  | union(set1,set2)           | Return the union of set1 and set2 | `..set +
+rich = 'Gates Musk Cheesecake'`<br/>`..set famous = 'Einstein Musk +
+Gates'`</br>`..say Rich or famous: [union(rich,famous)]` | Rich or famous: +
+Gates Musk Cheesecake Einstein
 
 */
   call queueHelpFromLabel 'HelpVars:'
 
 EvenMoreHelp:
 /*
-
 # How to use JAM in ISPF/EDIT
 
 You should, before first use, do some initial set up as follows.
@@ -2711,27 +2848,35 @@ return
 
 doFor:
 /*
-### ..FOR READ dsn [limit1 [limit2]] [PARSE template WHERE condexpr] MACRO macroname
+### ..FOR READ dsn [limit1 [limit2]] [PARSE template WHERE condexpr] +
+MACRO macroname
 
-  This reads lines from the file "dsn" constrained by the limits "limit1" and "limit2"
-  and invokes the macro called "macroname" once for each selected line as follows:
+  This reads lines from the file "dsn" constrained by the limits
+  "limit1" and "limit2" and invokes the macro called "macroname" once
+  for each selected line as follows:
 
-  | limit1    | limit2    | Lines read                                                     |
-  | ------    | ------    | ----------                                                     |
-  | (omitted) | (omitted) | Reads all lines (i.e. no limits)                               |
-  | n         | (omitted) | Reads the first "n" lines                                      |
-  | n         | m         | Reads lines starting at line "n" for "m" lines                 |
-  | n         | string    | Reads lines starting at line "n" until "string" is found       |
-  | string    | m         | Reads "m" lines starting at the first line containing "string" |
-  | string1   | string2   | Reads the first block of lines bounded by the strings "string1" and "string2"     |
+  | limit1    | limit2    | Lines read
+  | ------    | ------    | ----------
+  | (omitted) | (omitted) | Reads all lines (i.e. no limits)
+  | n         | (omitted) | Reads the first "n" lines
+  | n         | m         | Reads lines starting at line "n" for "m" lines
+  | n         | string    | Reads lines starting at line "n" until "string" is +
+found
+  | string    | m         | Reads "m" lines starting at the first line +
+containing "string"
+  | string1   | string2   | Reads the first block of lines bounded by the +
+strings "string1" and "string2"
 
-  If a string argument contains spaces then it must be enclosed with `'` or `"` characters.
+  If a string argument contains spaces then it must be enclosed with +
+`'` or `"` characters.
 
-  If `PARSE template WHERE condexpr` is also specified, then each of the selected lines are further
-  parsed (using the REXX `parse var line [template]` statement) and the conditional 
-  expression "condexpr" is applied (using the REXX `if [condexpr]` statement). If `condexpr`
-  evaluates to 1 (true) then the line is selected, else it is not selected.
-  This enables lines to be selected using more complex logic.
+  If `PARSE template WHERE condexpr` is also specified, then each of
+  the selected lines are further parsed (using the REXX
+  `parse var line [template]` statement) and the conditional expression
+  "condexpr" is applied (using the REXX `if [condexpr]` statement).
+  If `condexpr` evaluates to 1 (true) then the line is selected, else
+  it is not selected. That enables lines to be selected using more
+  complex logic.
 
   Example 1 (prints the contents of a member):
 
@@ -2745,8 +2890,8 @@ doFor:
       ..macro define output _line
       [_line]
       ..macro end
-      ..for read sys1.parmlib(ieasys00) parse 1 c +1 0 key'='value',' where c <> '*' & key <> '' macro output
-
+      ..for read sys1.parmlib(ieasys00) parse 1 c +1 0 key'='value',' where +
+c <> '*' & key <> '' macro output
 
 ### ..FOR str1 str2 ... strn MACRO macroname
 
@@ -2772,12 +2917,10 @@ doFor:
       ..macro end
       ..for 1 to 10 by 2 macro show
 
-
 ### ..FOR n MACRO macroname
 
   Invokes the macro called "macroname" once for each
   number in the range 1 to "n"
-
 
   Example (creates some DD statements):
 
@@ -2805,8 +2948,11 @@ doFor:
     parse var sUpperCaseLine +(nMacro) . sMac .
     nParse = pos('PARSE',sUpperCaseLine)
     nWhere = lastpos('WHERE',sUpperCaseLine)
-    if nParse > 0 & nWhere > nParse /* Both PARSE and WHERE must be present if at all */
-    then do /* ..FOR READ file [limit1 [limit2]] PARSE template WHERE condexpr MACRO macname */
+    if nParse > 0 & nWhere > nParse
+    /* Both PARSE and WHERE must be present if at all */
+    then do /* ..FOR READ file [limit1 [limit2]] */
+            /*       PARSE template */
+            /*       WHERE condexpr MACRO macname */
       sOperands = substr(g.i,5,nParse-6)
       sTemplate = substr(g.i,nParse+6,nWhere-nParse-7)
       sCondExpr = substr(g.i,nWhere+6,nMacro-nWhere-7)
@@ -2826,7 +2972,8 @@ doFor:
         when sOperand1 = 'READ' then do /* for READ dsn [limits] MACRO mac */
           parse var sOperands . sDSN sLimits
           n = getArgs(sLimits)
-          nLines = readFile(getFileName(sDSN),g.0ARG.1,g.0ARG.2,sTemplate,sCondExpr)
+          nLines = readFile(getFileName(sDSN),g.0ARG.1,g.0ARG.2,,
+                            sTemplate,sCondExpr)
           do j = 1 to line.0
             call appendMacroOverride '..macro' sMac toStr(line.j)'[]'
           end
@@ -2853,7 +3000,7 @@ doFor:
             call appendMacroOverride '..macro' sMac n
           end
         end
-        otherwise do                            /* for str1 str2... MACRO mac */
+        otherwise do  /* for str1 str2... MACRO mac */
           do n = 1 to words(sOperands)
             call appendMacroOverride '..macro' sMac toStr(word(sOperands,n))
           end
@@ -2916,10 +3063,13 @@ readFile: procedure expose g. line.
   /*    (omitted)  - Read all lines starting at line 1 */
   /*    nFor       - Read nFor lines starting at line 1 */
   /*    nFrom nFor - Read nFor lines starting at line number nFrom */
-  /*    nFrom sTo  - Read lines starting at line number nFrom until string sTo is found */
-  /*    sFrom nFor - Read nFor lines starting at the line containing string sFrom */
+  /*    nFrom sTo  - Read lines starting at line number nFrom */
+  /*                      until string sTo is found */
+  /*    sFrom nFor - Read nFor lines starting at the line containing */
+  /*                      string sFrom */
   /*    sFrom sTo  - Read lines bounded by the strings sFrom and sTo */
-  /* The sTemplate can be any valid operand of the REXX "parse var sLine" statement */
+  /* The sTemplate can be any valid operand of the REXX */
+  /*              "parse var sLine" statement */
   /* The sCondExpr can be any valid expression on a REXX "if" statement */
   select
     when g.0ZOS then do
@@ -2966,14 +3116,16 @@ readFile: procedure expose g. line.
             do i = 1 to limit1-1 while g.0RC = 0 /* discard nFrom-1 lines */
               sLine = getLine(hFile)
             end
-            do i = 1 to limit2 while g.0RC = 0 /* return nFrom to nFrom+nFor-1 lines */
+            do i = 1 to limit2 while g.0RC = 0
+              /* return nFrom to nFrom+nFor-1 lines */
               sLine = getLine(hFile)
               if g.0RC = 0
               then call filterLine sLine,sTemplate,sCondExpr
             end
           end
           when isNum(limit2) then do /* READ sFrom nFor */
-            /* Read starting at the line containing string "limit1" for "limit2" lines */
+            /* Read starting at the line containing string "limit1" */
+            /* for "limit2" lines */
             bFoundLimit1 = 0
             do while g.0RC = 0 & \bFoundLimit1
               sLine = getLine(hFile)
@@ -2991,7 +3143,8 @@ readFile: procedure expose g. line.
             end
           end
           otherwise do /* READ sFrom sTo */
-            /* Read starting at the line containing string "limit1" to the line containing string "limit2" */
+            /* Read starting at the line containing string "limit1" */
+            /* to the line containing string "limit2" */
             bFoundLimit1 = 0
             do while g.0RC = 0 & \bFoundLimit1
               sLine = getLine(hFile)
@@ -3043,14 +3196,16 @@ return
 doInclude:
 /*
 ### ..INCLUDE dsn
+
   This includes the contents of dataset "dsn"
   at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
 ### ..INCLUDE dsn(member)
-  This includes the contents of partitioned dataset "dsn" member "member"
-  at this point in the JAM input file.
+
+  This includes the contents of partitioned dataset "dsn" member
+  "member" at this point in the JAM input file.
 
   Note: No attempt is made to detect recursive INCLUDEs.
 
@@ -3216,7 +3371,7 @@ queueJCL:
     end
     __nameoper = justify(__name __oper,max(12,length(__name __oper)))
     nParms = g.0PARM.0
-    if nParms = 1 
+    if nParms = 1
     then do
       queue '//'__nameoper strip(g.0PARM.1)
     end
@@ -3298,7 +3453,7 @@ getParmMap: procedure expose g.
       g.0PARM.nParm = softBlanks(sParms)
       sParms = ''
     end
-    when nComma > 0 & nComma < nEquals then do 
+    when nComma > 0 & nComma < nEquals then do
       /* Positional operands before key=value operands */
       nPos = lastpos(',',sParms,nEquals)
       sPositionals = left(sParms,nPos-1)
@@ -3404,8 +3559,10 @@ getInDoubleQuotesLength: procedure
   /* 'abc' --> 5 */
   /* "abc" --> 5 */
   parse arg sValue,sDelim
-  if sDelim = '' then sDelim = "'"   /* An apostrophe is the default string delimiter */
-  if sDelim <> "'" then sDelim = '"' /* Else a quotation mark is the string delimiter */
+  if sDelim = '' then sDelim = "'"
+  /* An apostrophe is the default string delimiter */
+  if sDelim <> "'" then sDelim = '"'
+  /* Else a quotation mark is the string delimiter */
   sDoubleDelim = sDelim || sDelim
   bEndOfString = 0
   do i = 2 to length(sValue) until bEndOfString
@@ -3427,7 +3584,7 @@ getArgs: procedure expose g.
       parse var sArgs sValue +(nValue) sArgs
       n = n + 1
       interpret 'g.0ARG.n =' sValue /* get the value inside the quotes */
-    end 
+    end
     else do /* arg is not a string */
       parse var sArgs sValue sArgs
       n = n + 1
@@ -3464,12 +3621,12 @@ doJob:
     call queueHelpForVerb 'Job'
   end
   else do
-    parse upper var g.1 . sAlias sDesc '/*' /* Ignore trailing comments   */
+    parse upper var g.1 . sAlias sDesc '/*' /* Ignore trailing comments    */
     parse var sAlias sAlias'/'sJobSuffix
-    call setAlias sAlias       /* Use system alias specified on JAM statement */
-    if jesnode.sAlias = '',   /* If a valid system alias was not specified */
-     & sJobSuffix = ''     /* ...and no job suffix was specified        */
-    then parse upper var g.1 . sDesc   /* Then parameters are all desc  */
+    call setAlias sAlias    /* Use system alias specified on JAM statement */
+    if jesnode.sAlias = '', /* If a valid system alias was not specified   */
+     & sJobSuffix = ''      /* ...and no job suffix was specified          */
+    then parse upper var g.1 . sDesc   /* Then parameters are all desc     */
     sDesc = strip(left(space(sDesc),20))
     if hold = 1
     then call queueJob 'TYPRUN=HOLD',sJobSuffix
@@ -3510,10 +3667,11 @@ doListcat:
 /*
 ### ..LISTCAT dsn [catalog] [options...]
 
-  This generates a job step that will invoke IDCAMS to LIST dataset "dsn" in the
-  specified catalog, or else in the standard catalog
-  search order. The following pre-defined catalog
-  variables can be used:
+  This generates a job step that will invoke IDCAMS to LIST dataset
+  "dsn" in the specified catalog, or else in the standard catalog
+  search order.
+
+  The following pre-defined catalog variables can be used:
 
   | Variable | Description                               |
   | -------- | ----------------------------------------- |
@@ -3584,7 +3742,7 @@ doListVTOC:
 
    This generates a job step that will list datasets specified by
    "dsn" in the VTOC of the volume specified by "volser".
-   The dataset name can be generic (e.g. SYS1.XXX*).
+   The dataset name can be generic (e.g. `SYS1.XXX*`).
 
 */
   call addJCLCommentBlock 'List VTOC'
@@ -3628,8 +3786,8 @@ doMacro:
   REXX "parse value" statement.
 
 ### ..MACRO EXIT
-  This exits from the macro at run time, otherwise the macro terminates at
-  the `..macro end` JAM statement.
+  This exits from the macro at run time, otherwise the macro terminates
+  at the `..macro end` JAM statement.
 
 ### ..MACRO END
 
@@ -3701,7 +3859,8 @@ doMacro:
         sMacroName = toUpper(sMacroName)
         if g.0MACRUN.sMacroName = 1
         then do
-          say 'JAM007E Recursion detected. Macro "'sMacroName'" is already running'
+          say 'JAM007E Recursion detected. Macro "'sMacroName,
+              '" is already running'
           call popStack   /* discard saved state */
         end
         else do
@@ -3710,7 +3869,8 @@ doMacro:
           if isNum(g.0MAC.sMacroName.0) /* size of macro in lines */
           then do
             g.0MACRUN = 1 /* retrieve next line(s) from the macro */
-            interpret "parse value '"toStr(sMacroParms)"' with" g.0MAC.sMacroName.0ARGS
+            interpret "parse value '"toStr(sMacroParms)"'",
+                      "with" g.0MAC.sMacroName.0ARGS
             g.0MACRO = sMacroName    /* current macro name */
             g.0MACLINE = 0           /* current macro line */
           end
@@ -3743,25 +3903,31 @@ doMap:
 /*
 ### ..MAP dsn
 
-  This maps tabular data in dataset "dsn" (containing column headings) to REXX variables
-  that are indexed by the value of the first column.
+  This maps tabular data in dataset "dsn" (containing column headings)
+  to REXX variables that are indexed by the value of the first column.
 
   For "dsn" you can specify either:
-  - A fully qualified unquoted dataset name. For example, `MY.DATASET`
-  - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
-  - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
-  - (On Linux or Windows) An absolute or relative path name. For example, `~/somepath/myfile`
+
+  * A fully qualified unquoted dataset name.
+    For example, `MY.DATASET`
+  * A member in a partitioned dataset.
+    For example, `SYS1.PARMLIB(IEASYS00)`
+  * A member in the same dataset as the JAM member being edited.
+    For example, `(MYMEM)`
+  * (On Linux or Windows) An absolute or relative path name.
+    For example, `~/somepath/myfile`
 
   The column data in the file need not be aligned, but if a cell value
   contains spaces then that value must be enclosed in quotation marks
   or apostrophes. A useful convention is to use `.` to represent a
-  null cell value, but you could just as easily assign a zero-length value
-  by using `''`.
+  null cell value, but you could just as easily assign a zero-length
+  value by using `''`.
 
   If the column names are omitted from the `..map` statement then they
   are read from the first line of the dataset. For example:
 
-  Assume member "users" contains tablular data with column headings on row 1:
+  Assume member "users" contains tablular data with column headings on
+  row 1:
 
       uid    phone          email
       ABC    "1234 567 890" user1@example.org
@@ -3779,23 +3945,25 @@ doMap:
 
 ### ..MAP dsn column1 [column2 ... columnn]
 
-  Maps the tabular data in a dataset (containing no column headings) to REXX variables.
-  The column headings to be used are specified on the `..map` JAM statement.
+  Maps the tabular data in a dataset (containing no column headings) to
+  REXX variables. The column headings to be used are specified on the
+  `..map` JAM statement.
 
   Reads the dataset "dsn" and generates REXX variables such that you
   can use the value in the first column of each row to access
   any other column by that value.
 
   For "dsn" you can specify either:
-  - A fully qualified unquoted dataset name: dsn
-  - A member in a partitioned dataset:       dsn(member)
-  - A member in the dataset being edited:    (member)
+
+  * A fully qualified unquoted dataset name: dsn
+  * A member in a partitioned dataset:       dsn(member)
+  * A member in the dataset being edited:    (member)
 
   The column data in the file need not be aligned, but if a cell value
   contains spaces then that value must be enclosed in quotation marks
   or apostrophes. A useful convention is to use `.` to represent a
-  null cell value, but you could just as easily assign a zero-length value
-  by using `''`.
+  null cell value, but you could just as easily assign a zero-length
+  value by using `''`.
 
   If the column names are present on the `..map` statement then the
   first line of the dataset is considered to be data, not column names,
@@ -3864,12 +4032,12 @@ return
 doMount:
 /*
 ### ..MOUNT dsn path [options...]
+
 ### ..MOUNT path dsn [options...]
 
-  This generates a job step to mount file system "dsn" at mount point "path" using any
-  "options" valid on the TSO MOUNT command. The "path"
-  must contain a "/" character to distinguish it from the
-  "dsn" operand.
+  This generates a job step to mount file system "dsn" at mount point
+  "path" using any "options" valid on the TSO MOUNT command. The "path"
+  must contain a "/" character to distinguish it from the "dsn" operand.
 
 */
   call addJCLCommentBlock 'Mount file system'
@@ -3906,7 +4074,9 @@ return
 doOption:
 /*
 ### ..OPTION [NO]option...
+
 ### ..OPTION PUSH
+
 ### ..OPTION POP
 
   This sets (or resets) one or more named option flags.
@@ -3927,19 +4097,26 @@ doOption:
 
   | Option   | Action when set
   | -------- | ----------------------------------------------
-  | blanks   | Copy blank input lines to the output. Use "noblanks" to cause blank input lines to be ignored.
-  | comments | Copy JCL comment cards to the output. Use "nocomments" to cause JCL comment input lines to be ignored.
-  | debug    | Show JAM statements trace messages. 
-  | hold     | Append TYPRUN=HOLD to job cards that are generated by subsequent `..job` or `..runon` statements.
+  | blanks   | Copy blank input lines to the output. Use "noblanks" to +
+cause blank input lines to be ignored.
+  | comments | Copy JCL comment cards to the output. Use "nocomments" +
+to cause JCL comment input lines to be ignored.
+  | debug    | Show JAM statements trace messages.
+  | hold     | Append TYPRUN=HOLD to job cards that are generated by +
+subsequent `..job` or `..runon` statements.
   | quiet    | Do not generate comments describing the JCL being generated.
-  | trunc    | Truncate input lines at column 71. This is useful in order to ignore input sequence numbers (columns 73-80).
-  | useftp   | Use FTP to submit jobs instead of NJE even when the source and target systems are in the same NJE network.
+  | trunc    | Truncate input lines at column 71. This is useful in +
+order to ignore input sequence numbers (columns 73-80).
+  | useftp   | Use FTP to submit jobs instead of NJE even when the +
+source and target systems are in the same NJE network.
   | verbose  | Copy input JAM statements to output as JCL comment lines.
 
-  When `..option debug` is in effect, JAM statements are printed as they are encountered.
-  If the JAM statement will be executed it is prefixed by `|` else it is prefixed by `-`.
+  When `..option debug` is in effect, JAM statements are printed as
+  they are encountered. If the JAM statement will be executed it is
+  prefixed by `|` else it is prefixed by `-`.
 
-  Any flags set in this way can be used in subsequent `..if` statements. For example:
+  Any flags set in this way can be used in subsequent `..if`
+  statements. For example:
 
       ..option debug nohold myflag
       ..if [debug]
@@ -4001,8 +4178,9 @@ doOtherwise:
 
   The `..otherwise` clause is processed if all previous `..when` clauses
   of a `..select` statement are evaluated as false. First process the
-  otherwise "action" (if present) and all subsequent statements until `..end`
-  statement that closes the corresponding `..select` statement is found
+  otherwise "action" (if present) and all subsequent statements until
+  `..end` statement that closes the corresponding `..select` statement
+  is found
 
 */
   parse var g.1 . sParms .
@@ -4012,8 +4190,8 @@ doOtherwise:
     parse var g.1 . sAction
     parse value peekStack() with sClause bEmit .
     g.0EMIT = bEmit & \g.0WHEN /* If emitting when SELECT was seen,
-                                  and WHEN condition not met for this SELECT
-                                  then we emit OTHERWISE input
+                                  and WHEN condition not met for this
+                                  SELECT then we emit OTHERWISE input
                                   else we don't emit OTHERWISE input
                                */
     if g.0EMIT
@@ -4107,7 +4285,7 @@ return
 
 doQueued:
 /*
-### ..QUEUED 
+### ..QUEUED
 
   This processes any JAM statements that were queued by
   earlier `..queue` JAM statements and then clears the
@@ -4140,6 +4318,7 @@ doQuit:
   then that message is displayed as the reason for
   quitting. If "CANCEL" is present then the ISPF EDIT
   session is also cancelled.
+
 */
   parse upper var g.1 . sParms . sQuitMsg
   if sParms = '?'
@@ -4206,7 +4385,9 @@ return
 doRename:
 /*
 ### ..RENAME dsn todsn [volser]
+
 ### ..RENAME pds(mem1[,mem2...]) (new1[,new2...]) [volser]
+
 ### ..RENAME path topath
 
   This generates a job step that will rename a dataset, members in a
@@ -4537,7 +4718,7 @@ doRunOn:
     if sysname.sSystem = '',           /* If a valid alias was not specified */
      & sJobSuffix = ''                 /* ...and no job suffix specified     */
     then do
-      parse upper var g.1 . sDesc '/*'  /* Then parameters are all desc   */
+      parse upper var g.1 . sDesc '/*' /* Then parameters are all desc       */
       sSystem = ''
     end
     else do                            /* Parameters are alias/suffix/via    */
@@ -4559,12 +4740,13 @@ doRunOn:
        In summary: use NJE when possible, and use FTP if allowed */
     if (sSystem = '' | njenet.sViaSystem = njenet.alias) & useftp = 0
     then call doJob /* use NJE to submit job */
-    else do /* use FTP to submit job to a TCPIP-connected NJE network, or when useftp is specified */
+    else do /* use FTP to submit job to a TCPIP-connected NJE network */
+            /* or when useftp is specified */
       job = job + 1 /* Generate unique (maybe) job suffix */
       if sJobSuffix = ''
       then call queueJob ,job         /* System generated job suffix */
       else call queueJob ,sJobSuffix  /* User-specified job suffix   */
-      call queueXEQ                   /* Create XEQ/JOBPARM for the local system */
+      call queueXEQ       /* Create XEQ/JOBPARM for the local system */
       if hold = 1
       then do                         /* Cannot retrieve output when held */
         say 'JAM001W Output cannot be retrieved by FTP when you specify',
@@ -4579,11 +4761,12 @@ doRunOn:
       end
       call addJCLComment 'Put JCL to be submitted here'
       queue '//JCL       DD DATA,DLM=@@'
-      call setAlias sSystem /* Set alias REXX variables for the execution system */
+      call setAlias sSystem /* Set alias REXX variables for the */
+                            /* execution system */
       if hold = 1
       then call queueJob 'TYPRUN=HOLD'
       else call queueJob
-      call queueXEQ                   /* Create XEQ/JOBPARM for the execution system */
+      call queueXEQ  /* Create XEQ/JOBPARM for the execution system */
       g.0DLM = 1 /* Indicate DLM=@@ is unterminated */
     end
     step = 0
@@ -4659,14 +4842,14 @@ doSelect:
           output if expr does not equal any of the above values
     ..end
 
-  If "expr" is present then the `..select` clause will evaluate the REXX
-  expression and search for a `..when` clause expression that matches that
-  value.
+  If "expr" is present then the `..select` clause will evaluate the
+  REXX expression and search for a `..when` clause expression that
+  matches that value.
 
   If "expr" is omitted then subsequent `..when` clause expressions are
-  evaluated and the first clause evaluating to 1 (true) will be processed.
-  All remaining `..when` clauses (and the `..otherwise` clause, if present)
-  will be ignored.
+  evaluated and the first clause evaluating to 1 (true) will be
+  processed. All remaining `..when` clauses (and the `..otherwise`
+  clause, if present) will be ignored.
 
   If no matching `..when` clause is found then the `..otherwise`
   clause (if present) for this `..select` statement will be
@@ -4740,7 +4923,8 @@ doSet:
       sVarName = translate(sVarName)   /* Convert to uppercase */
       if sVarName = 'ALIAS'            /* Special case: ..set alias = system */
       then call setAlias alias         /* Set variables for this system */
-      if inSet(sVarName,'U USER USERID')  /* Special case: userid is explicitly set */
+      if inSet(sVarName,'U USER USERID')
+              /* Special case: userid is explicitly set */
       then do /* Ensure that U, USER and USERID all have the new userid value */
         sVarValue = value(sVarName)
         u = sVarValue
@@ -4798,10 +4982,11 @@ doShip:
   This transfers a dataset to another system.
 
   Generates JCL to:
-  - Convert "dsn" to NETDATA format using the TSO TRANSMIT command,
-  - Transfer that archive to remote system "tosystem" using FTP,
-  - Receive the archive on the remote system into a dataset called "todsn"
-    using the TSO RECEIVE command.
+
+  * Convert "dsn" to NETDATA format using the TSO TRANSMIT command,
+  * Transfer that archive to remote system "tosystem" using FTP,
+  * Receive the archive on the remote system into a dataset called
+    "todsn" using the TSO RECEIVE command.
 
   Optionally, you can set TSO RECEIVE command options by
   setting "options". Typically, you would set the todsn
@@ -4933,12 +5118,14 @@ return
 
 doStyle:
 /*
-### ..STYLE name[=width,first,borderleft,borderfill,borderright,commentleft,commentright,last]
+### ..STYLE name[=width,first,borderleft,borderfill,borderright,+
+commentleft,commentright,last]
 
-  This creates a named set of global REXX variables that are used by the
-  `..*` JAM statements to generate styled comment lines.
+  This creates a named set of global REXX variables that are used by
+  the `..*` JAM statements to generate styled comment lines.
 
-  To illustrate where where the parameter texts are placed you can code:
+  To illustrate where where the parameter texts are placed you can
+  code:
 
       ..style test=60,1,2,3,4,5,6,7
       ..* This shows where each parameter appears in the output
@@ -4955,7 +5142,8 @@ doStyle:
 
   | Parameter   | Meaning
   | ---------   | --------------------------------------------
-  | name        | The name of the set of variables to be defined and/or activated
+  | name        | The name of the set of variables to be defined and/or +
+activated
   | width       | The width of the comment line
   | first       | The characters (if any) to emit before the top border line
   | borderleft  | The leftmost characters of the top and bottom border line
@@ -4970,28 +5158,41 @@ doStyle:
 
       ..style asm
 
-  If the named set does not exist then the default comment style (jcl) becomes active.
+  If the named set does not exist then the default comment style (jcl)
+  becomes active.
 
-  If you only specify the width parameter, then only the width is updated for this style.
-  For example, the following sets the comment width to 40 characters for the asm style:
+  If you only specify the width parameter, then only the width is
+  updated for this style.
+  For example, the following sets the comment width to 40 characters
+  for the asm style:
 
       ..style asm=40
 
-  If you omit the borderfill parameter then no top or bottom border will be generated.
+  If you omit the borderfill parameter then no top or bottom border
+  will be generated.
 
   The following styles are pre-defined:
 
-  | name | width | first   | border<br/>left | border<br/>fill | border<br/>right | comment<br/>left | comment<br/>right | last    |
-  | ---- | ----- | ------- | -----------     | --------------- | ---------------- | ---------------- | ----------------- | ----    |
-  | asm  | 71    | *       | *               | -               | *                | *                | *                 | *       |
-  | box  | 71    |         | **              | *               | **               | **               | **                |         |
-  | c    | 80    | //      | //              | -               | -                | //               | -                 | //      |
-  | jcl  | 71    | //&ast; | //&ast;         | -               | *                | //&ast;          | *                 | //&ast; |
-  | js   | 80    | //      | //              | -               |                  | //               |                   | //      |
-  | rexx | 80    | /&ast;  | &nbsp;*         | -               | &ast;/           | &nbsp;*          | &ast;/            | &ast;/  |
-  | xml  | 80    | <!--    |                 |                 |                  |                  |                   | -->     |
+  | name | width | first   | border<br/>left | border<br/>fill | +
+border<br/>right | comment<br/>left | comment<br/>right | last    |
+  | ---- | ----- | ------- | -----------     | --------------- | +
+---------------- | ---------------- | ----------------- | ----    |
+  | asm  | 71    | *       | *               | -               | +
+*                | *                | *                 | *       |
+  | box  | 71    |         | **              | *               | +
+**               | **               | **                |         |
+  | c    | 80    | //      | //              | -               | +
+-                | //               | -                 | //      |
+  | jcl  | 71    | //&ast; | //&ast;         | -               | +
+*                | //&ast;          | *                 | //&ast; |
+  | js   | 80    | //      | //              | -               | +
+                 | //               |                   | //      |
+  | rexx | 80    | /&ast;  | &nbsp;*         | -               | +
+&ast;/           | &nbsp;*          | &ast;/            | &ast;/  |
+  | xml  | 80    | <!--    |                 |                 | +
+                 |                  |                   | -->     |
 
-  Note that xml comments cannot contain double hypens (--).
+  Note that XML comments cannot contain double hypens (--).
 
   To override a built-in default style:
 
@@ -5029,19 +5230,22 @@ doStyle:
   then call queueHelpForVerb 'Style'
   else do
     do i = 1 to g.0
-      parse var g.i . sName'='nWidth','sFirst','sBorderLeft','sBorderFill','sBorderRight','sLeft','sRight','sLast
-      call setStyle sName,nWidth,sFirst,sBorderLeft,sBorderFill,sBorderRight,sLeft,sRight,sLast
+      parse var g.i . sName'='nWidth','sFirst','sBorderLeft',',
+            sBorderFill','sBorderRight','sLeft','sRight','sLast
+      call setStyle sName,nWidth,sFirst,sBorderLeft,sBorderFill,,
+           sBorderRight,sLeft,sRight,sLast
     end
   end
 return
 
 setStyle: procedure expose g.
-  parse arg sName,nWidth,sFirst,sBorderLeft,sBorderFill,sBorderRight,sLeft,sRight,sLast
-  /* say 'setStyle <'sName','nWidth','sFirst','sBorderLeft','sBorderFill','sBorderRight','sLeft','sRight','sLast'>' */
+  parse arg sName,nWidth,sFirst,sBorderLeft,sBorderFill,sBorderRight,,
+            sLeft,sRight,sLast
   g.0STYLE = sName /* Activate this style */
   if isNum(nWidth) & nWidth > 0
   then g.0STYLE_WIDTH.sName = nWidth
-  if length(sFirst||sBorderLeft||sBorderFill||sBorderRight||sLeft||sRight||sLast) > 0
+  if length(sFirst||sBorderLeft||sBorderFill||sBorderRight||sLeft||,
+            sRight||sLast) > 0
   then do
     g.0STYLE_FIRST.sName = sFirst
     g.0STYLE_BORDER_LEFT.sName  = sBorderLeft
@@ -5062,19 +5266,18 @@ doSubmit:
 /*
 ### ..SUBMIT dsn [tosystem [outdsn]]
 
-  This submits the JCL in dataset "dsn" to the system alias specified by
-  "tosystem", or to the system specified by the
+  This submits the JCL in dataset "dsn" to the system alias specified
+  by "tosystem", or to the system specified by the
   value of the "alias" REXX variable if "tosystem" is omitted.
 
-  Optionally, if "outdsn" is specified, you can retrieve
-  the output from the remote system and store it in local
-  dataset called "outdsn". Note: If you want to retrieve
-  the output then the job name on the target system must
-  be your userid with a single character appended. This
-  is required when the target system FTP server is configured to use
-  JESINTERFACELEVEL 1 (which is the default). If the FTP server
-  JESINTERFACELEVEL level is configured as 2, then you can choose any job
-  name that you want (subject to RACF authorisations).
+  Optionally, if "outdsn" is specified, you can retrieve the output
+  from the remote system and store it in local dataset called "outdsn".
+  Note: If you want to retrieve the output then the job name on the
+  target system must be your userid with a single character appended.
+  This is required when the target system FTP server is configured to
+  use JESINTERFACELEVEL 1 (which is the default). If the FTP server
+  JESINTERFACELEVEL level is configured as 2, then you can choose any
+  job name that you want (subject to RACF authorisations).
 
 */
   call addJCLCommentBlock 'Submit job'
@@ -5135,10 +5338,10 @@ doSudo:
 /*
 ### ..SUDO unixcommand
 
-  This generates a job step to execute the specified command as superuser in the Unix
-  System Services environment. The invoker will need to be permitted
-  RACF READ access to BPX.SUPERUSER (or have uid=0) for this to be
-  effective.
+  This generates a job step to execute the specified command as
+  superuser in the Unix System Services environment. The invoker will
+  need to be permitted RACF READ access to BPX.SUPERUSER
+  (or have uid=0) for this to be effective.
 
 */
   call addJCLCommentBlock 'Execute Unix command as superuser'
@@ -5169,22 +5372,30 @@ return
 doTable:
 /*
 ### ..TABLE dsn
-  This reads tabular data in dataset "dsn" (containing column headings) into REXX variables
-  that are indexed by row number. See below for more detail.
+
+  This reads tabular data in dataset "dsn" (containing column headings)
+  into REXX variables that are indexed by row number. See below for
+  more detail.
 
 ### ..TABLE dsn col1 [col2 ...]
 
-  This reads tabular data in dataset "dsn" (with no column headings) into REXX variables
-  that are indexed by row number. The column headings are supplied on the `..table`
-  command itself.
+  This reads tabular data in dataset "dsn" (with no column headings)
+  into REXX variables that are indexed by row number. The column
+  headings are supplied on the `..table` command itself.
 
   For "dsn" you can specify either:
-  - A fully qualified unquoted dataset name. For example, `MY.DATASET`
-  - A member in a partitioned dataset. For example, `SYS1.PARMLIB(IEASYS00)`
-  - A member in the same dataset as the JAM member being edited. For example, `(MYMEM)`
-  - (On Linux or Windows) An absolute or relative path name. For example, `~/somepath/myfile`
 
-  Table data is stored in REXX variables in the traditional manner as follows:
+  * A fully qualified unquoted dataset name.
+    For example, `MY.DATASET`
+  * A member in a partitioned dataset.
+    For example, `SYS1.PARMLIB(IEASYS00)`
+  * A member in the same dataset as the JAM member being edited.
+    For example, `(MYMEM)`
+  * (On Linux or Windows) An absolute or relative path name.
+    For example, `~/somepath/myfile`
+
+  Table data is stored in REXX variables in the traditional manner as
+  follows:
 
       col1.0 col2.0 ... colx.0    <-- Number of rows
       col1.1 col2.1 ... colx.1    <-- Values of row 1 fields
@@ -5218,7 +5429,7 @@ doTable:
 
   * Example 2 (list all rows):
 
-        ..macro define list # 
+        ..macro define list #
         ..  say u=[user.#] p=[phone.#] e=[email.#]
         ..macro end
         ..table (mytab) user phone email
@@ -5229,6 +5440,7 @@ doTable:
         u=U001 p=555-1111 e=u001@example.org
         u=U002 p=555-2222 e=u002@example.org
         u=U003 p=555-3333 e=u003@example.org
+
 */
   parse var g.1 . sParms .
   if sParms = '' | sParms = '?'
@@ -5270,7 +5482,7 @@ doTable:
   end
 return
 
-/* This overcomes a limitationof REXX: longest token length is 250 */
+/* This overcomes a limitation of REXX: longest token length is 250 */
 assign:
   parse arg __Name,__Value
   if length(__Name)+length(__Value)+3 < 250
@@ -5339,7 +5551,8 @@ doTSO:
 /*
 ### ..TSO tsocommand
 
-  This generates a job step to executes the specified TSO command in batch
+  This generates a job step that executes the specified TSO command in
+  batch
 
 */
   call addJCLCommentBlock 'Execute TSO command'
@@ -5360,8 +5573,9 @@ doUncatalog:
 /*
 ### ..UNCATALOG dsn [catalog]
 
-  This generates a job step to uncatalogs dataset "dsn" from the specified catalog, or
-  else from the catalog appropriate for the "alias" system.
+  This generates a job step to uncatalogs dataset "dsn" from the
+  specified catalog, or else from the catalog appropriate for the
+  "alias" system.
 
 */
   call addJCLCommentBlock 'Uncatalog dataset'
@@ -5387,8 +5601,8 @@ doUnmount:
 /*
 ### ..UNMOUNT dsn [options...]
 
-  This generates a job step to unmount file system "dsn" using any "options" valid on
-  the TSO UNMOUNT command.
+  This generates a job step to unmount file system "dsn" using any
+  "options" valid on the TSO UNMOUNT command.
 
 */
   call addJCLCommentBlock 'Unmount file system'
@@ -5409,8 +5623,8 @@ doUSS:
 /*
 ### ..USS unixcommand
 
-  This generates a job step to executes the specified command in the Unix System
-  Services environment.
+  This generates a job step to executes the specified command in the
+  Unix System Services environment.
 
 */
   call addJCLCommentBlock 'Execute Unix command'
@@ -5484,19 +5698,20 @@ doWhen:
           output if expr does not equal any of the above values
     ..end
 
-  The REXX expression specified by "expr" is evaluated. The result could
-  be either 1 (true), 0 (false) or a string that could match a
+  The REXX expression specified by "expr" is evaluated. The result
+  could be either 1 (true), 0 (false) or a string that could match a
   subsequent `..when` clause.
 
-  If "expr" evaluates as 1, execute the "action" (if present) and process all
-  statements in this `..when` clause and then ignore all
+  If "expr" evaluates as 1, execute the "action" (if present) and
+  process all statements in this `..when` clause and then ignore all
   statements until the `..end` of the owning
   `..select` JAM statement is found.
 
-  If "expr" evaluates as 0, ignore all statements in this `..when` clause.
+  If "expr" evaluates as 0, ignore all statements in this `..when`
+  clause.
 
-  If "expr" evaluates as neither 0 nor 1, compare the value of "expr" to the
-  value of the variable specified on the owning `..select` and
+  If "expr" evaluates as neither 0 nor 1, compare the value of "expr"
+  to the value of the variable specified on the owning `..select` and
   process the resulting 0 or 1 as decribed above.
 
   The following examples are equivalent:
@@ -5542,12 +5757,13 @@ doWhen:
       then bCondition = 0
     end
     parse value peekStack() with sClause bEmit .
-    g.0EMIT = bEmit & bCondition & \g.0WHEN   /* If emitting at SELECT,
-                                                 and WHEN condition is met,
-                                                 and no prior WHEN was met
-                                                 then we emit this WHEN input
-                                                 else we don't emit WHEN input
-                                              */
+    g.0EMIT = bEmit & bCondition & \g.0WHEN
+      /* If emitting at SELECT,
+        and WHEN condition is met,
+        and no prior WHEN was encountered
+        then we emit this WHEN input
+        else we don't emit WHEN input
+      */
     if g.0EMIT
     then do
       g.0WHEN = 1 /* Remember WHEN already executed for this SELECT */
@@ -5561,10 +5777,10 @@ doXEQ:
 /*
 ### ..XEQ [alias]
 
-  This will generate XEQ and JOBPARM cards for the specified system alias,
-  or else from the system currently specified by the "alias" variable.
-  If you specify "alias" then the "alias" variable will be set to that
-  value, so the following:
+  This will generate XEQ and JOBPARM cards for the specified system
+  alias, or else from the system currently specified by the "alias"
+  variable. If you specify "alias" then the "alias" variable will be
+  set to that value, so the following:
 
       ..set alias = 'TST1'
       ..xeq
@@ -5606,7 +5822,6 @@ doXMIT:
    command (but you must specify system and userid too).
    The default "system" is the invoking system.
    The default "userid" is the invoking userid.
-
 */
   parse var g.1 . sParms .
   if sParms = '' | sParms = '?'
@@ -5761,8 +5976,8 @@ return
  *---------------------------------------------------------------------
 */
 Prolog:
-  g.0HARDBLANK = 'ff'x /* Hard blank to help with parsing                */
-  g.0DELTA  = 0        /* Progress counter                               */
+  g.0HARDBLANK = 'ff'x /* Hard blank to help with parsing        */
+  g.0DELTA  = 0        /* Progress counter                       */
   g.0VERBS = ''        /* List of JAM verbs found in the program */
   /* Identify help text for each JAM verb */
   do i = 1 until sourceline(i) = 'eof:'
@@ -5836,8 +6051,8 @@ Prolog:
   g.0OPTIONS.0 = 0 /* Current options stack index         */
   g.0SOCKETS = 0   /* TCP/IP sockets not initialised      */
 
-  /*                           -----border--------  ---comment---                */
-  /*            name    width  first   bleft  bfill bright  left   right   last  */
+  /*                           -----border--------  ---comment---             */
+  /*            name    width  first   bleft  bfill bright  left   right ast  */
   call setStyle 'asm'  ,71    ,'*'    ,'*'   ,'-'  ,'*'    ,'*'   ,'*'    ,'*'
   call setStyle 'box'  ,71    ,''     ,'**'  ,'*'  ,'**'   ,'**'  ,'**'   ,''
   call setStyle 'c'    ,80    ,'//'   ,'//'  ,'-'  ,''     ,'//'  ,''     ,'//'
@@ -6449,8 +6664,9 @@ toLower: procedure
 return sString
 
 toStr: procedure
-  /* Remove surrounding single quotes (if any) from a string, and duplicate
-     all remaining single quotes (e.g. 'You can't' becomes: You can''t)
+  /* Remove surrounding single quotes (if any) from a string, and
+     duplicate all remaining single quotes.
+     For example, 'You can't' becomes: You can''t
   */
   parse arg sLine
   if length(sLine) >= 2 & left(sLine,1) = "'" & right(sLine,1) = "'"
@@ -6538,4 +6754,5 @@ Socket: procedure expose g.
   parse value 'SOCKET'(a,c,d,e,f,g,h,i,j,k) with g.0SOCKETRC sResp
 return sResp
 
+/* Mark the end of the REXX file when searching for HELP info */
 eof:
