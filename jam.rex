@@ -95,6 +95,7 @@ trace off
         parse upper var sLine '..' sVerb sAction .
         if left(sLine,2) = '..' & sVerb = 'MACRO' & sAction = 'END'
         then do
+          if debug = 1 then call sayDebug sLine
           g.0MACDEF = 0   /* Not defining a macro now */
           g.0MACRO  = ''  /* No macro name required   */
         end
