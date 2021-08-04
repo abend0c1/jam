@@ -1,0 +1,18 @@
+..jcl //MYJOB JOB (ACCT,1234),'SOME TEXT',MSGCLASS=Y,CLASS=A,NOTIFY=&SYSUID,
+..jcl //JOB2  JOB SOMETEXT,,CLASS=A,
+..jcl //JOB3  JOB CLASS=B
+..jcl //SYSIN  DD *
+..jcl //MYDD DD DISP=SHR,DSN='MY DATASET N1',RECFM=V,LRECL=255,BLKSIZE=27990,
+..jcl //DD2  DD DISP=SHR,DSN=A2345678.B2345678.C2345678.D2345678.E2345678,-
+..              PATH='/u/myuser/this is my file.txt',-
+..              DCB=(RECFM=F,LRECL=80), Fixed blocked 80 -
+..              RECFM=V,LRECL=255,BLKSIZE=27990,-
+..              VOL=(SER=VOL001)
+..set xxxxx = "DISP=SHR,DSN=SYS1.PARMLIB,-
+..              PATH='/u/myuser/this is my file too.txt',-
+..              RECFM=V,LRECL=255,BLKSIZE=27990,-
+..              VOL=SER=VOL002"
+..jcl //JUNK DD [xxxxx]
+Name: [__name]
+Oper: [__oper]
+Parm: [softBlanks(__parms)]

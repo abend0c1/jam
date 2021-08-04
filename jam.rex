@@ -491,7 +491,7 @@ includeInMacro: procedure expose g. dataset
   then do
     sMacroName = g.0MACRO
     do i = 1 to i.0
-      i.i = normaliseSquareBrackets(i.i)
+      if g.0ZOS then i.i = normaliseSquareBrackets(i.i)
       parse upper var i.i 1 sPrefix +2 1 . sVerb sDataset .
       if sPrefix = '..' & sVerb = 'INCLUDE'
       then do
