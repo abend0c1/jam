@@ -107,7 +107,7 @@ trace off
             /* We need to include the lines into the macro definition
                because it doesn't work very well to include the lines
                when the macro is executed */
-            call includeInMacro sAction
+            call includeInMacro getSub(sAction)
           end
           else do
             g.0MAC.sMacroName.nMacroLine = strip(sLine,'TRAILING')
