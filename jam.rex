@@ -180,6 +180,11 @@ return
 onSyntax:
   sSourceLine = strip(sourceline(sigl))
   say 'JAM0099I' errortext(rc) 'at line' sigl':' sSourceLine
+  /* Display the values of some selected variables likely to appear */
+  if pos('sVarName',sSourceLine) > 0 then say 'JAM0100I sVarName =' sVarName
+  if pos('sValue'  ,sSourceLine) > 0 then say 'JAM0100I sValue   =' sValue
+  if pos('sAction' ,sSourceLine) > 0 then say 'JAM0100I sAction  =' sAction
+  if pos('sExpr'   ,sSourceLine) > 0 then say 'JAM0100I sExpr    =' sExpr
 return ''
 
 getOptions: procedure expose g.
@@ -674,21 +679,21 @@ getSub:
   if nBeg > 0 & nEnd = 0
   then say 'JAM006W Missing terminating bracket:' g.0ERRLINE
   do while nBeg > 0 & nBeg < nEnd
-    parse var sSubLine sBefore'['sExpression']'sSubLine
-    if right(strip(sExpression),1) = '?'
+    parse var sSubLine sBefore'['sExpr']'sSubLine
+    if right(strip(sExpr),1) = '?'
     then do
-      sExpression = strip(strip(sExpression),'TRAILING','?')
-      parse var sExpression sVarName sPrompt
+      sExpr = strip(strip(sExpr),'TRAILING','?')
+      parse var sExpr sVarName sPrompt
       if sPrompt <> ''
       then say sPrompt':'
       else say 'Enter' sVarName':'
       parse pull sValue
       interpret sVarName "= '"toStr(sValue)"'"
     end
-    else interpret 'sValue =' sExpression
-    cLeft  = left(sExpression,1)
-    cRight = right(sExpression,1)
-    nWidth = length(sExpression)+2 /* +2 for the surrounding [ and ] */
+    else interpret 'sValue =' sExpr
+    cLeft  = left(sExpr,1)
+    cRight = right(sExpr,1)
+    nWidth = length(sExpr)+2 /* +2 for the surrounding [ and ] */
     select
       when cLeft = ' ' & cRight = ' ' then do /* centre output */
         sValue = centre(sValue,nWidth)
@@ -4913,10 +4918,10 @@ doSet:
   end
   else do
     do i = 1 to g.0
-      parse var g.i . sVarName'='sExpression
+      parse var g.i . sVarName'='sExpr
       sVarName = strip(sVarName)
-      if sExpression = '' then sExpression = "''"
-      interpret sVarName '=' sExpression
+      if sExpr = '' then sExpr = "''"
+      interpret sVarName '=' sExpr
       if debug = 1
       then do
         say ' 'sVarName "= '"value(sVarName)"'"
