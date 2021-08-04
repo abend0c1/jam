@@ -72,10 +72,22 @@ BEGIN-LOCAL-SITE-DATA
 ... or, if the tst1 REXX variable has not been assigned a value yet, simply:
 ...   [jesname.tst1]
 ...
+... set alias. = ''
 ..map [jam_lpars]
+...
+... Enable '..job [sysname]' to work the same as '..job [alias]'
+...
+..macro define alt #
+..  set _alias   = alias.#
+..  set _sysname = sysname._alias
+..  set alias._sysname = _alias
+..  set alias._alias   = _alias
+..macro end
+..for [alias.0] macro alt
 END-LOCAL-SITE-DATA
 
-The lpars file must contain at least the following column names (in any order):
+The lpars file must contain at least the following column names - in any order
+except for 'alias' which must be the first column:
 
 alias sysname jc mc sysclone sysplex jesname jesnode njenet cat tags host
 
@@ -100,9 +112,9 @@ The njenet column is used to determine whether JCL can be submitted via NJE
 from one LPAR to another LPAR. If LPARs share the same njenet value then 
 it is assumed that they have NJE connectivity. The njenet value can be any
 user-defined string and is not related to any z/OS configuration value.
-If no NJE connectivity exists, then FTP will be used to submit JCL (assuming that
-there is TCPIP connectivity). The use of FTP instead of NJE can be forced by 
-setting the "useftp" option: `..option useftp` (or `..set useftp = 1`).
+If no NJE connectivity exists, then FTP will be used to submit JCL (assuming
+that there is TCPIP connectivity). The use of FTP instead of NJE can be forced
+by setting the "useftp" option: `..option useftp` (or `..set useftp = 1`).
 
 You can add your own columns, but the above are the minimum required for JAM
 to be useful on z/OS.
