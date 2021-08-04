@@ -4732,7 +4732,7 @@ doRunOn:
       queue '@@'
       g.0DLM = 0 /* No oustanding DLM=@@ termination */
     end
-    call setAlias '*' /* Set alias REXX variables for the current system */
+    call setAlias     /* Set alias REXX variables for the current system */
     /* If the "runon" system is not specified, or if the output
        is to be returned to the "via" system and the "via" system is
        this system - AND - if the "useftp" flag is not explicitly set
@@ -4940,11 +4940,16 @@ setAlias:
   /* An alias is a user-defined friendly name for a system */
   /* All aliases are defined in the "lpars" table */
   parse upper arg id            /* id is either an alias or a sysname */
+  alias = ''
   if sysname.id <> ''           /* If alias is in the lpars map */
   then alias = id               /* Then use the specified alias */
   else do                       /* Else use a suitable default */
     if g.0ZOS
-    then alias = g.0SYSNAME     /* On z/OS use SYSNAME of this system */
+    then do
+      if id = ''                /* If alias or sysname was omitted */
+      then id = g.0SYSNAME      /* Then use this system's sysname */
+      alias = alias.id          /* Get alias for this sysname */
+    end
     else alias = alias.1        /* Else use the first alias in the map */
   end
   sysname  = sysname.alias         /* SysName                  */
@@ -4954,6 +4959,7 @@ setAlias:
   sysplex  = sysplex.alias         /* SysPlex                  */
   jesname  = jesname.alias         /* JES2 node name           */
   jesnode  = jesnode.alias         /* JES2 node number         */
+  njenet   = njenet.alias          /* NJE network              */
   cat      = cat.alias             /* Catalog name             */
   tags     = tags.alias            /* Miscellaneous tags       */
   host     = host.alias            /* Host name                */
