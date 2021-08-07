@@ -77,13 +77,12 @@ BEGIN-LOCAL-SITE-DATA
 ...
 ... Enable '..job [sysname]' to work the same as '..job [alias]'
 ...
-..macro define alt #
-..  set _alias   = alias.#
-..  set _sysname = sysname._alias
-..  set alias._sysname = _alias
-..  set alias._alias   = _alias
-..macro end
-..for [alias.0] macro alt
+..rexx do # = 1 to alias.0,
+..rexx   _alias   = alias.#,
+..rexx   _sysname = sysname._alias,
+..rexx   alias._sysname = _alias,
+..rexx   alias._alias   = _alias,
+..rexx end
 END-LOCAL-SITE-DATA
 
 The lpars file must contain at least the following column names - in any order
