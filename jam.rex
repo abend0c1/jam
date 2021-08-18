@@ -5936,7 +5936,7 @@ queueUSS: procedure
 return
 
 queueSTR: procedure
-  parse arg sStatement
+  parse arg sStmt
   if length(sStmt) < 72
   then queue sStmt
   else do
